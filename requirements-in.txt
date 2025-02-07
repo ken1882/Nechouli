@@ -17,6 +17,8 @@ inflection==0.5.1
 prettytable==2.2.1
 pydantic>=2.4
 onepush==1.3.0
+filelock==3.17.0
+cached-property==2.0.1
 
 # OCR
 pponnxcr==2.0

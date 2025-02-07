@@ -438,9 +438,10 @@ class AlasGUI(Frame):
                     put_scope(f"dashboard-row-{arg}", [])
                     for arg in self.ALAS_STORED.keys() if deep_get(self.ALAS_STORED, keys=[arg, "order"], default=0)
                     # Empty content to left-align last row
-                ] + [put_html("<i></i>")] * min(len(self.ALAS_STORED), 4))
+                ])
             ])
             put_scope("log", [put_html("")])
+            print(len(self.ALAS_STORED))
 
         log.console.width = log.get_width()
 
@@ -783,6 +784,8 @@ class AlasGUI(Frame):
                 upstream_commit = updater.get_commit(
                     f"origin/{updater.Branch}", short_sha1=True
                 )
+                local_commit = [s or '' for s in local_commit]
+                upstream_commit = [s or '' for s in upstream_commit]
                 put_table(
                     [
                         [t("Gui.Update.Local"), *local_commit],
@@ -801,6 +804,7 @@ class AlasGUI(Frame):
                 history = updater.get_commit(
                     f"origin/{updater.Branch}", n=20, short_sha1=True
                 )
+                history = [s or '' for s in history]
                 put_table(
                     [commit for commit in history],
                     header=[
@@ -1112,11 +1116,10 @@ class AlasGUI(Frame):
             put_text("Select your language / 选择语言").style("text-align: center")
             put_buttons(
                 [
-                    {"label": "简体中文", "value": "zh-CN"},
-                    {"label": "繁體中文", "value": "zh-TW"},
                     {"label": "English", "value": "en-US"},
-                    {"label": "日本語", "value": "ja-JP"},
-                    {"label": "Español", "value": "es-ES"},
+                    # {"label": "简体中文", "value": "zh-CN"},
+                    # {"label": "繁體中文", "value": "zh-TW"},
+                    # {"label": "日本語", "value": "ja-JP"},
                 ],
                 onclick=lambda l: set_language(l),
             ).style("text-align: center")
@@ -1132,9 +1135,9 @@ class AlasGUI(Frame):
             # show something
             put_markdown(
                 """
-            SRC is a free open source software, if you paid for SRC from any channel, please refund.
-            SRC 是一款免费开源软件，如果你在任何渠道付费购买了SRC，请退款。
-            Project repository 项目地址：`https://github.com/LmeSzinc/StarRailCopilot`
+            Nechouli is a free open source software, if you paid for Nechouli from any channel, please refund.
+            Nechouli 是一款免费开源软件，如果你在任何渠道付费购买了Nechouli，请退款。
+            Project repository 项目地址：`https://github.com/ken1882/Nechouli`
             """
             ).style("text-align: center")
 
@@ -1154,7 +1157,7 @@ class AlasGUI(Frame):
 
     def run(self) -> None:
         # setup gui
-        set_env(title="SRC", output_animation=False)
+        set_env(title="Nechouli", output_animation=False)
         add_css(filepath_css("alas"))
         if self.is_mobile:
             add_css(filepath_css("alas-mobile"))

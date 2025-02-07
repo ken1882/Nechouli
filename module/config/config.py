@@ -505,41 +505,6 @@ class AzurLaneConfig(ConfigUpdater, ManualConfig, GeneratedConfig, ConfigWatcher
     def is_task_enabled(self, task):
         return bool(self.cross_get(keys=[task, 'Scheduler', 'Enable'], default=False))
 
-    def update_daily_quests(self):
-        """
-        Raises:
-            TaskEnd: Call task `DailyQuest` and stop current task
-        """
-        with self.multi_set():
-            if self.stored.DailyActivity.is_expired():
-                logger.info('DailyActivity expired')
-                self.stored.DailyActivity.clear()
-            if self.stored.DailyQuest.is_expired():
-                logger.info('DailyQuest expired')
-                q = self.stored.DailyQuest
-                q.clear()
-                # Assume fixed quests
-                q.write_quests([
-                    'Complete_1_Daily_Mission',
-                    'Log_in_to_the_game',
-                    'Dispatch_1_assignments',
-                    'Complete_Divergent_Universe_or_Simulated_Universe_1_times',
-                    'Obtain_victory_in_combat_with_Support_Characters_1_times',
-                    'Consume_120_Trailblaze_Power',
-                ])
-
-    def update_battle_pass_quests(self):
-        """
-        Raises:
-            TaskEnd: Call task `BattlePass` and stop current task
-        """
-        if self.stored.BattlePassWeeklyQuest.is_expired():
-            if self.stored.BattlePassLevel.is_full():
-                logger.info('BattlePassLevel full, no updates')
-            else:
-                logger.info('BattlePassTodayQuest expired')
-                self.stored.BattlePassWeeklyQuest.clear()
-
     @property
     def DEVICE_SCREENSHOT_METHOD(self):
         return self.Emulator_ScreenshotMethod

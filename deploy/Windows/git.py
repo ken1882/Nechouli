@@ -52,7 +52,7 @@ class GitManager(DeployConfig):
         return conf
 
     def git_repository_init(
-            self, repo, source='origin', branch='master',
+            self, repo, source='origin', branch='main',
             proxy='', ssl_verify=True, keep_changes=False
     ):
         logger.hr('Git Init', 1)
@@ -100,6 +100,7 @@ class GitManager(DeployConfig):
             './.git/index.lock',
             './.git/HEAD.lock',
             './.git/refs/heads/master.lock',
+            './.git/refs/heads/main.lock',
         ]:
             if os.path.exists(lock_file):
                 logger.info(f'Lock file {lock_file} exists, removing')
@@ -131,10 +132,10 @@ class GitManager(DeployConfig):
     @property
     def goc_client(self):
         client = GitOverCdnClient(
-            url='https://vip.123pan.cn/1815343254/pack/LmeSzinc_StarRailCopilot_master',
+            url='https://github.com/ken1882/Nechouli',
             folder=self.root_filepath,
             source='origin',
-            branch='master',
+            branch='main',
             git=self.git,
         )
         client.logger = logger

@@ -14,8 +14,8 @@ class ExecutionError(Exception):
 
 class ConfigModel:
     # Git
-    Repository: str = "https://github.com/LmeSzinc/AzurLaneAutoScript"
-    Branch: str = "master"
+    Repository: str = "https://github.com/ken1882/Nechouli"
+    Branch: str = "main"
     GitExecutable: str = "./toolkit/Git/mingw64/bin/git.exe"
     GitProxy: Optional[str] = None
     SSLVerify: bool = False
@@ -27,12 +27,6 @@ class ConfigModel:
     PypiMirror: Optional[str] = None
     InstallDependencies: bool = True
     RequirementsFile: str = "requirements.txt"
-
-    # Adb
-    AdbExecutable: str = "./toolkit/Lib/site-packages/adbutils/binaries/adb.exe"
-    ReplaceAdb: bool = True
-    AutoConnect: bool = True
-    InstallUiautomator2: bool = True
 
     # Ocr
     UseOcrServer: bool = False
@@ -117,7 +111,7 @@ class DeployConfig(ConfigModel):
         # Don't write these into deploy.yaml
         super().__setattr__('GitOverCdn', self.Repository in ['cn'])
         if self.Repository in ['global', 'cn']:
-            super().__setattr__('Repository', 'https://github.com/LmeSzinc/StarRailCopilot')
+            super().__setattr__('Repository', 'https://github.com/ken1882/Nechouli')
 
     def filepath(self, path):
         """

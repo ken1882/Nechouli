@@ -9,8 +9,6 @@ Alas:
   page: 'setting'
   tasks:
     Alas:
-      - Emulator
-      - EmulatorInfo
       - Error
       - Optimization
     Restart:
@@ -21,59 +19,18 @@ Alas:
 Daily:
   menu: 'list'
   page: 'setting'
-  tasks:
-    Dungeon:
-      - Scheduler
-      - Planner
-      - Dungeon
-      - DungeonSupport
-      - DungeonStorage
-      - TrailblazePower
-    Ornament:
-      - Scheduler
-      - Ornament
-      - DungeonSupport
-      - TrailblazePower
-    DailyQuest:
-      - Scheduler
-      - DailyStorage
-    BattlePass:
-      - Scheduler
-      - BattlePassStorage
-    Assignment:
-      - Scheduler
-      - Assignment
-    DataUpdate:
-      - Scheduler
-      - ItemStorage
-      - CloudStorage
-    Freebies:
-      - Scheduler
-      - SupportReward
+  tasks: {}
 
 # ==================== Weekly ====================
 
 Weekly:
   menu: 'list'
   page: 'setting'
-  tasks:
-    Weekly:
-      - Scheduler
-      - Weekly
-      - DungeonSupport
-    Rogue:
-      - Scheduler
-      - RogueWorld
-      - RogueBlessing
-      - RogueDebug
+  tasks: {}
 
 # ==================== Tool ====================
 
 Tool:
   menu: 'list'
   page: 'tool'
-  tasks:
-    Daemon:
-      - Daemon
-    PlannerScan:
-      - PlannerScan
+  tasks: {}

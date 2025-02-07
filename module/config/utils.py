@@ -11,7 +11,13 @@ from filelock import FileLock
 import module.config.server as server_
 from module.config.atomicwrites import atomic_write
 
-LANGUAGES = ['zh-CN', 'en-US', 'ja-JP', 'zh-TW', 'es-ES']
+LANGUAGES = [
+    'en-US',
+    # 'zh-TW',
+    # 'zh-CN',
+    # 'ja-JP',
+]
+
 SERVER_TO_TIMEZONE = {
     'CN-Official': timedelta(hours=8),
     'CN-Bilibili': timedelta(hours=8),

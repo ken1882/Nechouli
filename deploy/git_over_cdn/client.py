@@ -49,7 +49,7 @@ class PrintLogger:
 class GitOverCdnClient:
     logger = PrintLogger()
 
-    def __init__(self, url, folder, source='origin', branch='master', git='git'):
+    def __init__(self, url, folder, source='origin', branch='main', git='git'):
         """
         Args:
             url: http://127.0.0.1:22251/pack/LmeSzinc_AzurLaneAutoScript_master/

@@ -3,7 +3,7 @@
     <ASpin
       dot
       :size="30"
-      tip="SRC Loading..."
+      tip="Nechouli Loading..."
     />
   </div>
 </template>

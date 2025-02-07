@@ -65,9 +65,9 @@ def reload():
         for path, v in deep_iter(read_file(filepath_i18n(lang)), depth=3):
             dic_lang[lang][".".join(path)] = v
 
-    for key in dic_lang["ja-JP"].keys():
-        if dic_lang["ja-JP"][key] == key:
-            dic_lang["ja-JP"][key] = dic_lang["en-US"][key]
+    # for key in dic_lang["ja-JP"].keys():
+    #     if dic_lang["ja-JP"][key] == key:
+    #         dic_lang["ja-JP"][key] = dic_lang["en-US"][key]
 
 
 def readable_time(before: str) -> str:

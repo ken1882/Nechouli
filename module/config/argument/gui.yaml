@@ -53,7 +53,6 @@ Overview:
   NoTask:
 
 Dashboard:
-  # From lang.readable_time()
   NoData:
   TimeError:
   JustNow:
@@ -61,7 +60,6 @@ Dashboard:
   HoursAgo:
   DaysAgo:
   LongTimeAgo:
-  # Planner
   EtaDays:
 
 AddAlas:
