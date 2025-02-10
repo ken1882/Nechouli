@@ -30,7 +30,37 @@ Optimization:
   WhenTaskQueueEmpty:
     value: goto_main
     option: [ stay_there, goto_main, close_game ]
+Playwright:
+  Browser:
+    type: select
+    value: msedge
+    option:
+      - msedge
+      - msedge-beta
+      - msedge-dev
+      - msedge-canary
+      - chrome
+      - chrome-beta
+      - chrome-dev
+      - chrome-canary
+  Headless: false
+  AutoOpenDevtools: false
+  ExtensionDirectory: "%LOCALAPPDATA%/Microsoft/Edge/User Data/Default/Extensions"
+  ExtensionNames:
+    type: textarea
+    value: Ruffle
+  ExtraChromiumArgs:
+    type: textarea
+    value: |
+      --disable-blink-features=AutomationControlled
+      --disable-features=IsolateOrigins,site-per-process
+      --disable-infobars
 
 # ==================== Daily ====================
+DailyQuest:
+  Name:
+    value: DailyQuest
+    option: [ ]
+
 
 # ==================== Tool ====================

@@ -1,5 +1,13 @@
 {
   "Alas": {
+    "Playwright": {
+      "Browser": "msedge",
+      "Headless": false,
+      "AutoOpenDevtools": false,
+      "ExtensionDirectory": "%LOCALAPPDATA%/Microsoft/Edge/User Data/Default/Extensions",
+      "ExtensionNames": "Ruffle",
+      "ExtraChromiumArgs": "--disable-blink-features=AutomationControlled\n--disable-features=IsolateOrigins,site-per-process\n--disable-infobars\n"
+    },
     "Error": {
       "Restart": "game",
       "SaveError": true,
@@ -17,6 +25,14 @@
       "Enable": true,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "Restart",
+      "ServerUpdate": "04:00"
+    }
+  },
+  "DailyQuest": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "DailyQuest",
       "ServerUpdate": "04:00"
     }
   }

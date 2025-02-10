@@ -29,7 +29,7 @@
 #pywebio-scope-log-bar {
     display: flex;
     flex-direction: column;
-    height: 11.5rem;
+    max-height: 11.5rem;
 }
 
 #pywebio-scope-dashboard {

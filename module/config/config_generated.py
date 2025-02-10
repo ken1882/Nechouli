@@ -25,3 +25,14 @@ class GeneratedConfig:
     Optimization_ScreenshotInterval = 0.3
     Optimization_CombatScreenshotInterval = 1.0
     Optimization_WhenTaskQueueEmpty = 'goto_main'  # stay_there, goto_main, close_game
+
+    # Group `Playwright`
+    Playwright_Browser = 'msedge'  # msedge, msedge-beta, msedge-dev, msedge-canary, chrome, chrome-beta, chrome-dev, chrome-canary
+    Playwright_Headless = False
+    Playwright_AutoOpenDevtools = False
+    Playwright_ExtensionDirectory = '%LOCALAPPDATA%/Microsoft/Edge/User Data/Default/Extensions'
+    Playwright_ExtensionNames = 'Ruffle'
+    Playwright_ExtraChromiumArgs = '--disable-blink-features=AutomationControlled\n--disable-features=IsolateOrigins,site-per-process\n--disable-infobars\n'
+
+    # Group `DailyQuest`
+    DailyQuest_Name = 'DailyQuest'

@@ -16,7 +16,7 @@ from module.config.utils import *
 from module.config.watcher import ConfigWatcher
 from module.exception import RequestHumanTakeover, ScriptError
 from module.logger import logger
-
+import inspect
 
 class TaskEnd(Exception):
     pass
@@ -124,6 +124,7 @@ class AzurLaneConfig(ConfigUpdater, ManualConfig, GeneratedConfig, ConfigWatcher
         self.save()
 
     def load(self):
+        logger.info(f"Load config {filepath_config(self.config_name)}")
         self.data = self.read_file(self.config_name)
         self.config_override()
 
@@ -187,9 +188,7 @@ class AzurLaneConfig(ConfigUpdater, ManualConfig, GeneratedConfig, ConfigWatcher
 
     @property
     def is_cloud_game(self):
-        return deep_get(
-            self.data, keys="Alas.Emulator.GameClient"
-        ) == 'cloud_android'
+        return False
 
     @cached_property
     def stored(self) -> StoredGenerated:
@@ -220,7 +219,6 @@ class AzurLaneConfig(ConfigUpdater, ManualConfig, GeneratedConfig, ConfigWatcher
                 pending.append(func)
             else:
                 waiting.append(func)
-
         f = Filter(regex=r"(.*)", attr=["command"])
         f.load(self.SCHEDULER_PRIORITY)
         if pending:
@@ -230,7 +228,6 @@ class AzurLaneConfig(ConfigUpdater, ManualConfig, GeneratedConfig, ConfigWatcher
             waiting = sorted(waiting, key=operator.attrgetter("next_run"))
         if error:
             pending = error + pending
-
         self.pending_task = pending
         self.waiting_task = waiting
 
@@ -507,11 +504,11 @@ class AzurLaneConfig(ConfigUpdater, ManualConfig, GeneratedConfig, ConfigWatcher
 
     @property
     def DEVICE_SCREENSHOT_METHOD(self):
-        return self.Emulator_ScreenshotMethod
+        return 'auto' # playwright built-in
 
     @property
     def DEVICE_CONTROL_METHOD(self):
-        return self.Emulator_ControlMethod
+        return 'auto' # playwright built-in
 
     def temporary(self, **kwargs):
         """

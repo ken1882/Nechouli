@@ -1,5 +1,6 @@
 import datetime
 import operator
+import os
 import re
 import sys
 import threading
@@ -7,6 +8,7 @@ import time
 import traceback
 from queue import Queue
 from typing import Callable, Generator, List
+from base64 import b64encode
 
 import pywebio
 from module.config.utils import deep_iter
@@ -365,8 +367,12 @@ def filepath_css(filename):
     return f"./assets/gui/css/{filename}.css"
 
 
+ICON_FORMATS = ["svg", "png", "jpg", "jpeg", "gif"]
 def filepath_icon(filename):
-    return f"./assets/gui/icon/{filename}.svg"
+    for fmt in ICON_FORMATS:
+        path = f"./assets/gui/icon/{filename}.{fmt}"
+        if os.path.exists(path):
+            return path
 
 
 def add_css(filepath):
@@ -376,8 +382,15 @@ def add_css(filepath):
 
 
 def _read(path):
-    with open(path, "r") as f:
-        return f.read()
+    try:
+        with open(path, "r", encoding='utf8') as f:
+            return f.read()
+    except UnicodeDecodeError:
+        pass
+    data = b''
+    with open(path, "rb") as f:
+        data = f.read()
+    return f"<img src='data:image/png;base64,{b64encode(data).decode()}'/>"
 
 
 class Icon:
@@ -385,7 +398,7 @@ class Icon:
     Storage html of icon.
     """
 
-    ALAS = _read(filepath_icon("alas"))
+    ALAS = _read(filepath_icon("nechouli"))
     SETTING = _read(filepath_icon("setting"))
     RUN = _read(filepath_icon("run"))
     DEVELOP = _read(filepath_icon("develop"))

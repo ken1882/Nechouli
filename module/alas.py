@@ -11,10 +11,13 @@ from module.config.utils import deep_get, deep_set
 from module.exception import *
 from module.logger import logger, save_error_log
 from module.notify import handle_notify
+from module.device.device import Device
 
+import inspect
 
 class AzurLaneAutoScript:
     stop_event: threading.Event = None
+    device: Device
 
     def __init__(self, config_name='alas'):
         logger.hr('Start', level=0)
@@ -54,27 +57,31 @@ class AzurLaneAutoScript:
     def checker(self):
         try:
             from module.server_checker import ServerChecker
-            checker = ServerChecker(server=self.config.Emulator_PackageName)
+            checker = ServerChecker()
             return checker
         except Exception as e:
             logger.exception(e)
             exit(1)
 
     def restart(self):
-        raise NotImplemented
+        # raise NotImplemented
+        logger.warning('Restart is not implemented')
 
     def start(self):
-        raise NotImplemented
+        # raise NotImplemented
+        logger.warning('Start is not implemented')
 
     def stop(self):
-        raise NotImplemented
+        # raise NotImplemented
+        logger.warning('Stop is not implemented')
 
     def goto_main(self):
-        raise NotImplemented
+        # raise NotImplemented
+        logger.warning('Goto main is not implemented')
 
     def run(self, command):
         try:
-            self.device.screenshot()
+            # self.device.screenshot()
             self.device.screenshot_tracking.clear()
             self.__getattribute__(command)()
             return True
@@ -88,14 +95,14 @@ class AzurLaneAutoScript:
             logger.error(e)
             self.save_error_log()
             logger.warning(f'Game stuck, {self.device.package} will be restarted in 10 seconds')
-            logger.warning('If you are playing by hand, please stop Src')
+            logger.warning('If you are playing by hand, please stop Nechouli')
             self.config.task_call('Restart')
             self.device.sleep(10)
             return False
         except GameBugError as e:
             logger.warning(e)
             self.save_error_log()
-            logger.warning('An error has occurred in Star Rail game client, Src is unable to handle')
+            logger.warning('An error has occurred in Star Rail game client, Nechouli is unable to handle')
             logger.warning(f'Restarting {self.device.package} to fix it')
             self.config.task_call('Restart')
             self.device.sleep(10)
@@ -108,7 +115,7 @@ class AzurLaneAutoScript:
                 self.save_error_log()
                 handle_notify(
                     self.config.Error_OnePushConfig,
-                    title=f"Src <{self.config_name}> crashed",
+                    title=f"Nechouli <{self.config_name}> crashed",
                     content=f"<{self.config_name}> GamePageUnknownError",
                 )
                 exit(1)
@@ -125,7 +132,7 @@ class AzurLaneAutoScript:
             self.save_error_log()
             handle_notify(
                 self.config.Error_OnePushConfig,
-                title=f"Src <{self.config_name}> crashed",
+                title=f"Nechouli <{self.config_name}> crashed",
                 content=f"<{self.config_name}> ScriptError",
             )
             exit(1)
@@ -134,7 +141,7 @@ class AzurLaneAutoScript:
             self.error_postprocess()
             handle_notify(
                 self.config.Error_OnePushConfig,
-                title=f"Src <{self.config_name}> crashed",
+                title=f"Nechouli <{self.config_name}> crashed",
                 content=f"<{self.config_name}> RequestHumanTakeover",
             )
             exit(1)
@@ -144,7 +151,7 @@ class AzurLaneAutoScript:
             self.save_error_log()
             handle_notify(
                 self.config.Error_OnePushConfig,
-                title=f"Src <{self.config_name}> crashed",
+                title=f"Nechouli <{self.config_name}> crashed",
                 content=f"<{self.config_name}> Exception occured",
             )
             exit(1)
@@ -298,7 +305,7 @@ class AzurLaneAutoScript:
                 logger.critical('Request human takeover')
                 handle_notify(
                     self.config.Error_OnePushConfig,
-                    title=f"Src <{self.config_name}> crashed",
+                    title=f"Nechouli <{self.config_name}> crashed",
                     content=f"<{self.config_name}> RequestHumanTakeover\nTask `{task}` failed 3 or more times.",
                 )
                 exit(1)

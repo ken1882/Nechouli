@@ -9,6 +9,7 @@ Alas:
   page: 'setting'
   tasks:
     Alas:
+      - Playwright
       - Error
       - Optimization
     Restart:
@@ -19,7 +20,9 @@ Alas:
 Daily:
   menu: 'list'
   page: 'setting'
-  tasks: {}
+  tasks:
+    DailyQuest:
+      - Scheduler
 
 # ==================== Weekly ====================
 

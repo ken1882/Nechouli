@@ -2,30 +2,18 @@
 This file stores server, such as 'cn', 'en'.
 Use 'import module.config.server as server' to import, don't use 'from xxx import xxx'.
 """
-lang = 'cn'  # Setting default to cn, will avoid errors when using dev_tools
-server = 'CN-Official'
+lang = 'en'  # Setting default to cn, will avoid errors when using dev_tools
+server = 'EN-Official'
 
-VALID_LANG = ['cn', 'en']
+VALID_LANG = ['en']
 VALID_SERVER = {
-    'CN-Official': 'com.miHoYo.hkrpg',
-    'CN-Bilibili': 'com.miHoYo.hkrpg.bilibili',
-    'OVERSEA-America': 'com.HoYoverse.hkrpgoversea',
-    'OVERSEA-Asia': 'com.HoYoverse.hkrpgoversea',
-    'OVERSEA-Europe': 'com.HoYoverse.hkrpgoversea',
-    'OVERSEA-TWHKMO': 'com.HoYoverse.hkrpgoversea',
+    'EN-Official': 'www.neopets.com',
 }
 VALID_PACKAGE = set(list(VALID_SERVER.values()))
-VALID_CLOUD_SERVER = {
-    'CN-Official': 'com.miHoYo.cloudgames.hkrpg',
-}
+VALID_CLOUD_SERVER = {}
 VALID_CLOUD_PACKAGE = set(list(VALID_CLOUD_SERVER.values()))
 
-DICT_PACKAGE_TO_ACTIVITY = {
-    'com.miHoYo.hkrpg': 'com.mihoyo.combosdk.ComboSDKActivity',
-    'com.miHoYo.hkrpg.bilibili': 'com.mihoyo.combosdk.ComboSDKActivity',
-    'com.HoYoverse.hkrpgoversea': 'com.mihoyo.combosdk.ComboSDKActivity',
-    'com.miHoYo.cloudgames.hkrpg': 'com.mihoyo.cloudgame.ui.SplashActivity',
-}
+DICT_PACKAGE_TO_ACTIVITY = {}
 
 
 def set_lang(lang_: str):
@@ -48,11 +36,6 @@ def to_server(package_or_server: str) -> str:
     Convert package/server to server.
     To unknown packages, consider they are a CN channel servers.
     """
-    # Can't distinguish different regions of oversea servers,
-    # assume it's 'OVERSEA-Asia'
-    if package_or_server == 'com.HoYoverse.hkrpgoversea':
-        return 'OVERSEA-Asia'
-
     for key, value in VALID_SERVER.items():
         if value == package_or_server:
             return key

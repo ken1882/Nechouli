@@ -1,6 +1,6 @@
 class ServerChecker:
     # Create a fake server check since server check is not supported yet.
-    def __init__(self, server):
+    def __init__(self, *args, **kwargs):
         pass
 
     def check_now(self):

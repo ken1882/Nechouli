@@ -9,7 +9,7 @@ test('test write yaml', () => {
   modifyYaml(yamlPath, {Branch: 'dev'});
   const newYamlConfig1 = require('yaml').parse(fs.readFileSync(yamlPath, 'utf8'));
   expect(newYamlConfig1.Deploy.Git.Branch).toBe('dev');
-  modifyYaml(yamlPath, {Branch: 'master'});
+  modifyYaml(yamlPath, {Branch: 'main'});
   const newYamlConfig2 = require('yaml').parse(fs.readFileSync(yamlPath, 'utf8'));
-  expect(newYamlConfig2.Deploy.Git.Branch).toBe('master');
+  expect(newYamlConfig2.Deploy.Git.Branch).toBe('main');
 });

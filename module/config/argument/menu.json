@@ -10,7 +10,9 @@
   "Daily": {
     "menu": "list",
     "page": "setting",
-    "tasks": []
+    "tasks": [
+      "DailyQuest"
+    ]
   },
   "Weekly": {
     "menu": "list",

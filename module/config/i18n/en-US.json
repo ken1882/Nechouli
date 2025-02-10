@@ -3,6 +3,10 @@
     "Alas": {
       "name": "Nechouli",
       "help": ""
+    },
+    "Daily": {
+      "name": "Daily",
+      "help": ""
     }
   },
   "Task": {
@@ -12,6 +16,10 @@
     },
     "Restart": {
       "name": "Error Handling",
+      "help": ""
+    },
+    "DailyQuest": {
+      "name": "Daily Quest",
       "help": ""
     }
   },
@@ -82,6 +90,54 @@
       "stay_there": "Stay There",
       "goto_main": "Goto Main Page",
       "close_game": "Close Game"
+    }
+  },
+  "Playwright": {
+    "_info": {
+      "name": "Playwright",
+      "help": "Restart is required after changing these settings"
+    },
+    "Browser": {
+      "name": "Browser",
+      "help": "",
+      "msedge": "msedge",
+      "msedge-beta": "msedge-beta",
+      "msedge-dev": "msedge-dev",
+      "msedge-canary": "msedge-canary",
+      "chrome": "chrome",
+      "chrome-beta": "chrome-beta",
+      "chrome-dev": "chrome-dev",
+      "chrome-canary": "chrome-canary"
+    },
+    "Headless": {
+      "name": "Headless Mode",
+      "help": "Run without a visible UI"
+    },
+    "AutoOpenDevtools": {
+      "name": "Auto Open DevTools",
+      "help": ""
+    },
+    "ExtensionDirectory": {
+      "name": "Extension Directory",
+      "help": "Path to folder contains browser extensions"
+    },
+    "ExtensionNames": {
+      "name": "Extensions",
+      "help": "Name of extensions to load, separated by line"
+    },
+    "ExtraChromiumArgs": {
+      "name": "Extra Chromium Arguments",
+      "help": "Additional command-line arguments to pass."
+    }
+  },
+  "DailyQuest": {
+    "_info": {
+      "name": "Daily Quest",
+      "help": ""
+    },
+    "Name": {
+      "name": "DailyQuest.Name.name",
+      "help": "DailyQuest.Name.help"
     }
   },
   "Gui": {

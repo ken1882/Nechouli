@@ -1,8 +1,9 @@
-import asyncio
+import os
+from time import sleep
 from functools import wraps
-from playwright.async_api import async_playwright
+from playwright.sync_api import sync_playwright, Page, Browser, Playwright
+from module.config.config import AzurLaneConfig
 from module.logger import logger
-from module.base.decorator import retry
 
 def retry(func):
     @wraps(func)
@@ -12,46 +13,40 @@ def retry(func):
                 return await func(self, *args, **kwargs)
             except Exception as e:
                 logger.warning(f"Retrying {func.__name__} due to {e} (Attempt {attempt + 1}/3)")
-                await asyncio.sleep(2)
+                await sleep(2)
         raise Exception(f"Function {func.__name__} failed after 3 retries.")
     return retry_wrapper
 
 class Connection:
-    def __init__(self, browser_type="chromium"):
-        self.browser_type = browser_type
-        self.playwright = None
+    config: AzurLaneConfig
+    pw: Playwright
+    page: Page
+    context: Browser
+
+    PROFILE_DIRECTORY = os.path.realpath(os.path.join(os.getcwd(), './profiles'))
+
+    def __init__(self, config):
+        self.config = config
+        self.pw = None
         self.browser = None
         self.page = None
-        self.current_url = ""
+        self.url = ""
 
-    async def start_browser(self):
-        if self.playwright is None:
-            self.playwright = await async_playwright().start()
+    def start_browser(self):
+        if self.pw is None:
+            self.pw = sync_playwright().start()
 
-        self.browser = await self.playwright.chromium.launch(headless=False)
-        self.page = await self.browser.new_page()
+        kwargs = {
+            'channel': self.config.Playwright_Browser,
+            'headless': self.config.Playwright_Headless,
+            'args': self.config.Playwright_ExtraChromiumArgs.split('\n'),
+        }
+        if self.config.Playwright_AutoOpenDevtools:
+            kwargs['args'].append('--auto-open-devtools-for-tabs')
+
+        self.context = self.pw.chromium.launch_persistent_context(
+            os.path.join(self.PROFILE_DIRECTORY, self.config.config_name),
+            **kwargs
+        )
+        self.page = self.context.new_page()
         logger.info("Browser started.")
-
-    @retry
-    async def open_page(self, url: str):
-        if not self.page:
-            await self.start_browser()
-
-        logger.info(f'Opening page: {url}')
-        await self.page.goto(url)
-        self.current_url = await self.page.url()
-
-    async def stop_browser(self):
-        if self.browser:
-            logger.info("Closing browser session.")
-            await self.browser.close()
-        if self.playwright:
-            await self.playwright.stop()
-
-        self.browser = None
-        self.page = None
-        self.playwright = None
-        self.current_url = ""
-
-    async def execute_js(self, script: str):
-        return await self.page.evaluate(script)

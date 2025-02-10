@@ -559,7 +559,7 @@ class ConfigUpdater:
             str: Key path to set config json, such as "Main.Emotion.Fleet1Record"
             any: Value to set, such as "2020-01-01 00:00:00"
         """
-        pass
+        yield key, value
 
     def iter_hidden_args(self, data) -> t.Iterator[str]:
         """

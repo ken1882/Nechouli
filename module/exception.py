@@ -26,6 +26,8 @@ class HandledError(Exception):
 class EmulatorNotRunningError(Exception):
     pass
 
+class BrowserNotRunningError(Exception):
+    pass
 
 class GameNotRunningError(Exception):
     pass

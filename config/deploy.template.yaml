@@ -6,7 +6,7 @@ Deploy:
     Repository: global
     # Branch of Alas
     # [Developer] Use 'dev', 'app', etc, to try new features
-    # [Other] Use 'master', the stable branch
+    # [Other] Use 'main', the stable branch
     Branch: main
     # Filepath of git executable `git.exe`
     # [Easy installer] Use './toolkit/Git/mingw64/bin/git.exe'

@@ -1,16 +1,22 @@
 import asyncio
 import collections
 import itertools
+
+from lxml import etree
+
+from module.device.env import IS_WINDOWS
+
+from module.base.timer import Timer
 from module.device.control import Control
 from module.device.screenshot import Screenshot
-from module.logger import logger
-from playwright.async_api import Page
-from module.base.timer import Timer
 from module.exception import (
+    BrowserNotRunningError,
     GameNotRunningError,
     GameStuckError,
     GameTooManyClickError,
+    RequestHumanTakeover
 )
+from module.logger import logger
 
 def show_function_call():
     """
@@ -38,141 +44,148 @@ def show_function_call():
     logger.info('Function calls:' + ''.join(func_list))
 
 class Device(Control, Screenshot):
-    def __init__(self, page: Page):
+    _screen_size_checked = False
+    detect_record = set()
+    click_record = collections.deque(maxlen=30)
+    stuck_timer = Timer(60, count=60).start()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.screenshot_interval_set()
+
+        # Early init
+        if self.config.is_actual_task:
+            pass
+
+    def run_simple_screenshot_benchmark(self):
         """
-        Args:
-            page (Page): Playwright Page object.
+        Perform a screenshot method benchmark, test 3 times on each method.
+        The fastest one will be set into config.
         """
-        self.page = page
-        Control.__init__(self, page)
-        Screenshot.__init__(self, page)
+        return
+
+    def method_check(self):
+        return True
+
+    def screenshot(self):
+        """
+        Returns:
+            np.ndarray:
+        """
+        return
+
+    def dump_hierarchy(self) -> etree._Element:
+        self.stuck_record_check()
+        return super().dump_hierarchy()
+
+    def release_during_wait(self):
+        return
+
+    def get_orientation(self):
+        return
+
+    def stuck_record_add(self, button):
+        self.detect_record.add(str(button))
+
+    def stuck_record_clear(self):
         self.detect_record = set()
-        self.click_record = collections.deque(maxlen=30)
-        self.stuck_timer = Timer(60, count=60).start()
+        self.stuck_timer.reset()
 
-    async def check_element_exists(self, selector: str) -> bool:
-        """Check if a UI element exists."""
-        exists = await self.page.locator(selector).count() > 0
-        logger.info(f"Element {selector} exists: {exists}")
-        return exists
-
-    async def wait_for_element(self, selector: str, timeout: int = 5000):
-        """Wait for an element to appear."""
-        try:
-            await self.page.wait_for_selector(selector, timeout=timeout)
-            logger.info(f"Element {selector} appeared.")
-        except Exception:
-            logger.warning(f"Timeout waiting for element {selector}")
-
-    async def detect_stuck(self):
+    def stuck_record_check(self):
         """
-        Detects if the script is stuck waiting for an element.
+        Raises:
+            GameStuckError:
         """
         reached = self.stuck_timer.reached()
         if not reached:
             return False
 
         show_function_call()
-        logger.warning("Wait too long")
-        logger.warning(f"Waiting for {self.detect_record}")
-        self.detect_record.clear()
-        self.stuck_timer.reset()
+        logger.warning('Wait too long')
+        logger.warning(f'Waiting for {self.detect_record}')
+        self.stuck_record_clear()
 
-        if await self.page.evaluate("document.readyState") == "complete":
-            raise GameStuckError("Wait too long")
+        if self.app_is_running():
+            raise GameStuckError(f'Wait too long')
         else:
-            raise GameNotRunningError("Game is not running")
+            raise GameNotRunningError('Game died')
 
-    def record_click(self, selector: str):
-        """
-        Records clicks to detect infinite loops.
-        """
-        self.click_record.append(selector)
+    def handle_control_check(self, button):
+        self.stuck_record_clear()
+        self.click_record_add(button)
+        self.click_record_check()
 
-    async def check_click_limit(self):
+    def click_record_add(self, button):
+        self.click_record.append(str(button))
+
+    def click_record_clear(self):
+        self.click_record.clear()
+
+    def click_record_remove(self, button):
         """
-        Detects excessive clicking on the same element.
+        Remove a button from `click_record`
+
+        Args:
+            button (Button):
+
+        Returns:
+            int: Number of button removed
+        """
+        removed = 0
+        for _ in range(self.click_record.maxlen):
+            try:
+                self.click_record.remove(str(button))
+                removed += 1
+            except ValueError:
+                # Value not in queue
+                break
+
+        return removed
+
+    def click_record_check(self):
+        """
+        Raises:
+            GameTooManyClickError:
         """
         first15 = itertools.islice(self.click_record, 0, 15)
         count = collections.Counter(first15).most_common(2)
         if count[0][1] >= 12:
+            # Allow more clicks in Ruan Mei event
+            if 'CHOOSE_OPTION_CONFIRM' in self.click_record and 'BLESSING_CONFIRM' in self.click_record:
+                count = collections.Counter(self.click_record).most_common(2)
+                if count[0][0] == 'BLESSING_CONFIRM' and count[0][1] < 25:
+                    return
             show_function_call()
-            logger.warning(f"Too many clicks on: {count[0][0]}")
-            logger.warning(f"History click: {[str(prev) for prev in self.click_record]}")
-            self.click_record.clear()
-            raise GameTooManyClickError(f"Too many clicks on: {count[0][0]}")
-
+            logger.warning(f'Too many click for a button: {count[0][0]}')
+            logger.warning(f'History click: {[str(prev) for prev in self.click_record]}')
+            self.click_record_clear()
+            raise GameTooManyClickError(f'Too many click for a button: {count[0][0]}')
         if len(count) >= 2 and count[0][1] >= 6 and count[1][1] >= 6:
             show_function_call()
-            logger.warning(f"Too many clicks between two buttons: {count[0][0]}, {count[1][0]}")
-            logger.warning(f"History click: {[str(prev) for prev in self.click_record]}")
-            self.click_record.clear()
-            raise GameTooManyClickError(f"Too many clicks between two buttons: {count[0][0]}, {count[1][0]}")
+            logger.warning(f'Too many click between 2 buttons: {count[0][0]}, {count[1][0]}')
+            logger.warning(f'History click: {[str(prev) for prev in self.click_record]}')
+            self.click_record_clear()
+            raise GameTooManyClickError(f'Too many click between 2 buttons: {count[0][0]}, {count[1][0]}')
 
-    async def click_element(self, selector: str):
+    def disable_stuck_detection(self):
         """
-        Clicks an element and records it.
+        Disable stuck detection and its handler. Usually uses in semi auto and debugging.
         """
-        self.record_click(selector)
-        await self.page.locator(selector).click()
-        logger.info(f"Clicked {selector}")
+        logger.info('Disable stuck detection')
 
-        await self.check_click_limit()
+        def empty_function(*arg, **kwargs):
+            return False
 
-    async def input_text(self, selector: str, text: str):
-        """
-        Inputs text into a text field.
-        """
-        await self.page.locator(selector).fill(text)
-        logger.info(f"Typed into {selector}: {text}")
+        self.click_record_check = empty_function
+        self.stuck_record_check = empty_function
 
-    async def drag_element(self, start_selector: str, end_selector: str):
-        """
-        Drags one element to another.
-        """
-        start = await self.page.locator(start_selector).bounding_box()
-        end = await self.page.locator(end_selector).bounding_box()
-        await self.page.mouse.move(start["x"], start["y"])
-        await self.page.mouse.down()
-        await self.page.mouse.move(end["x"], end["y"])
-        await self.page.mouse.up()
-        logger.info(f"Dragged {start_selector} to {end_selector}")
+    def app_start(self):
+        super().app_start()
+        self.stuck_record_clear()
+        self.click_record_clear()
 
-    async def wait_until_stable(self, selector: str, timeout=5):
-        """
-        Waits until an element stops changing.
-        """
-        prev_image = await self.page.screenshot(type="png")
-        timer = Timer(timeout)
-
-        while not timer.reached():
-            await self.page.wait_for_timeout(200)
-            new_image = await self.page.screenshot(type="png")
-
-            if prev_image == new_image:
-                break
-            prev_image = new_image
-
-    async def handle_canvas_click(self, selector: str, x_offset: int, y_offset: int):
-        """
-        Clicks inside a canvas element at a specific offset.
-        """
-        bounding_box = await self.page.locator(selector).bounding_box()
-        if bounding_box:
-            x, y = bounding_box["x"] + x_offset, bounding_box["y"] + y_offset
-            await self.page.mouse.click(x, y)
-            logger.info(f"Clicked inside {selector} at ({x}, {y})")
-
-    async def get_canvas_pixel_color(self, selector: str, x_offset: int, y_offset: int):
-        """
-        Gets the color of a pixel inside a canvas element.
-        """
-        script = f"""
-        var canvas = document.querySelector('{selector}');
-        var ctx = canvas.getContext('2d');
-        var pixel = ctx.getImageData({x_offset}, {y_offset}, 1, 1).data;
-        return `rgb(${pixel[0]}, ${pixel[1]}, ${pixel[2]})`;
-        """
-        color = await self.page.evaluate(script)
-        logger.info(f"Pixel color at ({x_offset}, {y_offset}): {color}")
-        return color
+    def app_stop(self):
+        super().app_stop()
+        self.stuck_record_clear()
+        self.click_record_clear()

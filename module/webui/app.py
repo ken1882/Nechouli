@@ -29,6 +29,7 @@ from pywebio.output import (
     toast,
     use_scope,
 )
+from pywebio.input import textarea
 from pywebio.pin import pin, pin_on_change
 from pywebio.session import (
     go_app,
@@ -74,6 +75,7 @@ from module.webui.utils import (
     filepath_css,
     get_alas_config_listen_path,
     get_localstorage,
+    set_localstorage,
     get_window_visibility_state,
     login,
     parse_pin_value,
@@ -551,6 +553,7 @@ class AlasGUI(Frame):
     def alas_update_overview_task(self) -> None:
         if not self.visible:
             return
+        print("Reload overview")
         self.alas_config.load()
         self.alas_config.get_next_task()
 
@@ -745,11 +748,11 @@ class AlasGUI(Frame):
             color="menu",
         ).style(f"--menu-Update--")
 
-        put_button(
-            label=t("Gui.MenuDevelop.Remote"),
-            onclick=self.dev_remote,
-            color="menu",
-        ).style(f"--menu-Remote--")
+        # put_button(
+        #     label=t("Gui.MenuDevelop.Remote"),
+        #     onclick=self.dev_remote,
+        #     color="menu",
+        # ).style(f"--menu-Remote--")
 
         put_button(
             label=t("Gui.MenuDevelop.Utils"),
@@ -935,6 +938,15 @@ class AlasGUI(Frame):
 
         updater.check_update()
 
+
+    @property
+    def last_exec(self) -> str:
+        return get_localstorage("_last_exec") or ''
+
+    @last_exec.setter
+    def last_exec(self, value: str) -> None:
+        set_localstorage("_last_exec", value)
+
     @use_scope("content", clear=True)
     def dev_utils(self) -> None:
         self.init_menu(name="Utils")
@@ -950,6 +962,25 @@ class AlasGUI(Frame):
                 toast("Reload not enabled", color="error")
 
         put_button(label="Force restart", onclick=_force_restart)
+        enable_eval = get_localstorage("DANGER_ENABLE_EVAL") or ''
+        if enable_eval != 'DO_NOT_PASTE_ANY_CODE_HERE_UNLESS_YOU_KNOW_WHAT_YOU_ARE_DOING':
+            return
+
+        self._exec_namespace = {**globals(), **locals()}
+        def _eval(self):
+            try:
+                code = textarea('Code Edit', code={
+                    'mode': "python",
+                    'theme': 'darcula',
+                }, value=self.last_exec)
+                self._exec_namespace = {**globals(), **locals(), **self._exec_namespace}
+                self.last_exec = code
+                exec(code, self._exec_namespace, self._exec_namespace)
+            except Exception as e:
+                logger.exception(e)
+        put_button(label="Run Code", onclick=lambda: _eval(self))
+
+
 
     @use_scope("content", clear=True)
     def dev_remote(self) -> None:
@@ -1046,8 +1077,8 @@ class AlasGUI(Frame):
             def get_unused_name():
                 all_name = alas_instance()
                 for i in range(2, 100):
-                    if f"src{i}" not in all_name:
-                        return f"src{i}"
+                    if f"nechouli{i}" not in all_name:
+                        return f"nechouli{i}"
                 else:
                     return ""
 
@@ -1086,7 +1117,7 @@ class AlasGUI(Frame):
                     name="AddAlas_copyfrom",
                     label=t("Gui.AddAlas.CopyFrom"),
                     options=alas_template() + alas_instance(),
-                    value=origin or "template-src",
+                    value=origin or "template-nechouli",
                     scope=s,
                 ),
                 put_button(label=t("Gui.AddAlas.Confirm"), onclick=add, scope=s)
