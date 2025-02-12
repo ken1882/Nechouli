@@ -443,7 +443,7 @@ class AlasGUI(Frame):
                 ])
             ])
             put_scope("log", [put_html("")])
-            print(len(self.ALAS_STORED))
+            # print(len(self.ALAS_STORED))
 
         log.console.width = log.get_width()
 

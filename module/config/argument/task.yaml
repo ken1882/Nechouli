@@ -21,7 +21,59 @@ Daily:
   menu: 'list'
   page: 'setting'
   tasks:
-    DailyQuest:
+    AltadorCouncil:
+      - Scheduler
+    AnchorManagement:
+      - Scheduler
+    AppleBobbing:
+      - Scheduler
+    BankInterest:
+      - Scheduler
+    ColtzansShrine:
+      - Scheduler
+    DailyPuzzle:
+      - Scheduler
+    DesertedTomb:
+      - Scheduler
+    FaerieCrossword:
+      - Scheduler
+    Fishing:
+      - Scheduler
+    ForgottenShore:
+      - Scheduler
+    FruitMachine:
+      - Scheduler
+    GiantJelly:
+      - Scheduler
+    GiantOmelette:
+      - Scheduler
+    GraveDanger:
+      - Scheduler
+    GrumpyKing:
+      - Scheduler
+    WiseKing:
+      - Scheduler
+    LunarTemple:
+      - Scheduler
+    NeggCave:
+      - Scheduler
+    MeteorCrashSite:
+      - Scheduler
+    PotatoCounter:
+      - Scheduler
+    RichSlorg:
+      - Scheduler
+    QasalanExpellibox:
+      - Scheduler
+    TDMBGPOP:
+      - Scheduler
+    Tombola:
+      - Scheduler
+    TrudysSurprise:
+      - Scheduler
+    Snowager:
+      - Scheduler
+    MoltaraQuarry:
       - Scheduler
 
 # ==================== Weekly ====================

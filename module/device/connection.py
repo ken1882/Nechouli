@@ -1,9 +1,10 @@
 import os
-from time import sleep
+import time
 from functools import wraps
 from playwright.sync_api import sync_playwright, Page, Browser, Playwright
 from module.config.config import AzurLaneConfig
 from module.logger import logger
+from module.base.utils import ensure_time
 
 def retry(func):
     @wraps(func)
@@ -13,8 +14,8 @@ def retry(func):
                 return await func(self, *args, **kwargs)
             except Exception as e:
                 logger.warning(f"Retrying {func.__name__} due to {e} (Attempt {attempt + 1}/3)")
-                await sleep(2)
-        raise Exception(f"Function {func.__name__} failed after 3 retries.")
+                await time.sleep(2)
+        raise Exception(f"Function {func.__name__} failed after 3 retries. (Caused by {e.message})")
     return retry_wrapper
 
 class Connection:
@@ -32,11 +33,21 @@ class Connection:
         self.page = None
         self.url = ""
 
+    @staticmethod
+    def sleep(second):
+        """
+        Args:
+            second(int, float, tuple):
+        """
+        time.sleep(ensure_time(second))
+
     def start_browser(self):
         if self.pw is None:
             self.pw = sync_playwright().start()
 
         kwargs = {
+            'handle_sigint': False,
+            'color_scheme': 'dark',
             'channel': self.config.Playwright_Browser,
             'headless': self.config.Playwright_Headless,
             'args': self.config.Playwright_ExtraChromiumArgs.split('\n'),
@@ -50,3 +61,9 @@ class Connection:
         )
         self.page = self.context.new_page()
         logger.info("Browser started.")
+
+    def goto(self, url, page=None):
+        if page is None:
+            page = self.page
+        logger.info(f"Navigating to {url}")
+        page.goto(url)

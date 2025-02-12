@@ -27,6 +27,7 @@ class ProcessManager:
         self.renderables_reduce_length = 80
         self._process: Process = None
         self.thd_log_queue_handler: threading.Thread = None
+        logger.info(f"ProcessManager created: {config_name}")
 
     def start(self, func, ev: threading.Event = None) -> None:
         if not self.alive:

@@ -4,6 +4,7 @@
       "Browser": "msedge",
       "Headless": false,
       "AutoOpenDevtools": false,
+      "AutoAcceptDialog": true,
       "ExtensionDirectory": "%LOCALAPPDATA%/Microsoft/Edge/User Data/Default/Extensions",
       "ExtensionNames": "Ruffle",
       "ExtraChromiumArgs": "--disable-blink-features=AutomationControlled\n--disable-features=IsolateOrigins,site-per-process\n--disable-infobars\n"
@@ -28,11 +29,219 @@
       "ServerUpdate": "04:00"
     }
   },
-  "DailyQuest": {
+  "AltadorCouncil": {
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
-      "Command": "DailyQuest",
+      "Command": "AltadorCouncil",
+      "ServerUpdate": "04:00"
+    }
+  },
+  "AnchorManagement": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "AnchorManagement",
+      "ServerUpdate": "04:00"
+    }
+  },
+  "AppleBobbing": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "AppleBobbing",
+      "ServerUpdate": "04:00"
+    }
+  },
+  "BankInterest": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "BankInterest",
+      "ServerUpdate": "04:00"
+    }
+  },
+  "ColtzansShrine": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "ColtzansShrine",
+      "ServerUpdate": "04:00"
+    }
+  },
+  "DailyPuzzle": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "DailyPuzzle",
+      "ServerUpdate": "04:00"
+    }
+  },
+  "DesertedTomb": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "DesertedTomb",
+      "ServerUpdate": "04:00"
+    }
+  },
+  "FaerieCrossword": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "FaerieCrossword",
+      "ServerUpdate": "04:00"
+    }
+  },
+  "Fishing": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "Fishing",
+      "ServerUpdate": "04:00"
+    }
+  },
+  "ForgottenShore": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "ForgottenShore",
+      "ServerUpdate": "04:00"
+    }
+  },
+  "FruitMachine": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "FruitMachine",
+      "ServerUpdate": "04:00"
+    }
+  },
+  "GiantJelly": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "GiantJelly",
+      "ServerUpdate": "04:00"
+    }
+  },
+  "GiantOmelette": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "GiantOmelette",
+      "ServerUpdate": "04:00"
+    }
+  },
+  "GraveDanger": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "GraveDanger",
+      "ServerUpdate": "04:00"
+    }
+  },
+  "GrumpyKing": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "GrumpyKing",
+      "ServerUpdate": "04:00"
+    }
+  },
+  "WiseKing": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "WiseKing",
+      "ServerUpdate": "04:00"
+    }
+  },
+  "LunarTemple": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "LunarTemple",
+      "ServerUpdate": "04:00"
+    }
+  },
+  "NeggCave": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "NeggCave",
+      "ServerUpdate": "04:00"
+    }
+  },
+  "MeteorCrashSite": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "MeteorCrashSite",
+      "ServerUpdate": "04:00"
+    }
+  },
+  "PotatoCounter": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "PotatoCounter",
+      "ServerUpdate": "04:00"
+    }
+  },
+  "RichSlorg": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "RichSlorg",
+      "ServerUpdate": "04:00"
+    }
+  },
+  "QasalanExpellibox": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "QasalanExpellibox",
+      "ServerUpdate": "04:00"
+    }
+  },
+  "TDMBGPOP": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "TDMBGPOP",
+      "ServerUpdate": "04:00"
+    }
+  },
+  "Tombola": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "Tombola",
+      "ServerUpdate": "04:00"
+    }
+  },
+  "TrudysSurprise": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "TrudysSurprise",
+      "ServerUpdate": "04:00"
+    }
+  },
+  "Snowager": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "Snowager",
+      "ServerUpdate": "04:00"
+    }
+  },
+  "MoltaraQuarry": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "MoltaraQuarry",
       "ServerUpdate": "04:00"
     }
   }

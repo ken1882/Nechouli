@@ -45,6 +45,7 @@ Playwright:
       - chrome-canary
   Headless: false
   AutoOpenDevtools: false
+  AutoAcceptDialog: true
   ExtensionDirectory: "%LOCALAPPDATA%/Microsoft/Edge/User Data/Default/Extensions"
   ExtensionNames:
     type: textarea
@@ -57,10 +58,6 @@ Playwright:
       --disable-infobars
 
 # ==================== Daily ====================
-DailyQuest:
-  Name:
-    value: DailyQuest
-    option: [ ]
 
 
 # ==================== Tool ====================

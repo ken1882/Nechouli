@@ -48,3 +48,7 @@ class RequestHumanTakeover(Exception):
     # Request human takeover
     # Alas is unable to handle such error, probably because of wrong settings.
     pass
+
+class InvisibleElement(Exception):
+    # Raised when attempt to perform action on an invisible element
+    pass

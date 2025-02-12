@@ -4,6 +4,7 @@ import random
 import string
 from collections import deque
 from datetime import datetime, timedelta, timezone
+import pytz, tzlocal
 
 import yaml
 from filelock import FileLock
@@ -19,12 +20,7 @@ LANGUAGES = [
 ]
 
 SERVER_TO_TIMEZONE = {
-    'CN-Official': timedelta(hours=8),
-    'CN-Bilibili': timedelta(hours=8),
-    'OVERSEA-America': timedelta(hours=-5),
-    'OVERSEA-Asia': timedelta(hours=8),
-    'OVERSEA-Europe': timedelta(hours=1),
-    'OVERSEA-TWHKMO': timedelta(hours=8),
+    'EN-Official': timedelta(hours=-8), # PST
 }
 DEFAULT_TIME = datetime(2020, 1, 1, 0, 0)
 
@@ -484,7 +480,7 @@ def dict_to_kv(dictionary, allow_none=True):
 
 
 def server_timezone() -> timedelta:
-    return SERVER_TO_TIMEZONE.get(server_.server, SERVER_TO_TIMEZONE['CN-Official'])
+    return SERVER_TO_TIMEZONE.get(server_.server, SERVER_TO_TIMEZONE['EN-Official'])
 
 
 def server_time_offset() -> timedelta:
@@ -581,7 +577,7 @@ def get_os_reset_remain():
     return remain
 
 
-def get_server_next_update(daily_trigger):
+def get_server_next_update(daily_trigger) -> datetime:
     """
     Args:
         daily_trigger (list[str], str): [ "00:00", "12:00", "18:00",]
@@ -758,6 +754,39 @@ def type_to_str(typ):
         typ = type(typ).__name__
     return str(typ)
 
+
+def pst2localt(pst: datetime):
+    pst_tz = pytz.timezone('US/Pacific')
+    local_tz = tzlocal.get_localzone()
+    try:
+        pst = pst_tz.localize(pst)
+    except ValueError:
+        pst = pst.replace(tzinfo=pst_tz)
+    local_time = pst.astimezone(local_tz)
+    return local_time
+
+def localt2pst(localt: datetime):
+    pst_tz = pytz.timezone('US/Pacific')
+    local_tz = pytz.timezone(tzlocal.get_localzone().key)
+    try:
+        localt = local_tz.localize(localt)
+    except ValueError:
+        localt = localt.replace(tzinfo=local_tz)
+    pst = localt.astimezone(pst_tz)
+    return pst
+
+# Neopets server time is in PST
+nst2localt = pst2localt
+localt2nst = localt2pst
+
+def str2int(ss):
+    neg_mul = 1
+    if ss.strip().startswith('-'):
+        neg_mul = -1
+    try:
+        return int("".join([n for n in ss if n.isdigit()])) * neg_mul
+    except ValueError:
+        return None
 
 if __name__ == '__main__':
     get_os_reset_remain()

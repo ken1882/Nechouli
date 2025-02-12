@@ -30,9 +30,7 @@ class GeneratedConfig:
     Playwright_Browser = 'msedge'  # msedge, msedge-beta, msedge-dev, msedge-canary, chrome, chrome-beta, chrome-dev, chrome-canary
     Playwright_Headless = False
     Playwright_AutoOpenDevtools = False
+    Playwright_AutoAcceptDialog = True
     Playwright_ExtensionDirectory = '%LOCALAPPDATA%/Microsoft/Edge/User Data/Default/Extensions'
     Playwright_ExtensionNames = 'Ruffle'
     Playwright_ExtraChromiumArgs = '--disable-blink-features=AutomationControlled\n--disable-features=IsolateOrigins,site-per-process\n--disable-infobars\n'
-
-    # Group `DailyQuest`
-    DailyQuest_Name = 'DailyQuest'

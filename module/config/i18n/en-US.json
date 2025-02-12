@@ -18,8 +18,112 @@
       "name": "Error Handling",
       "help": ""
     },
-    "DailyQuest": {
-      "name": "Daily Quest",
+    "AltadorCouncil": {
+      "name": "Council Chamber",
+      "help": "https://www.jellyneo.net/?go=altador_plot&id=council_chamber"
+    },
+    "AnchorManagement": {
+      "name": "Anchor Management",
+      "help": "https://www.jellyneo.net/?go=ki_governorsmansion"
+    },
+    "AppleBobbing": {
+      "name": "Apple Bobbing",
+      "help": "https://www.jellyneo.net/?go=applebobbing"
+    },
+    "BankInterest": {
+      "name": "Bank Interest",
+      "help": "https://www.jellyneo.net/?go=bank"
+    },
+    "ColtzansShrine": {
+      "name": "Coltzan's Shrine",
+      "help": "https://www.jellyneo.net/?go=coltzansshrine"
+    },
+    "DailyPuzzle": {
+      "name": "Daily Puzzle",
+      "help": "https://www.jellyneo.net/?go=dailypuzzle"
+    },
+    "DesertedTomb": {
+      "name": "Deserted Tomb",
+      "help": "https://www.jellyneo.net/?go=geraptomb"
+    },
+    "FaerieCrossword": {
+      "name": "Faerie Crossword",
+      "help": "https://www.jellyneo.net/?go=faerie_crossword"
+    },
+    "Fishing": {
+      "name": "Ye Olde Fishing Vortex",
+      "help": "https://www.jellyneo.net/?go=fishingvortex"
+    },
+    "ForgottenShore": {
+      "name": "Forgotten Shore",
+      "help": "https://www.jellyneo.net/?go=forgottenshore"
+    },
+    "FruitMachine": {
+      "name": "Fruit Machine",
+      "help": "https://www.jellyneo.net/?go=fruit_machine"
+    },
+    "GiantJelly": {
+      "name": "Giant Jelly",
+      "help": "https://www.jellyneo.net/?go=giantjelly"
+    },
+    "GiantOmelette": {
+      "name": "Giant Omelette",
+      "help": "https://www.jellyneo.net/?go=giantomelette"
+    },
+    "GraveDanger": {
+      "name": "Grave Danger",
+      "help": "https://www.jellyneo.net/?go=gravedanger"
+    },
+    "GrumpyKing": {
+      "name": "Grumpy Old King",
+      "help": "https://www.jellyneo.net/?go=grumpy_old_king"
+    },
+    "WiseKing": {
+      "name": "Wise Old King",
+      "help": "https://www.jellyneo.net/?go=wise_old_king"
+    },
+    "LunarTemple": {
+      "name": "Lunar Temple",
+      "help": "https://www.jellyneo.net/?go=lunartemple"
+    },
+    "NeggCave": {
+      "name": "Negg Cave",
+      "help": "https://www.jellyneo.net/?go=mysterious_negg_cave"
+    },
+    "MeteorCrashSite": {
+      "name": "Meteor",
+      "help": "https://www.jellyneo.net/?go=meteor"
+    },
+    "PotatoCounter": {
+      "name": "Potato Counter",
+      "help": "https://www.jellyneo.net/?go=potato_counter"
+    },
+    "RichSlorg": {
+      "name": "Rich Slorg",
+      "help": ""
+    },
+    "QasalanExpellibox": {
+      "name": "Qasalan Expellibox",
+      "help": "https://www.jellyneo.net/?go=qasalan_expellibox"
+    },
+    "TDMBGPOP": {
+      "name": "TDMBGPOP",
+      "help": "Discarded Magical Blue Grundo Plushie of Prosperity\nhttps://www.jellyneo.net/?go=tdmbgpop"
+    },
+    "Tombola": {
+      "name": "Tombola",
+      "help": "https://www.jellyneo.net/?go=tombola"
+    },
+    "TrudysSurprise": {
+      "name": "Trudy's Surprise",
+      "help": "https://www.jellyneo.net/?go=trudys_surprise"
+    },
+    "Snowager": {
+      "name": "Snowager",
+      "help": "https://www.jellyneo.net/?go=snowager"
+    },
+    "MoltaraQuarry": {
+      "name": "Moltara Quarry",
       "help": ""
     }
   },
@@ -117,6 +221,10 @@
       "name": "Auto Open DevTools",
       "help": ""
     },
+    "AutoAcceptDialog": {
+      "name": "Auto Accept Dialog",
+      "help": "When confirm dialog appears, automatically accept instead dismiss"
+    },
     "ExtensionDirectory": {
       "name": "Extension Directory",
       "help": "Path to folder contains browser extensions"
@@ -128,16 +236,6 @@
     "ExtraChromiumArgs": {
       "name": "Extra Chromium Arguments",
       "help": "Additional command-line arguments to pass."
-    }
-  },
-  "DailyQuest": {
-    "_info": {
-      "name": "Daily Quest",
-      "help": ""
-    },
-    "Name": {
-      "name": "DailyQuest.Name.name",
-      "help": "DailyQuest.Name.help"
     }
   },
   "Gui": {

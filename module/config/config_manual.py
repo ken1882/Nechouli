@@ -10,7 +10,12 @@ class ManualConfig:
 
     SCHEDULER_PRIORITY = """
     Restart
-    > DailyQuest
+    > DesertedTomb > FaerieCrossword
+    > AltadorCouncil > AnchorManagement > AppleBobbing > BankInterest > ColtzansShrine
+    > DailyPuzzle > Fishing > ForgottenShore > FruitMachine > GiantJelly
+    > GiantOmelette > GraveDanger > GrumpyKing > WiseKing > LunarTemple
+    > NeggCave > MeteorCrashSite > PotatoCounter > RichSlorg > QasalanExpellibox
+    > TDMBGPOP > Tombola > TrudysSurprise > Snowager > MoltaraQuarry
     """
 
     """

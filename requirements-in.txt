@@ -19,6 +19,8 @@ pydantic>=2.4
 onepush==1.3.0
 filelock==3.17.0
 cached-property==2.0.1
+pytz==2024.2
+tzlocal==5.2
 
 # OCR
 pponnxcr==2.0
