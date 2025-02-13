@@ -5,7 +5,7 @@
       "Headless": false,
       "AutoOpenDevtools": false,
       "AutoAcceptDialog": true,
-      "ExtensionDirectory": "%LOCALAPPDATA%/Microsoft/Edge/User Data/Default/Extensions",
+      "ExtensionDirectory": "$LOCALAPPDATA/Microsoft/Edge/User Data/Default/Extensions",
       "ExtensionNames": "Ruffle",
       "ExtraChromiumArgs": "--disable-blink-features=AutomationControlled\n--disable-features=IsolateOrigins,site-per-process\n--disable-infobars\n"
     },
@@ -27,6 +27,14 @@
       "NextRun": "2020-01-01 00:00:00",
       "Command": "Restart",
       "ServerUpdate": "04:00"
+    }
+  },
+  "GeneralSettings": {
+    "ProfileSettings": {
+      "MinNpKeep": 20000,
+      "JellyNeoExpiry": 168,
+      "DataStorage": "local",
+      "TaskSoftTerminationTime": 5
     }
   },
   "AltadorCouncil": {
@@ -59,6 +67,10 @@
       "NextRun": "2020-01-01 00:00:00",
       "Command": "BankInterest",
       "ServerUpdate": "04:00"
+    },
+    "NeopianBank": {
+      "DepositThreshold": 1000000,
+      "MaxDeposit": 500000
     }
   },
   "ColtzansShrine": {

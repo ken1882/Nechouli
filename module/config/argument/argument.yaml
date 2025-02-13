@@ -46,7 +46,7 @@ Playwright:
   Headless: false
   AutoOpenDevtools: false
   AutoAcceptDialog: true
-  ExtensionDirectory: "%LOCALAPPDATA%/Microsoft/Edge/User Data/Default/Extensions"
+  ExtensionDirectory: "$LOCALAPPDATA/Microsoft/Edge/User Data/Default/Extensions"
   ExtensionNames:
     type: textarea
     value: Ruffle
@@ -56,8 +56,18 @@ Playwright:
       --disable-blink-features=AutomationControlled
       --disable-features=IsolateOrigins,site-per-process
       --disable-infobars
+ProfileSettings:
+  MinNpKeep: 20000
+  JellyNeoExpiry: 168
+  DataStorage:
+    type: select
+    value: local
+    option: [ local, redis ]
+  TaskSoftTerminationTime: 5
 
 # ==================== Daily ====================
-
+NeopianBank:
+  DepositThreshold: 1000000
+  MaxDeposit: 500000
 
 # ==================== Tool ====================

@@ -35,7 +35,7 @@ class Control(Connection):
             setTimeout(() => marker.remove(), {timeout});
         """)
 
-    def wait_until_element_found(self, selectors:list, timeout:int=60, wait_interval:float=1):
+    def wait_until_element_found(self, *selectors:list, timeout:float=60, wait_interval:float=1):
         '''
         Wait until one of the selectors is found.
         '''
@@ -52,7 +52,7 @@ class Control(Connection):
             self.sleep(wait_interval)
         return False
 
-    def scroll_to(self, x:int=0, y:int=0, loc=None):
+    def scroll_to(self, x:int=0, y:int=0, loc:Locator=None):
         if loc:
             bb = loc.bounding_box()
             if not bb:
@@ -62,35 +62,57 @@ class Control(Connection):
         return self.page.evaluate(f"window.scrollTo({x}, {y})")
 
     def click(self,
-            x:float=None, y:float=None, loc:Locator=None,
-            x_mul=0.5, y_mul=0.5, point_random=(-10, -10, 10, 10),
+            target,
+            x_mul=0.5, y_mul=0.5, nth=0, point_random=(-10, -10, 10, 10),
             delay=50, random_delay=(-20, 20),
             button='left', modifiers=[], debug=False
         ):
         '''
-        https://playwright.dev/python/docs/api/class-locator#locator-click
-        https://playwright.dev/python/docs/api/class-mouse
+        Click on a target.
+
+        Args:
+            target: Target to click on. Can be a tuple of (x, y), a string of selector, or a Locator object.
+            nth (int): Which element to click if there are multiple elements
+            x_mul (float): Which portion of the element to click on the x-axis. 0.5 means center of its width.
+            y_mul (float): Which portion of the element to click on the y-axis. 0.5 means center of its height.
+            point_random (tuple[int]): Random range to click around the target.
+            delay (int): Delay between mouse down and mouse up.
+            random_delay (tuple): Random delay to add to the delay.
+            button ('left' | 'right' | 'middle'): Which mouse button to click.
+            modifiers (list): Keyboard modifiers to hold while clicking.
+            debug (bool): Draw a red dot on the clicked point.
+
+        References:
+            https://playwright.dev/python/docs/api/class-locator#locator-click
+            https://playwright.dev/python/docs/api/class-mouse
         '''
-        if not x and not y and not loc:
-            raise ValueError("Unspecified click target")
+        x, y = 0, 0
+        loc = None
+        if target is tuple:
+            x, y = target
+        if target is str:
+            loc = self.page.locator(target)
+        if target is Locator:
+            loc = target
         if type(point_random) == int:
             point_random = (-point_random, -point_random, point_random, point_random)
         if type(random_delay) == int:
             random_delay = (-random_delay, random_delay)
         mx, my = utils.random_rectangle_point(point_random)
-        mx += int(bb['width'] * x_mul)
-        my += int(bb['height'] * y_mul)
         md = delay + randint(*random_delay)
-        bb = loc.bounding_box()
-        bx, by = 0, 0
-        if not bb:
-            raise InvisibleElement
-        else:
-            bx = bb['x']
-            by = bb['y']
-        if loc:
+        if loc and loc.count():
+            loc = loc.nth(nth)
+            bb = loc.bounding_box()
+            if not bb:
+                raise InvisibleElement
+            else:
+                x = bb['x']
+                y = bb['y']
+                mx += int(bb['width'] * x_mul)
+                my += int(bb['height'] * y_mul)
+        if loc and loc.count():
             if debug:
-                self.draw_debug_point(mx+bx, my+by)
+                self.draw_debug_point(mx+x, my+y)
             return loc.click(
                 button=button,
                 modifiers=modifiers,
@@ -99,13 +121,27 @@ class Control(Connection):
             )
         if modifiers:
             raise ValueError("`page.mouse` does not support modifiers")
-        self.page.mouse.click(mx+bx, my+by, button=button, delay=md)
+        self.page.mouse.click(mx+x, my+y, button=button, delay=md)
 
     def drag_to(self,
             locator_a, locator_b, speed=1000, shake=(0, 15), point_random=(-10, -10, 10, 10),
             shake_random=(-5, -5, 5, 5), swipe_duration=0.1, shake_duration=0.03,
             random_duration=(-50, 50)
         ):
+        '''
+        Drag an entity from a to b.
+
+        Args:
+            locator_a (Locator): The entity to drag.
+            locator_b (Locator): The entity to drag to.
+            speed (int): Speed of the drag.
+            shake (tuple[int]): Shake range after the drag.
+            point_random (tuple[int]): Random range to click around the target.
+            shake_random (tuple[int]): Random range to shake the entity.
+            swipe_duration (float): Duration of each swipe.
+            shake_duration (float): Duration of each shake.
+            random_duration (tuple[int]): Random range to add to the duration.
+        '''
         locator_a.hover()
         self.page.mouse.down()
         ba = locator_a.bounding_box()

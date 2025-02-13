@@ -31,6 +31,16 @@ class GeneratedConfig:
     Playwright_Headless = False
     Playwright_AutoOpenDevtools = False
     Playwright_AutoAcceptDialog = True
-    Playwright_ExtensionDirectory = '%LOCALAPPDATA%/Microsoft/Edge/User Data/Default/Extensions'
+    Playwright_ExtensionDirectory = '$LOCALAPPDATA/Microsoft/Edge/User Data/Default/Extensions'
     Playwright_ExtensionNames = 'Ruffle'
     Playwright_ExtraChromiumArgs = '--disable-blink-features=AutomationControlled\n--disable-features=IsolateOrigins,site-per-process\n--disable-infobars\n'
+
+    # Group `ProfileSettings`
+    ProfileSettings_MinNpKeep = 20000
+    ProfileSettings_JellyNeoExpiry = 168
+    ProfileSettings_DataStorage = 'local'  # local, redis
+    ProfileSettings_TaskSoftTerminationTime = 5
+
+    # Group `NeopianBank`
+    NeopianBank_DepositThreshold = 1000000
+    NeopianBank_MaxDeposit = 500000

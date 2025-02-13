@@ -5,6 +5,8 @@ class AnchorManagementUI(BasePageUI):
 
     def main(self):
         self.goto('https://www.neopets.com/pirates/anchormanagement.phtml')
+        self.device.scroll_to(0, 50)
+        self.device.click('#btn-fire')
 
 if __name__ == '__main__':
     self = AnchorManagementUI()

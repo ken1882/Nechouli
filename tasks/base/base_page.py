@@ -17,16 +17,17 @@ class BasePageUI(ModuleBase):
         self.check_connection()
         try:
             self.main()
+            self.dm.save()
             logger.info("Task finished, soft sleep for 5 seconds.")
             self.device.sleep(5)
-            self.calc_next_run_time()
+            self.calc_next_run()
         except Exception as e:
             raise e
 
     def main(self):
         pass
 
-    def calc_next_run_time(self, s='daily'):
+    def calc_next_run(self, s='daily'):
         now = datetime.now()
         future = now
         if s == 'now':
@@ -47,7 +48,7 @@ class BasePageUI(ModuleBase):
     def goto(self, url):
         self.device.goto(url)
         if '/login/index.phtml' in self.device.page.url:
-            logger.critical("You have to login first, navigate to https://www.neopets.com/home after you login.")
-            ok = self.device.wait_until_element_found(['#navPetMenuIcon__2020'], timeout=60*60)
+            logger.critical("You have to login first, launch with gui then navigate to https://www.neopets.com/home after you login.")
+            ok = self.device.wait_until_element_found('#navPetMenuIcon__2020', timeout=60*60)
             if not ok:
                 raise RequestHumanTakeover("No operation for 1 hour, exited.")

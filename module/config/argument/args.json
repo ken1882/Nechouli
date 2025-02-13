@@ -29,7 +29,7 @@
       },
       "ExtensionDirectory": {
         "type": "input",
-        "value": "%LOCALAPPDATA%/Microsoft/Edge/User Data/Default/Extensions"
+        "value": "$LOCALAPPDATA/Microsoft/Edge/User Data/Default/Extensions"
       },
       "ExtensionNames": {
         "type": "textarea",
@@ -111,6 +111,30 @@
         "type": "input",
         "value": "04:00",
         "display": "hide"
+      }
+    }
+  },
+  "GeneralSettings": {
+    "ProfileSettings": {
+      "MinNpKeep": {
+        "type": "input",
+        "value": 20000
+      },
+      "JellyNeoExpiry": {
+        "type": "input",
+        "value": 168
+      },
+      "DataStorage": {
+        "type": "select",
+        "value": "local",
+        "option": [
+          "local",
+          "redis"
+        ]
+      },
+      "TaskSoftTerminationTime": {
+        "type": "input",
+        "value": 5
       }
     }
   },
@@ -219,6 +243,16 @@
         "type": "input",
         "value": "04:00",
         "display": "hide"
+      }
+    },
+    "NeopianBank": {
+      "DepositThreshold": {
+        "type": "input",
+        "value": 1000000
+      },
+      "MaxDeposit": {
+        "type": "input",
+        "value": 500000
       }
     }
   },

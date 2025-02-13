@@ -18,6 +18,10 @@
       "name": "Error Handling",
       "help": ""
     },
+    "GeneralSettings": {
+      "name": "General Settings",
+      "help": ""
+    },
     "AltadorCouncil": {
       "name": "Council Chamber",
       "help": "https://www.jellyneo.net/?go=altador_plot&id=council_chamber"
@@ -108,7 +112,7 @@
     },
     "TDMBGPOP": {
       "name": "TDMBGPOP",
-      "help": "Discarded Magical Blue Grundo Plushie of Prosperity\nhttps://www.jellyneo.net/?go=tdmbgpop"
+      "help": "The Discarded Magical Blue Grundo Plushie of Prosperity\nhttps://www.jellyneo.net/?go=tdmbgpop"
     },
     "Tombola": {
       "name": "Tombola",
@@ -236,6 +240,44 @@
     "ExtraChromiumArgs": {
       "name": "Extra Chromium Arguments",
       "help": "Additional command-line arguments to pass."
+    }
+  },
+  "ProfileSettings": {
+    "_info": {
+      "name": "Profile Settings",
+      "help": ""
+    },
+    "MinNpKeep": {
+      "name": "Min NP carrying",
+      "help": "Will not spent NP if you're carrying less than this value"
+    },
+    "JellyNeoExpiry": {
+      "name": "JellyNeo cache expiry",
+      "help": "Effective hours of JellyNeo item search cache"
+    },
+    "DataStorage": {
+      "name": "Data Storage",
+      "help": "",
+      "local": "local",
+      "redis": "redis"
+    },
+    "TaskSoftTerminationTime": {
+      "name": "Task termination delay",
+      "help": "Seconds to terminate task after it's done"
+    }
+  },
+  "NeopianBank": {
+    "_info": {
+      "name": "NeopianBank._info.name",
+      "help": "NeopianBank._info.help"
+    },
+    "DepositThreshold": {
+      "name": "NeopianBank.DepositThreshold.name",
+      "help": "NeopianBank.DepositThreshold.help"
+    },
+    "MaxDeposit": {
+      "name": "NeopianBank.MaxDeposit.name",
+      "help": "NeopianBank.MaxDeposit.help"
     }
   },
   "Gui": {

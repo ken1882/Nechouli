@@ -14,6 +14,8 @@ Alas:
       - Optimization
     Restart:
       - Scheduler
+    GeneralSettings:
+      - ProfileSettings
 
 # ==================== Daily ====================
 
@@ -29,6 +31,7 @@ Daily:
       - Scheduler
     BankInterest:
       - Scheduler
+      - NeopianBank
     ColtzansShrine:
       - Scheduler
     DailyPuzzle:

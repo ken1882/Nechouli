@@ -8,13 +8,13 @@ from module.base.utils import ensure_time
 
 def retry(func):
     @wraps(func)
-    async def retry_wrapper(self, *args, **kwargs):
+    def retry_wrapper(self, *args, **kwargs):
         for attempt in range(3):
             try:
-                return await func(self, *args, **kwargs)
+                return func(self, *args, **kwargs)
             except Exception as e:
                 logger.warning(f"Retrying {func.__name__} due to {e} (Attempt {attempt + 1}/3)")
-                await time.sleep(2)
+                time.sleep(2)
         raise Exception(f"Function {func.__name__} failed after 3 retries. (Caused by {e.message})")
     return retry_wrapper
 
@@ -60,6 +60,8 @@ class Connection:
             **kwargs
         )
         self.page = self.context.new_page()
+        if self.config.Playwright_AutoAcceptDialog:
+            self.page.on('dialog', lambda dialog: dialog.accept())
         logger.info("Browser started.")
 
     def goto(self, url, page=None):
