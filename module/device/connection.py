@@ -1,5 +1,6 @@
 import os
 import time
+from random import random
 from functools import wraps
 from playwright.sync_api import sync_playwright, Page, Browser, Playwright
 from module.config.config import AzurLaneConfig
@@ -21,8 +22,8 @@ def retry(func):
 class Connection:
     config: AzurLaneConfig
     pw: Playwright
-    page: Page
     context: Browser
+    _page: Page
 
     PROFILE_DIRECTORY = os.path.realpath(os.path.join(os.getcwd(), './profiles'))
 
@@ -30,8 +31,8 @@ class Connection:
         self.config = config
         self.pw = None
         self.browser = None
-        self.page = None
         self.url = ""
+        self._page = None
 
     @staticmethod
     def sleep(second):
@@ -40,6 +41,24 @@ class Connection:
             second(int, float, tuple):
         """
         time.sleep(ensure_time(second))
+
+    @staticmethod
+    def wait(second):
+        """
+        Wait for seconds plus randomized time, extra is around 0~20% of the given time.
+
+        Args:
+            second(int, float, tuple):
+        """
+        time.sleep(ensure_time(second) + max(random() / 2, second * random() / 5))
+
+    @property
+    def page(self) -> Page:
+        return self._page
+
+    @page.setter
+    def page(self, page):
+        self._page = page
 
     def start_browser(self):
         if self.pw is None:

@@ -65,7 +65,8 @@ class Control(Connection):
             target,
             x_mul=0.5, y_mul=0.5, nth=0, point_random=(-10, -10, 10, 10),
             delay=50, random_delay=(-20, 20),
-            button='left', modifiers=[], debug=False
+            button='left', modifiers=[], debug=False,
+            nav=None
         ):
         '''
         Click on a target.
@@ -81,6 +82,7 @@ class Control(Connection):
             button ('left' | 'right' | 'middle'): Which mouse button to click.
             modifiers (list): Keyboard modifiers to hold while clicking.
             debug (bool): Draw a red dot on the clicked point.
+            nav (bool | str): Wait for navigation loaded (if True) or to given url after clicking.
 
         References:
             https://playwright.dev/python/docs/api/class-locator#locator-click
@@ -101,6 +103,8 @@ class Control(Connection):
         mx, my = utils.random_rectangle_point(point_random)
         md = delay + randint(*random_delay)
         if loc and loc.count():
+            if nth < 0:
+                nth = max(0, loc.count() - nth)
             loc = loc.nth(nth)
             bb = loc.bounding_box()
             if not bb:
@@ -113,15 +117,20 @@ class Control(Connection):
         if loc and loc.count():
             if debug:
                 self.draw_debug_point(mx+x, my+y)
-            return loc.click(
+            loc.click(
                 button=button,
                 modifiers=modifiers,
                 position={'x': mx, 'y': my},
                 delay=md
             )
-        if modifiers:
-            raise ValueError("`page.mouse` does not support modifiers")
-        self.page.mouse.click(mx+x, my+y, button=button, delay=md)
+        else:
+            if modifiers:
+                raise ValueError("`page.mouse` does not support modifiers")
+            self.page.mouse.click(mx+x, my+y, button=button, delay=md)
+        if nav == True:
+            self.page.wait_for_url('**')
+        elif nav and type(nav) == str:
+            self.page.wait_for_url(nav)
 
     def drag_to(self,
             locator_a, locator_b, speed=1000, shake=(0, 15), point_random=(-10, -10, 10, 10),

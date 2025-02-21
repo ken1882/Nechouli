@@ -4,7 +4,8 @@ from tasks.base.base_page import BasePageUI
 class ColtzansShrineUI(BasePageUI):
 
     def main(self):
-        pass
+        self.goto('https://www.neopets.com/desert/shrine.phtml')
+        self.device.click('input[type=submit]', nth=1, nav=True)
 
 if __name__ == '__main__':
     self = ColtzansShrineUI()

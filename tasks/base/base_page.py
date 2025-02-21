@@ -33,7 +33,7 @@ class BasePageUI(ModuleBase):
         if s == 'now':
             pass
         elif s == 'daily':
-            future = self.config.task_delay(server_update=True)
+            return self.config.task_delay(server_update=True)
         elif s == 'monthly':
             future = get_server_next_update('00:00')
             if future.month != now.month:
@@ -45,10 +45,17 @@ class BasePageUI(ModuleBase):
         self.config.task_delay(target=future)
         return future
 
+    def is_logged_in(self):
+        if '/login/index.phtml' in self.device.page.url:
+            return True
+        if 'you are not logged in' in self.device.page.content():
+            return True
+        return False
+
     def goto(self, url):
         self.device.goto(url)
         if '/login/index.phtml' in self.device.page.url:
-            logger.critical("You have to login first, launch with gui then navigate to https://www.neopets.com/home after you login.")
+            logger.critical("You have to login first, launch with gui then navigate to https://www.neopets.com/home after you logged in.")
             ok = self.device.wait_until_element_found('#navPetMenuIcon__2020', timeout=60*60)
             if not ok:
                 raise RequestHumanTakeover("No operation for 1 hour, exited.")

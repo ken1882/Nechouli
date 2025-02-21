@@ -1,3 +1,4 @@
+import os
 import module.config.server as server_
 from module.base.button import Button, ButtonWrapper, ClickButton, match_template
 from module.base.timer import Timer
@@ -50,7 +51,11 @@ class ModuleBase:
             self.device = device
 
         self.interval_timer = {}
-        self.dm = DataManager(self.config.config_name, self.config.ProfileSettings_DataStorage)
+        self.dm = DataManager(
+            self.config.config_name,
+            self.config.ProfileSettings_DataStorage,
+            os.path.join(self.device.PROFILE_DIRECTORY, f"{self.config.config_name}.dat")
+        )
 
     @cached_class_property
     def worker(self):
