@@ -1,6 +1,16 @@
-**| English** |
+**| 繁體中文** |
 
 # Nechouli
 
-Nechouli web-based automation tool based on [Playwright](https://playwright.dev/python/) and [ALAS framework](https://github.com/LmeSzinc/StarRailCopilot).
+Nechouli 是基於 [Playwright](https://playwright.dev/python/) 和 [星鐵速溶茶 (次世代 ALAS 框架)](https://github.com/LmeSzinc/StarRailCopilot) 所開發的自動化工具，為 7x24 運行的場景所設計，能接管大部分尼奧寵物的日常活動。尼奧寵物自 1999 年以來作為網頁遊戲已經進入生命週期的晚期，從現在到關服的這段時間裡，請減少花費在無聊瑣碎的日常上，交由 Nechouli 幫您完成。
 
+現行尼奧寵物除了英文以外的語言已不再支援，所以語言選項僅只有英文。
+
+Nechouli 是一款免費開源軟體，連結：https://github.com/LmeSzinc/AzurLaneAutoScript
+
+
+## 功能 Features
+
+- **每日**：尼奧寵物有著超過數十種的每日活動，有些甚至幾小時或更短就能再度完成，包含但不限於收取利息、巨大煎蛋捲、被遺忘的海灘、尼奧股市、縱橫字謎、森空明月宮、神秘新奇蛋洞穴、聖甲蟲移除器、治癒之泉、每日謎題、每日任務等等。
+- **物品管理**：超過二十年的帳號往往保險箱裡有成千上萬的物品，但尼奧網頁中每頁只能顯示 30 個，且無排序功能，Nechouli 將會解決這些問題。
+- **遊戲室**：Nechouli 能自動遊玩部分遊戲室內的小遊戲，透過截圖與 OCR 識別 canvas 場景導出決策，但為避免麻煩，Nechouli 將會把分數控制在排行榜人工審核以下。
