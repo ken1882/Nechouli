@@ -6,7 +6,7 @@ Nechouli 是基於 [Playwright](https://playwright.dev/python/) 和 [星鐵速�
 
 現行尼奧寵物除了英文以外的語言已不再支援，所以語言選項僅只有英文。
 
-Nechouli 是一款免費開源軟體，連結：https://github.com/LmeSzinc/AzurLaneAutoScript
+Nechouli 是一款免費開源軟體，連結：https://github.com/ken1882/Nechouli
 
 
 ## 功能 Features
