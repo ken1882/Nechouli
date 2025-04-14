@@ -268,16 +268,16 @@
   },
   "NeopianBank": {
     "_info": {
-      "name": "NeopianBank._info.name",
-      "help": "NeopianBank._info.help"
+      "name": "Bank Configuration",
+      "help": ""
     },
     "DepositThreshold": {
-      "name": "NeopianBank.DepositThreshold.name",
-      "help": "NeopianBank.DepositThreshold.help"
+      "name": "Deposit Threshold",
+      "help": "When your NP is above this value, it will be deposited into the bank"
     },
     "MaxDeposit": {
-      "name": "NeopianBank.MaxDeposit.name",
-      "help": "NeopianBank.MaxDeposit.help"
+      "name": "Max Deposit",
+      "help": "Maximum amount of NP to deposit into the bank once above the threshold"
     }
   },
   "Gui": {

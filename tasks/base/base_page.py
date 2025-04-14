@@ -59,3 +59,4 @@ class BasePageUI(ModuleBase):
             ok = self.device.wait_until_element_found('#navPetMenuIcon__2020', timeout=60*60)
             if not ok:
                 raise RequestHumanTakeover("No operation for 1 hour, exited.")
+            return self.goto(url)

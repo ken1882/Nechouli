@@ -63,6 +63,11 @@ class Connection:
     def start_browser(self):
         if self.pw is None:
             self.pw = sync_playwright().start()
+        else:
+            try:
+                self.pw.stop()
+            except Exception:
+                pass
 
         kwargs = {
             'handle_sigint': False,

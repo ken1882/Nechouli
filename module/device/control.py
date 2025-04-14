@@ -90,11 +90,11 @@ class Control(Connection):
         '''
         x, y = 0, 0
         loc = None
-        if target is tuple:
+        if type(target) is tuple:
             x, y = target
-        if target is str:
+        if type(target) is str:
             loc = self.page.locator(target)
-        if target is Locator:
+        if type(target) is Locator:
             loc = target
         if type(point_random) == int:
             point_random = (-point_random, -point_random, point_random, point_random)
@@ -114,9 +114,10 @@ class Control(Connection):
                 y = bb['y']
                 mx += int(bb['width'] * x_mul)
                 my += int(bb['height'] * y_mul)
+        if debug:
+            self.draw_debug_point(mx+x, my+y)
         if loc and loc.count():
-            if debug:
-                self.draw_debug_point(mx+x, my+y)
+            logger.info(f"Clicking on {target} at ({mx+x}, {my+y})")
             loc.click(
                 button=button,
                 modifiers=modifiers,
@@ -126,7 +127,10 @@ class Control(Connection):
         else:
             if modifiers:
                 raise ValueError("`page.mouse` does not support modifiers")
+            logger.info(f"Clicking on Page at ({mx+x}, {my+y})")
             self.page.mouse.click(mx+x, my+y, button=button, delay=md)
+        if nav:
+            logger.info("Waiting for navigation")
         if nav == True:
             self.page.wait_for_url('**')
         elif nav and type(nav) == str:

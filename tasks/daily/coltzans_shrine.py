@@ -5,7 +5,7 @@ class ColtzansShrineUI(BasePageUI):
 
     def main(self):
         self.goto('https://www.neopets.com/desert/shrine.phtml')
-        self.device.click('input[type=submit]', nth=1, nav=True)
+        self.device.click('input[value="Approach the Shrine"]', nav=True)
 
 if __name__ == '__main__':
     self = ColtzansShrineUI()

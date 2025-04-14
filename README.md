@@ -4,7 +4,7 @@
 
 Nechouli 是基於 [Playwright](https://playwright.dev/python/) 和 [星鐵速溶茶 (次世代 ALAS 框架)](https://github.com/LmeSzinc/StarRailCopilot) 所開發的自動化工具，為 7x24 運行的場景所設計，能接管大部分尼奧寵物的日常活動。尼奧寵物自 1999 年以來作為網頁遊戲已經進入生命週期的晚期，從現在到關服的這段時間裡，請減少花費在無聊瑣碎的日常上，交由 Nechouli 幫您完成。
 
-現行尼奧寵物除了英文以外的語言已不再支援，所以語言選項僅只有英文。
+現行尼奧寵物除了英文以外的語言已不再支援，所以語言選項僅只有英文，也只支援英文版。
 
 Nechouli 是一款免費開源軟體，連結：https://github.com/ken1882/Nechouli
 
