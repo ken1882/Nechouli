@@ -1,6 +1,6 @@
 import re
 import os
-from module.config import utils
+from module.base.utils import str2int
 from module.logger import logger
 from bs4 import BeautifulSoup as BS
 from datetime import datetime, timedelta
@@ -121,8 +121,9 @@ def load_cache(force_local=False):
             with open(CACHE_FILE, 'r') as f:
                 Database = json.loads(f.read())
         except Exception as e:
-            utils.handle_exception(e)
-            _G.log_warning("Failed to load jellyneo item cache file")
+            pass
+            # utils.handle_exception(e)
+            # _G.log_warning("Failed to load jellyneo item cache file")
     return Database
 
 def save_cache(item=None, padding=True, save_local=False):

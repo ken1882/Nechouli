@@ -1,11 +1,13 @@
 import os
 import time
+import json
+from copy import deepcopy
 from random import random
 from functools import wraps
 from playwright.sync_api import sync_playwright, Page, Browser, Playwright
 from module.config.config import AzurLaneConfig
 from module.logger import logger
-from module.base.utils import ensure_time
+from module.base.utils import ensure_time, str2int
 
 def retry(func):
     @wraps(func)
@@ -60,6 +62,33 @@ class Connection:
     def page(self, page):
         self._page = page
 
+    def get_extension_paths(self):
+        ext_paths = []
+        ext_dir = os.path.expandvars(self.config.Playwright_ExtensionDirectory)
+        load_ext_names = self.config.Playwright_ExtensionNames.split('\n')
+        for path in os.listdir(ext_dir):
+            path = os.path.join(ext_dir, path).replace('\\', '/')
+            version = str2int(path.split('/')[-1])
+            if not version:
+                versions = os.listdir(path)
+                latest = max(versions, key=lambda x: str2int(x))
+                path = os.path.join(path, latest)
+            with open(os.path.join(path, 'manifest.json'), 'r') as f:
+                manifest = json.load(f)
+                ext_name = manifest['name']
+                for name in deepcopy(load_ext_names):
+                    if name.lower() in ext_name.lower():
+                        logger.info(f"Loading extension: {ext_name} {manifest['version']}")
+                        ext_paths.append(path)
+                        load_ext_names.remove(name)
+                else:
+                    logger.warning(f"Extension {ext_name} not in found")
+            ext_paths.append(path)
+        return [
+            f"--load-extension={','.join(ext_paths)}",
+            f"--disable-extensions-except={','.join(ext_paths)}",
+        ]
+
     def start_browser(self):
         if self.pw is None:
             self.pw = sync_playwright().start()
@@ -76,6 +105,7 @@ class Connection:
             'headless': self.config.Playwright_Headless,
             'args': self.config.Playwright_ExtraChromiumArgs.split('\n'),
         }
+        kwargs['args'].extend(self.get_extension_paths())
         if self.config.Playwright_AutoOpenDevtools:
             kwargs['args'].append('--auto-open-devtools-for-tabs')
 
