@@ -4,7 +4,6 @@ import random
 import string
 from collections import deque
 from datetime import datetime, timedelta, timezone
-import pytz, tzlocal
 
 import yaml
 from filelock import FileLock

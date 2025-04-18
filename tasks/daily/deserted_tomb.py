@@ -4,7 +4,9 @@ from tasks.base.base_page import BasePageUI
 class DesertedTombUI(BasePageUI):
 
     def main(self):
-        pass
+        self.goto('https://www.neopets.com/worlds/geraptiku/tomb.phtml')
+        self.device.click('input[value="Open the door..."]', nav=True)
+        self.device.click('input[value="Continue on..."]', nav=True)
 
 if __name__ == '__main__':
     self = DesertedTombUI()

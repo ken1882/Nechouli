@@ -1144,7 +1144,7 @@ class AlasGUI(Frame):
             run_js("location.reload()")
 
         with use_scope("content"):
-            put_text("Select your language / 选择语言").style("text-align: center")
+            put_text("Select your language / 選擇語言").style("text-align: center")
             put_buttons(
                 [
                     {"label": "English", "value": "en-US"},
@@ -1154,7 +1154,7 @@ class AlasGUI(Frame):
                 ],
                 onclick=lambda l: set_language(l),
             ).style("text-align: center")
-            put_text("Change theme / 更改主题").style("text-align: center")
+            put_text("Change theme / 更改主題").style("text-align: center")
             put_buttons(
                 [
                     {"label": "Light", "value": "default", "color": "light"},
@@ -1167,7 +1167,7 @@ class AlasGUI(Frame):
             put_markdown(
                 """
             Nechouli is a free open source software, if you paid for Nechouli from any channel, please refund.
-            Nechouli 是一款免费开源软件，如果你在任何渠道付费购买了Nechouli，请退款。
+            Nechouli 是一款免費開源軟體，如果你在任何管道付費購買了Nechouli，請退款。
             Project repository 项目地址：`https://github.com/ken1882/Nechouli`
             """
             ).style("text-align: center")

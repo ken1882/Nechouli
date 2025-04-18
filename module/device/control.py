@@ -1,4 +1,5 @@
 import numpy as np
+from typing import Callable
 from random import randint
 from module.exception import *
 from module.base.button import ClickButton
@@ -35,18 +36,29 @@ class Control(Connection):
             setTimeout(() => marker.remove(), {timeout});
         """)
 
-    def wait_until_element_found(self, *selectors:list, timeout:float=60, wait_interval:float=1):
+    def wait_for_element(self, *locators:list, timeout:float=60, wait_interval:float=1, condition:Callable=None):
         '''
-        Wait until one of the selectors is found.
+        Wait until one of the selectors is met given condition.
+
+        Args:
+            locators (list): List of locators to execute.
+            timeout (float): Timeout in seconds.
+            wait_interval (float): Interval to wait between each check.
+            condition (Callable): Condition to check. If None, will check if the element is visible and found.
+
+        Returns:
+            Locator: The first locator that meets the condition.
         '''
+        if not condition:
+            condition = lambda x: x.count() > 0 and x.is_visible()
         while timeout > 0:
             node = None
-            for selector in selectors:
+            for selector in locators:
                 try:
-                    node = self.page.query_selector(selector)
+                    node = self.page.locator(selector)
                 except Exception as e:
                     pass
-                if node:
+                if node and condition(node):
                     return node
             timeout -= wait_interval
             self.sleep(wait_interval)
@@ -57,8 +69,8 @@ class Control(Connection):
             bb = loc.bounding_box()
             if not bb:
                 raise InvisibleElement
-            x = 0
-            y = y + bb['y'] - 100
+            x += bb['x']
+            y += bb['y']
         return self.page.evaluate(f"window.scrollTo({x}, {y})")
 
     def click(self,

@@ -1,6 +1,7 @@
 import os
 import time
 import json
+import re
 from copy import deepcopy
 from random import random
 from functools import wraps
@@ -62,6 +63,24 @@ class Connection:
     def page(self, page):
         self._page = page
 
+    def expand_locale(self, path, key, locale):
+        locale_path = os.path.join(path, '_locales', locale, 'messages.json')
+        vocab = {}
+        if not os.path.exists(locale_path):
+            logger.warning(f"Locale file not found: {locale_path}")
+            return key
+        with open(locale_path, 'r') as f:
+            vocab = json.load(f)
+        r = re.match(r'__MSG_(\w+)__', key)
+        if not r:
+            logger.warning(f"Invalid manifest local key format: {key}")
+            return key
+        key = r.group(1)
+        if key not in vocab or 'message' not in vocab[key]:
+            logger.warning(f"Key not found in locale file: {key}")
+            return key
+        return vocab[key]['message']
+
     def get_extension_paths(self):
         ext_paths = []
         ext_dir = os.path.expandvars(self.config.Playwright_ExtensionDirectory)
@@ -71,19 +90,23 @@ class Connection:
             version = str2int(path.split('/')[-1])
             if not version:
                 versions = os.listdir(path)
+                if not versions:
+                    continue
                 latest = max(versions, key=lambda x: str2int(x))
                 path = os.path.join(path, latest)
             with open(os.path.join(path, 'manifest.json'), 'r') as f:
                 manifest = json.load(f)
                 ext_name = manifest['name']
+                if ext_name.startswith('__MSG_'):
+                    ext_name = self.expand_locale(path, ext_name, manifest['default_locale'])
                 for name in deepcopy(load_ext_names):
-                    if name.lower() in ext_name.lower():
-                        logger.info(f"Loading extension: {ext_name} {manifest['version']}")
-                        ext_paths.append(path)
-                        load_ext_names.remove(name)
-                else:
-                    logger.warning(f"Extension {ext_name} not in found")
-            ext_paths.append(path)
+                    if name.lower() not in ext_name.lower():
+                        continue
+                    logger.info(f"Loading extension: {ext_name} {manifest['version']}")
+                    ext_paths.append(path)
+                    load_ext_names.remove(name)
+        if load_ext_names:
+            logger.warning("Extensions not found:\n"+'\n'.join(load_ext_names))
         return [
             f"--load-extension={','.join(ext_paths)}",
             f"--disable-extensions-except={','.join(ext_paths)}",

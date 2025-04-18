@@ -5,8 +5,8 @@ from module.logger import logger
 
 class Nechouli(AzurLaneAutoScript):
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, config_name: str = 'nechouli'):
+        super().__init__(config_name)
 
     def altador_council(self):
         from tasks.daily.altador_council import AltadorCouncilUI
@@ -118,5 +118,5 @@ class Nechouli(AzurLaneAutoScript):
 
 
 if __name__ == '__main__':
-    nch = Nechouli('nechouli')
+    nch = Nechouli()
     nch.loop()

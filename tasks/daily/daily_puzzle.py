@@ -13,13 +13,11 @@ class DailyPuzzleUI(BasePageUI):
         sel = self.device.page.locator('select[name=trivia_response]')
         self.device.scroll_to(loc=sel)
         opts = sel.locator('option')
-
         for i in range(opts.count()):
             opt = opts.nth(i)
             if opt.text_content().strip().lower() == answer:
                 sel.select_option(str(opt.get_attribute('value')))
-
-        self.device.click('input[type=submit]', nth=-1)
+        self.device.click('input[value="Submit"]')
 
 
 if __name__ == '__main__':
