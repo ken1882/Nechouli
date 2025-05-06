@@ -23,11 +23,12 @@ class BasePageUI(ModuleBase):
     def run(self):
         self.check_connection()
         try:
-            self.main()
+            ok = self.main()
             self.dm.save()
             logger.info("Task finished, soft sleep for 5 seconds.")
             self.device.sleep(5)
-            self.calc_next_run()
+            if ok:
+                self.calc_next_run()
         except Exception as e:
             raise e
 

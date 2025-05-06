@@ -4,7 +4,14 @@ from tasks.base.base_page import BasePageUI
 class TombolaUI(BasePageUI):
 
     def main(self):
-        pass
+        self.goto('https://www.neopets.com/island/tombola.phtml')
+        btn = self.page.locate('input[value="Play Tombola!"]')
+        if not btn.count():
+            logger.info('Tombola is not available')
+            self.config.task_delay(minute=30)
+            return False
+        self.device.click(btn, nav=True)
+        return True
 
 if __name__ == '__main__':
     self = TombolaUI()

@@ -5,6 +5,7 @@ class RichSlorgUI(BasePageUI):
 
     def main(self):
         self.goto('https://www.neopets.com/shop_of_offers.phtml?slorg_payout=yes')
+        return True
 
 if __name__ == '__main__':
     self = RichSlorgUI()

@@ -6,6 +6,7 @@ class BankInterestUI(BasePageUI):
     def main(self):
         self.goto('https://www.neopets.com/bank.phtml')
         self.device.click('#frmCollectInterest')
+        return True
 
 
 if __name__ == '__main__':

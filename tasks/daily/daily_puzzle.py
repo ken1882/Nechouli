@@ -18,6 +18,7 @@ class DailyPuzzleUI(BasePageUI):
             if opt.text_content().strip().lower() == answer:
                 sel.select_option(str(opt.get_attribute('value')))
         self.device.click('input[value="Submit"]')
+        return True
 
 
 if __name__ == '__main__':

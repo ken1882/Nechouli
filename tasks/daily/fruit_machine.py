@@ -7,6 +7,7 @@ class FruitMachineUI(BasePageUI):
         self.goto('https://www.neopets.com/desert/fruitmachine.phtml')
         self.device.click('input[value="Spin, spin, spin!"]', nav=True)
         self.device.sleep(10)
+        return True
 
 if __name__ == '__main__':
     self = FruitMachineUI()

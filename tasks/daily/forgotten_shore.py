@@ -6,6 +6,7 @@ class ForgottenShoreUI(BasePageUI):
     def main(self):
         self.page.goto('https://www.neopets.com/pirates/forgottenshore.phtml')
         self.device.click('#shore_back')
+        return True
 
 if __name__ == '__main__':
     self = ForgottenShoreUI()

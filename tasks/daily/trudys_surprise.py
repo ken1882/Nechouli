@@ -17,6 +17,7 @@ class TrudysSurpriseUI(BasePageUI):
         self.device.click(frame, y_mul=0.85)
         logger.info("Clicked, wait for result")
         self.device.wait_for_element('#trudyPrizeTitle', timeout=30)
+        return True
 
 if __name__ == '__main__':
     self = TrudysSurpriseUI()

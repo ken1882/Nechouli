@@ -4,7 +4,7 @@ from tasks.base.base_page import BasePageUI
 class GraveDangerUI(BasePageUI):
 
     def main(self):
-        pass
+        return True
 
 if __name__ == '__main__':
     self = GraveDangerUI()
