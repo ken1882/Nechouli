@@ -69,5 +69,30 @@ ProfileSettings:
 NeopianBank:
   DepositThreshold: 1000000
   MaxDeposit: 500000
-
+PetCares:
+  FeedBlacklist:
+    type: textarea
+    value: |
+      poison
+      rotten
+      dung
+      glowing
+      clay
+      smelly
+  MaxFeedValue: 1000
+  MaxFeedLevel:
+    type: select
+    value: "full up"
+    option:
+      - "dying"
+      - "starving"
+      - "famished"
+      - "very hungry"
+      - "hungry"
+      - "not hungry"
+      - "fine"
+      - "satiated"
+      - "full up"
+      - "very full"
+      - "bloated"
 # ==================== Tool ====================

@@ -8,7 +8,6 @@ class TombolaUI(BasePageUI):
         btn = self.page.locate('input[value="Play Tombola!"]')
         if not btn.count():
             logger.info('Tombola is not available')
-            self.config.task_delay(minute=30)
             return False
         self.device.click(btn, nav=True)
         return True

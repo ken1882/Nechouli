@@ -60,7 +60,7 @@ class Connection:
         return self._page
 
     @page.setter
-    def page(self, page):
+    def page(self, page: Page):
         self._page = page
 
     def expand_locale(self, path, key, locale):

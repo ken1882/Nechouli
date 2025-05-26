@@ -3,7 +3,7 @@ from module.base.base import ModuleBase
 from module.logger import logger
 from datetime import datetime, timedelta
 from time import sleep
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright, Page
 from playwright._impl._errors import TimeoutError, Error
 from cached_property import cached_property
 from module.config.utils import get_server_next_update
@@ -12,9 +12,9 @@ from module.exception import *
 class BasePageUI(ModuleBase):
 
     @cached_property
-    def page(self):
+    def page(self) -> Page:
         return self.device.page
-    
+
     def check_connection(self):
         if not self.device.pw:
             self.device.start_browser()
@@ -29,6 +29,8 @@ class BasePageUI(ModuleBase):
             self.device.sleep(5)
             if ok:
                 self.calc_next_run()
+            else:
+                self.calc_next_run('failed')
         except Exception as e:
             raise e
 
@@ -40,6 +42,8 @@ class BasePageUI(ModuleBase):
         future = now
         if s == 'now':
             pass
+        elif s == 'failed':
+            return self.on_failed_delay()
         elif s == 'daily':
             return self.config.task_delay(server_update=True)
         elif s == 'monthly':
@@ -50,6 +54,11 @@ class BasePageUI(ModuleBase):
             future = future.replace(day=1)
         else:
             logger.warning(f'Unknown delay preset: {s}')
+        self.config.task_delay(target=future)
+        return future
+
+    def on_failed_delay(self):
+        future = datetime.now() + timedelta(hours=1)
         self.config.task_delay(target=future)
         return future
 

@@ -78,6 +78,9 @@ Daily:
       - Scheduler
     MoltaraQuarry:
       - Scheduler
+    PetCares:
+      - Scheduler
+      - PetCares
 
 # ==================== Weekly ====================
 
