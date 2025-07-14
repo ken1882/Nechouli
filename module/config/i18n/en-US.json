@@ -22,6 +22,10 @@
       "name": "General Settings",
       "help": ""
     },
+    "PetCares": {
+      "name": "Pet Cares",
+      "help": "Feeding pets and relative daily quests"
+    },
     "AltadorCouncil": {
       "name": "Council Chamber",
       "help": "https://www.jellyneo.net/?go=altador_plot&id=council_chamber"
@@ -82,33 +86,37 @@
       "name": "Grumpy Old King",
       "help": "https://www.jellyneo.net/?go=grumpy_old_king"
     },
-    "WiseKing": {
-      "name": "Wise Old King",
-      "help": "https://www.jellyneo.net/?go=wise_old_king"
-    },
     "LunarTemple": {
       "name": "Lunar Temple",
       "help": "https://www.jellyneo.net/?go=lunartemple"
-    },
-    "NeggCave": {
-      "name": "Negg Cave",
-      "help": "https://www.jellyneo.net/?go=mysterious_negg_cave"
     },
     "MeteorCrashSite": {
       "name": "Meteor",
       "help": "https://www.jellyneo.net/?go=meteor"
     },
+    "MoltaraQuarry": {
+      "name": "Moltara Quarry",
+      "help": ""
+    },
+    "NeggCave": {
+      "name": "Negg Cave",
+      "help": "https://www.jellyneo.net/?go=mysterious_negg_cave"
+    },
     "PotatoCounter": {
       "name": "Potato Counter",
       "help": "https://www.jellyneo.net/?go=potato_counter"
+    },
+    "QasalanExpellibox": {
+      "name": "Qasalan Expellibox",
+      "help": "https://www.jellyneo.net/?go=qasalan_expellibox"
     },
     "RichSlorg": {
       "name": "Rich Slorg",
       "help": ""
     },
-    "QasalanExpellibox": {
-      "name": "Qasalan Expellibox",
-      "help": "https://www.jellyneo.net/?go=qasalan_expellibox"
+    "Snowager": {
+      "name": "Snowager",
+      "help": "https://www.jellyneo.net/?go=snowager"
     },
     "TDMBGPOP": {
       "name": "TDMBGPOP",
@@ -122,13 +130,9 @@
       "name": "Trudy's Surprise",
       "help": "https://www.jellyneo.net/?go=trudys_surprise"
     },
-    "Snowager": {
-      "name": "Snowager",
-      "help": "https://www.jellyneo.net/?go=snowager"
-    },
-    "MoltaraQuarry": {
-      "name": "Moltara Quarry",
-      "help": ""
+    "WiseKing": {
+      "name": "Wise Old King",
+      "help": "https://www.jellyneo.net/?go=wise_old_king"
     }
   },
   "Scheduler": {
@@ -278,6 +282,35 @@
     "MaxDeposit": {
       "name": "Max Deposit",
       "help": "Maximum amount of NP to deposit into the bank once above the threshold"
+    }
+  },
+  "PetCares": {
+    "_info": {
+      "name": "Feeding Configuration",
+      "help": ""
+    },
+    "FeedBlacklist": {
+      "name": "Feeding Blacklist",
+      "help": "List of names of items that will not be fed to pets, separated by line, supports regex."
+    },
+    "MaxFeedValue": {
+      "name": "Max Item Value",
+      "help": "Upper price limit (NP) of a food item the script is allowed to feed."
+    },
+    "MaxFeedLevel": {
+      "name": "Max Feed Level",
+      "help": "Feeding pet when its hunger status is at or below this level.",
+      "dying": "Dying",
+      "starving": "Starving",
+      "famished": "Famished",
+      "very hungry": "Very Hungry",
+      "hungry": "Hungry",
+      "not hungry": "Not Hungry",
+      "fine": "Fine",
+      "satiated": "Satiated",
+      "full up": "Full Up",
+      "very full": "Very Full",
+      "bloated": "Bloated"
     }
   },
   "Gui": {

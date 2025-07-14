@@ -2,7 +2,6 @@ import re
 import os
 from module.base.utils import str2int
 from module.logger import logger
-from module.db.models.item import NeoItem
 from bs4 import BeautifulSoup as BS
 from datetime import datetime, timedelta
 from threading import Thread, Lock
@@ -17,7 +16,7 @@ HTTP_HEADERS = {
 
 WORKER_COUNT = 20
 DB_LOCK = Lock()
-WorkerThreads = []
+WorkerThreads:list[Thread] = []
 WorkerFlags   = [False] * WORKER_COUNT
 
 Agent = requests.Session()
@@ -50,32 +49,45 @@ def get_item_details_by_name(item_name, forced=False, agent=None):
     url = f"https://items.jellyneo.net/search?name={item_name}&name_type=3"
     response = agent.get(url)
     page = BS(response.content, "html.parser")
-    ret = NeoItem(name=item_name)
+    ret = {
+        "id": "",
+        "name": "",
+        "market_price": 0,
+        "restock_price": 0,
+        "price_timestamp": datetime(1999, 11, 15).timestamp(),
+        "recent_prices": [],
+        "price_dates": [],
+        "rarity": 0,
+        "category": "",
+        "image": "",
+        "restock_shop_link": "",
+        "effects": [],
+    }
     try:
         reg = re.search(r"items\.jellyneo\.net\/item\/(\d+)", str(page))
-        ret.id = reg.group(1)
+        ret["id"] = reg.group(1)
         link = f"https://{reg.group()}"
     except Exception as e:
         logger.exception(e)
         return ret
     try:
         pn = page.select('.price-history-link')[0]
-        ret.price = str2int(pn.text)
-        ret.price_timestamp = datetime.strptime(pn.attrs['title'], "%B %d, %Y").timestamp()
+        ret["market_price"] = str2int(pn.text)
+        ret["price_timestamp"] = datetime.strptime(pn.attrs['title'], "%B %d, %Y").timestamp()
     except Exception:
         logger.warning(f"Failed to get price for {item_name}, probably cash item or heavily inflated")
-        ret.price = 10**10
-        ret.price_timestamp = datetime.now().timestamp()
+        ret["market_price"] = 10**10
+        ret["price_timestamp"] = datetime.now().timestamp()
     res = agent.get(link)
     doc = BS(res.content, "html.parser")
     try:
-        ret.name = doc.select('h1')[0].text.strip()
+        ret["name"] = doc.select('h1')[0].text.strip()
         ul = doc.select('.small-block-grid-2')[0]
         grids = ul.select('.text-center')
-        ret.rarity = str2int(grids[0].text.strip())
-        ret.category = grids[1].text.strip()
-        ret.restock_price = str2int(grids[2].text.strip())
-        ret.image = grids[-1].select('a')[0]['href']
+        ret["rarity"] = str2int(grids[0].text.strip())
+        ret["category"] = grids[1].text.strip()
+        ret["restock_price"] = str2int(grids[2].text.strip())
+        ret["image"] = grids[-1].select('a')[0]['href']
     except Exception as e:
         logger.exception(e)
         return ret

@@ -26,7 +26,7 @@ class Connection:
     config: AzurLaneConfig
     pw: Playwright
     context: Browser
-    _page: Page
+    page: Page
 
     PROFILE_DIRECTORY = os.path.realpath(os.path.join(os.getcwd(), './profiles'))
 
@@ -35,7 +35,7 @@ class Connection:
         self.pw = None
         self.browser = None
         self.url = ""
-        self._page = None
+        self.page = None
 
     @staticmethod
     def sleep(second):
@@ -54,14 +54,6 @@ class Connection:
             second(int, float, tuple):
         """
         time.sleep(ensure_time(second) + max(random() / 2, second * random() / 5))
-
-    @property
-    def page(self) -> Page:
-        return self._page
-
-    @page.setter
-    def page(self, page: Page):
-        self._page = page
 
     def expand_locale(self, path, key, locale):
         locale_path = os.path.join(path, '_locales', locale, 'messages.json')
@@ -89,11 +81,19 @@ class Connection:
             path = os.path.join(ext_dir, path).replace('\\', '/')
             version = str2int(path.split('/')[-1])
             if not version:
-                versions = os.listdir(path)
-                if not versions:
+                try:
+                    versions = os.listdir(path)
+                    versions = [v for v in versions if 'manifest.json' in os.listdir(os.path.join(path, v))]
+                    if not versions:
+                        continue
+                    latest = max(versions, key=lambda x: str2int(x))
+                except Exception as e:
+                    logger.warning(f"Error finding latest version in {path}: {e}")
                     continue
-                latest = max(versions, key=lambda x: str2int(x))
                 path = os.path.join(path, latest)
+            if not os.path.exists(os.path.join(path, 'manifest.json')):
+                logger.warning(f"Manifest file not found in {path}")
+                continue
             with open(os.path.join(path, 'manifest.json'), 'r') as f:
                 manifest = json.load(f)
                 ext_name = manifest['name']
@@ -127,6 +127,7 @@ class Connection:
             'channel': self.config.Playwright_Browser,
             'headless': self.config.Playwright_Headless,
             'args': self.config.Playwright_ExtraChromiumArgs.split('\n'),
+            'locale': 'en-US'
         }
         kwargs['args'].extend(self.get_extension_paths())
         if self.config.Playwright_AutoOpenDevtools:
@@ -136,7 +137,8 @@ class Connection:
             os.path.join(self.PROFILE_DIRECTORY, self.config.config_name),
             **kwargs
         )
-        self.page = self.context.new_page()
+        self.page = self.context.pages[0] if self.context.pages else self.context.new_page()
+        self.page.goto("about:blank")
         if self.config.Playwright_AutoAcceptDialog:
             self.page.on('dialog', lambda dialog: dialog.accept())
         logger.info("Browser started.")

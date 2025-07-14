@@ -119,4 +119,5 @@ class Nechouli(AzurLaneAutoScript):
 
 if __name__ == '__main__':
     nch = Nechouli()
+    nch.device.start_browser()
     nch.loop()

@@ -22,6 +22,7 @@ cached-property==2.0.1
 pytz==2024.2
 tzlocal==5.2
 lxml==4.9.1
+beautifulsoup4==4.13.4
 
 # OCR
 pponnxcr==2.0

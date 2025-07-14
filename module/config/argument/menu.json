@@ -12,6 +12,7 @@
     "menu": "list",
     "page": "setting",
     "tasks": [
+      "PetCares",
       "AltadorCouncil",
       "AnchorManagement",
       "AppleBobbing",
@@ -27,18 +28,18 @@
       "GiantOmelette",
       "GraveDanger",
       "GrumpyKing",
-      "WiseKing",
       "LunarTemple",
-      "NeggCave",
       "MeteorCrashSite",
+      "MoltaraQuarry",
+      "NeggCave",
       "PotatoCounter",
-      "RichSlorg",
       "QasalanExpellibox",
+      "RichSlorg",
+      "Snowager",
       "TDMBGPOP",
       "Tombola",
       "TrudysSurprise",
-      "Snowager",
-      "MoltaraQuarry"
+      "WiseKing"
     ]
   },
   "Weekly": {

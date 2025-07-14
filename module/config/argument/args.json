@@ -138,6 +138,60 @@
       }
     }
   },
+  "PetCares": {
+    "Scheduler": {
+      "Enable": {
+        "type": "checkbox",
+        "value": false,
+        "option": [
+          true,
+          false
+        ]
+      },
+      "NextRun": {
+        "type": "datetime",
+        "value": "2020-01-01 00:00:00",
+        "validate": "datetime"
+      },
+      "Command": {
+        "type": "input",
+        "value": "PetCares",
+        "display": "hide"
+      },
+      "ServerUpdate": {
+        "type": "input",
+        "value": "16:00",
+        "display": "hide"
+      }
+    },
+    "PetCares": {
+      "FeedBlacklist": {
+        "type": "textarea",
+        "value": "poison\nrotten\ndung\nglowing\nclay\nsmelly\n"
+      },
+      "MaxFeedValue": {
+        "type": "input",
+        "value": 1000
+      },
+      "MaxFeedLevel": {
+        "type": "select",
+        "value": "full up",
+        "option": [
+          "dying",
+          "starving",
+          "famished",
+          "very hungry",
+          "hungry",
+          "not hungry",
+          "fine",
+          "satiated",
+          "full up",
+          "very full",
+          "bloated"
+        ]
+      }
+    }
+  },
   "AltadorCouncil": {
     "Scheduler": {
       "Enable": {
@@ -553,33 +607,6 @@
       }
     }
   },
-  "WiseKing": {
-    "Scheduler": {
-      "Enable": {
-        "type": "checkbox",
-        "value": false,
-        "option": [
-          true,
-          false
-        ]
-      },
-      "NextRun": {
-        "type": "datetime",
-        "value": "2020-01-01 00:00:00",
-        "validate": "datetime"
-      },
-      "Command": {
-        "type": "input",
-        "value": "WiseKing",
-        "display": "hide"
-      },
-      "ServerUpdate": {
-        "type": "input",
-        "value": "16:00",
-        "display": "hide"
-      }
-    }
-  },
   "LunarTemple": {
     "Scheduler": {
       "Enable": {
@@ -598,33 +625,6 @@
       "Command": {
         "type": "input",
         "value": "LunarTemple",
-        "display": "hide"
-      },
-      "ServerUpdate": {
-        "type": "input",
-        "value": "16:00",
-        "display": "hide"
-      }
-    }
-  },
-  "NeggCave": {
-    "Scheduler": {
-      "Enable": {
-        "type": "checkbox",
-        "value": false,
-        "option": [
-          true,
-          false
-        ]
-      },
-      "NextRun": {
-        "type": "datetime",
-        "value": "2020-01-01 00:00:00",
-        "validate": "datetime"
-      },
-      "Command": {
-        "type": "input",
-        "value": "NeggCave",
         "display": "hide"
       },
       "ServerUpdate": {
@@ -661,6 +661,60 @@
       }
     }
   },
+  "MoltaraQuarry": {
+    "Scheduler": {
+      "Enable": {
+        "type": "checkbox",
+        "value": false,
+        "option": [
+          true,
+          false
+        ]
+      },
+      "NextRun": {
+        "type": "datetime",
+        "value": "2020-01-01 00:00:00",
+        "validate": "datetime"
+      },
+      "Command": {
+        "type": "input",
+        "value": "MoltaraQuarry",
+        "display": "hide"
+      },
+      "ServerUpdate": {
+        "type": "input",
+        "value": "16:00",
+        "display": "hide"
+      }
+    }
+  },
+  "NeggCave": {
+    "Scheduler": {
+      "Enable": {
+        "type": "checkbox",
+        "value": false,
+        "option": [
+          true,
+          false
+        ]
+      },
+      "NextRun": {
+        "type": "datetime",
+        "value": "2020-01-01 00:00:00",
+        "validate": "datetime"
+      },
+      "Command": {
+        "type": "input",
+        "value": "NeggCave",
+        "display": "hide"
+      },
+      "ServerUpdate": {
+        "type": "input",
+        "value": "16:00",
+        "display": "hide"
+      }
+    }
+  },
   "PotatoCounter": {
     "Scheduler": {
       "Enable": {
@@ -679,6 +733,33 @@
       "Command": {
         "type": "input",
         "value": "PotatoCounter",
+        "display": "hide"
+      },
+      "ServerUpdate": {
+        "type": "input",
+        "value": "16:00",
+        "display": "hide"
+      }
+    }
+  },
+  "QasalanExpellibox": {
+    "Scheduler": {
+      "Enable": {
+        "type": "checkbox",
+        "value": false,
+        "option": [
+          true,
+          false
+        ]
+      },
+      "NextRun": {
+        "type": "datetime",
+        "value": "2020-01-01 00:00:00",
+        "validate": "datetime"
+      },
+      "Command": {
+        "type": "input",
+        "value": "QasalanExpellibox",
         "display": "hide"
       },
       "ServerUpdate": {
@@ -715,7 +796,7 @@
       }
     }
   },
-  "QasalanExpellibox": {
+  "Snowager": {
     "Scheduler": {
       "Enable": {
         "type": "checkbox",
@@ -732,7 +813,7 @@
       },
       "Command": {
         "type": "input",
-        "value": "QasalanExpellibox",
+        "value": "Snowager",
         "display": "hide"
       },
       "ServerUpdate": {
@@ -823,7 +904,7 @@
       }
     }
   },
-  "Snowager": {
+  "WiseKing": {
     "Scheduler": {
       "Enable": {
         "type": "checkbox",
@@ -840,34 +921,7 @@
       },
       "Command": {
         "type": "input",
-        "value": "Snowager",
-        "display": "hide"
-      },
-      "ServerUpdate": {
-        "type": "input",
-        "value": "16:00",
-        "display": "hide"
-      }
-    }
-  },
-  "MoltaraQuarry": {
-    "Scheduler": {
-      "Enable": {
-        "type": "checkbox",
-        "value": false,
-        "option": [
-          true,
-          false
-        ]
-      },
-      "NextRun": {
-        "type": "datetime",
-        "value": "2020-01-01 00:00:00",
-        "validate": "datetime"
-      },
-      "Command": {
-        "type": "input",
-        "value": "MoltaraQuarry",
+        "value": "WiseKing",
         "display": "hide"
       },
       "ServerUpdate": {

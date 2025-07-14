@@ -37,6 +37,19 @@
       "TaskSoftTerminationTime": 5
     }
   },
+  "PetCares": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "PetCares",
+      "ServerUpdate": "16:00"
+    },
+    "PetCares": {
+      "FeedBlacklist": "poison\nrotten\ndung\nglowing\nclay\nsmelly\n",
+      "MaxFeedValue": 1000,
+      "MaxFeedLevel": "full up"
+    }
+  },
   "AltadorCouncil": {
     "Scheduler": {
       "Enable": false,
@@ -161,27 +174,11 @@
       "ServerUpdate": "16:00"
     }
   },
-  "WiseKing": {
-    "Scheduler": {
-      "Enable": false,
-      "NextRun": "2020-01-01 00:00:00",
-      "Command": "WiseKing",
-      "ServerUpdate": "16:00"
-    }
-  },
   "LunarTemple": {
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "LunarTemple",
-      "ServerUpdate": "16:00"
-    }
-  },
-  "NeggCave": {
-    "Scheduler": {
-      "Enable": false,
-      "NextRun": "2020-01-01 00:00:00",
-      "Command": "NeggCave",
       "ServerUpdate": "16:00"
     }
   },
@@ -193,11 +190,35 @@
       "ServerUpdate": "16:00"
     }
   },
+  "MoltaraQuarry": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "MoltaraQuarry",
+      "ServerUpdate": "16:00"
+    }
+  },
+  "NeggCave": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "NeggCave",
+      "ServerUpdate": "16:00"
+    }
+  },
   "PotatoCounter": {
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "PotatoCounter",
+      "ServerUpdate": "16:00"
+    }
+  },
+  "QasalanExpellibox": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "QasalanExpellibox",
       "ServerUpdate": "16:00"
     }
   },
@@ -209,11 +230,11 @@
       "ServerUpdate": "16:00"
     }
   },
-  "QasalanExpellibox": {
+  "Snowager": {
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
-      "Command": "QasalanExpellibox",
+      "Command": "Snowager",
       "ServerUpdate": "16:00"
     }
   },
@@ -241,19 +262,11 @@
       "ServerUpdate": "16:00"
     }
   },
-  "Snowager": {
+  "WiseKing": {
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
-      "Command": "Snowager",
-      "ServerUpdate": "16:00"
-    }
-  },
-  "MoltaraQuarry": {
-    "Scheduler": {
-      "Enable": false,
-      "NextRun": "2020-01-01 00:00:00",
-      "Command": "MoltaraQuarry",
+      "Command": "WiseKing",
       "ServerUpdate": "16:00"
     }
   }

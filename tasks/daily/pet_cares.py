@@ -1,12 +1,18 @@
 from module.logger import logger
 from tasks.base.base_page import BasePageUI
 from module.exception import TaskError
+from module.base.utils import str2int
 from module.db.models.neopet import Neopet
+from module.db.models.neoitem import NeoItem
+import module.jelly_neo as jn
 from module.db.data_map import *
+from typing import List, Any, MutableMapping
 
 class PetCaresUI(BasePageUI):
-    select_pet: Neopet
-    
+    selected_pet: Neopet
+    pets: List[Neopet]
+    items: List[NeoItem]
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.pets = []
@@ -56,6 +62,42 @@ class PetCaresUI(BasePageUI):
             self.select_pet(i)
             self.page.locator('#petCareLinkFeed').click()
 
+    def scan_usable_items(self):
+        self.items = []
+        item_cnt = str2int(self.device.wait_for_element('.petCare-itemcount').inner_text() or '') or 0
+        if not item_cnt:
+            logger.warning("No usable items found.")
+            return []
+        nodes = self.page.locator('.petCare-itemgrid-item')
+        depth = 0
+        while nodes.count() < item_cnt:
+            self.device.sleep(1)
+            depth += 1
+            if depth > 30:
+                logger.warning("Timeout waiting for all items to load, assume loaded.")
+                break
+        item_names = set()
+        for node in nodes.all():
+            name = node.get_attribute('data-itemname')
+            if not name:
+                continue
+            item_names.add(name)
+            item = NeoItem(
+                name=name,
+                id=node.get_attribute('id'),
+                image=node.get_attribute('data-image'),
+                description=node.get_attribute('data-itemdesc'),
+                rarity=node.get_attribute('data-rarity'),
+                restock_price=node.get_attribute('data-itemvalue'),
+                market_price=0,
+                item_type=node.get_attribute('data-itemtype'),
+            )
+            item.node = node
+            self.items.append(item)
+        jn.batch_search(item_names)
+        for item in self.items:
+            item.update_jn()
+        return self.items
 
 
 if __name__ == '__main__':

@@ -8,6 +8,7 @@ from playwright._impl._errors import TimeoutError, Error
 from cached_property import cached_property
 from module.config.utils import get_server_next_update
 from module.exception import *
+from playwright._impl._errors import Error as PlaywrightError
 
 class BasePageUI(ModuleBase):
 
@@ -64,10 +65,12 @@ class BasePageUI(ModuleBase):
 
     def is_logged_in(self):
         if '/login/index.phtml' in self.device.page.url:
-            return True
+            return False
         if 'you are not logged in' in self.device.page.content():
-            return True
-        return False
+            return False
+        if 'id="loginButton"' in self.device.page.content():
+            return False
+        return True
 
     def goto(self, url):
         try:
@@ -76,11 +79,18 @@ class BasePageUI(ModuleBase):
             logger.warning("Page load timeout, assume main content loaded.")
         except Error as e:
             logger.warning(f"Page load error: {e}, likely interrupted by login or maintenance.")
-        if '/login/index.phtml' in self.device.page.url:
+        if not self.is_logged_in():
             logger.critical("You have to login first, launch with gui then navigate to https://www.neopets.com/home after you logged in.")
-            ok = self.device.wait_until_element_found('#navPetMenuIcon__2020', timeout=60*60)
-            if not ok:
-                raise RequestHumanTakeover("No operation for 1 hour, exited.")
+            while True:
+                try:
+                    ok = self.device.wait_for_element('#navPetMenuIcon__2020', timeout=60*60)
+                    if not ok:
+                        raise RequestHumanTakeover("No operation for 1 hour, exited.")
+                    break
+                except PlaywrightError as e:
+                    if 'navigation' in str(e):
+                        logger.info("Page navigation interrupted, retrying...")
+                        continue
             return self.goto(url)
 
     def execute_script(self, script_name):

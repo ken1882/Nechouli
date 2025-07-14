@@ -20,9 +20,12 @@ Alas:
 # ==================== Daily ====================
 
 Daily:
-  menu: 'list'
-  page: 'setting'
+  menu: list
+  page: setting
   tasks:
+    PetCares:
+      - Scheduler
+      - PetCares
     AltadorCouncil:
       - Scheduler
     AnchorManagement:
@@ -54,19 +57,21 @@ Daily:
       - Scheduler
     GrumpyKing:
       - Scheduler
-    WiseKing:
-      - Scheduler
     LunarTemple:
-      - Scheduler
-    NeggCave:
       - Scheduler
     MeteorCrashSite:
       - Scheduler
+    MoltaraQuarry:
+      - Scheduler
+    NeggCave:
+      - Scheduler
     PotatoCounter:
+      - Scheduler
+    QasalanExpellibox:
       - Scheduler
     RichSlorg:
       - Scheduler
-    QasalanExpellibox:
+    Snowager:
       - Scheduler
     TDMBGPOP:
       - Scheduler
@@ -74,13 +79,9 @@ Daily:
       - Scheduler
     TrudysSurprise:
       - Scheduler
-    Snowager:
+    WiseKing:
       - Scheduler
-    MoltaraQuarry:
-      - Scheduler
-    PetCares:
-      - Scheduler
-      - PetCares
+
 
 # ==================== Weekly ====================
 

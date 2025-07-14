@@ -44,3 +44,8 @@ class GeneratedConfig:
     # Group `NeopianBank`
     NeopianBank_DepositThreshold = 1000000
     NeopianBank_MaxDeposit = 500000
+
+    # Group `PetCares`
+    PetCares_FeedBlacklist = 'poison\nrotten\ndung\nglowing\nclay\nsmelly\n'
+    PetCares_MaxFeedValue = 1000
+    PetCares_MaxFeedLevel = 'full up'  # dying, starving, famished, very hungry, hungry, not hungry, fine, satiated, full up, very full, bloated

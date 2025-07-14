@@ -1,0 +1,167 @@
+{
+    "plain omelette": {
+        "id": "7163",
+        "name": "Plain Omelette",
+        "market_price": 130,
+        "restock_price": 165,
+        "price_timestamp": 1752249600.0,
+        "recent_prices": [],
+        "price_dates": [],
+        "rarity": 101,
+        "category": "Tyrannian Food",
+        "image": "https://images.neopets.com/items/om_plain1.gif",
+        "restock_shop_link": "",
+        "effects": [
+            "edible",
+            "openable"
+        ]
+    },
+    "pickled leeches": {
+        "id": "1004",
+        "name": "Pickled Leeches",
+        "market_price": 5,
+        "restock_price": 98,
+        "price_timestamp": 1751990400.0,
+        "recent_prices": [],
+        "price_dates": [],
+        "rarity": 60,
+        "category": "Gross Food",
+        "image": "https://images.neopets.com/items/gross_pickledleaches.gif",
+        "restock_shop_link": "",
+        "effects": [
+            "edible"
+        ]
+    },
+    "infested peach": {
+        "id": "5699",
+        "name": "Infested Peach",
+        "market_price": 90,
+        "restock_price": 372,
+        "price_timestamp": 1751990400.0,
+        "recent_prices": [],
+        "price_dates": [],
+        "rarity": 40,
+        "category": "Gross Food",
+        "image": "https://images.neopets.com/items/gross_infestedpeach.gif",
+        "restock_shop_link": "",
+        "effects": [
+            "edible"
+        ]
+    },
+    "stone jelly": {
+        "id": "21606",
+        "name": "Stone Jelly",
+        "market_price": 6,
+        "restock_price": 3000,
+        "price_timestamp": 1752249600.0,
+        "recent_prices": [],
+        "price_dates": [],
+        "rarity": 101,
+        "category": "Jelly Food",
+        "image": "https://images.neopets.com/items/jel_stone_whole.gif",
+        "restock_shop_link": "",
+        "effects": [
+            "edible",
+            "openable"
+        ]
+    },
+    "eyefish": {
+        "id": "5191",
+        "name": "Eyefish",
+        "market_price": 3,
+        "restock_price": 0,
+        "price_timestamp": 1752249600.0,
+        "recent_prices": [],
+        "price_dates": [],
+        "rarity": 101,
+        "category": "Food",
+        "image": "https://images.neopets.com/items/vor_eyefish.gif",
+        "restock_shop_link": "",
+        "effects": [
+            "edible"
+        ]
+    },
+    "smelly jelly": {
+        "id": "14062",
+        "name": "Smelly Jelly",
+        "market_price": 7,
+        "restock_price": 2000,
+        "price_timestamp": 1752249600.0,
+        "recent_prices": [],
+        "price_dates": [],
+        "rarity": 101,
+        "category": "Jelly Food",
+        "image": "https://images.neopets.com/items/jel_smelly_whole.gif",
+        "restock_shop_link": "",
+        "effects": [
+            "edible",
+            "openable",
+            "artists' day off"
+        ]
+    },
+    "tanglepus": {
+        "id": "1298",
+        "name": "Tanglepus",
+        "market_price": 3,
+        "restock_price": 0,
+        "price_timestamp": 1751990400.0,
+        "recent_prices": [],
+        "price_dates": [],
+        "rarity": 101,
+        "category": "Food",
+        "image": "https://images.neopets.com/items/vor_tanglepus.gif",
+        "restock_shop_link": "",
+        "effects": [
+            "edible"
+        ]
+    },
+    "oil and grease jelly": {
+        "id": "43145",
+        "name": "Oil and Grease Jelly",
+        "market_price": 4,
+        "restock_price": 3000,
+        "price_timestamp": 1752336000.0,
+        "recent_prices": [],
+        "price_dates": [],
+        "rarity": 101,
+        "category": "Jelly Food",
+        "image": "https://images.neopets.com/items/jelly_oag.gif",
+        "restock_shop_link": "",
+        "effects": [
+            "edible",
+            "openable"
+        ]
+    },
+    "tigersquash kougraclaw": {
+        "id": "28364",
+        "name": "Tigersquash Kougraclaw",
+        "market_price": 100,
+        "restock_price": 643,
+        "price_timestamp": 1752249600.0,
+        "recent_prices": [],
+        "price_dates": [],
+        "rarity": 83,
+        "category": "Baked",
+        "image": "https://images.neopets.com/items/bak_kougraclaw_tigersq.gif",
+        "restock_shop_link": "",
+        "effects": [
+            "edible"
+        ]
+    },
+    "mint rolls": {
+        "id": "14695",
+        "name": "Mint Rolls",
+        "market_price": 50,
+        "restock_price": 290,
+        "price_timestamp": 1751990400.0,
+        "recent_prices": [],
+        "price_dates": [],
+        "rarity": 78,
+        "category": "Exotic Foods",
+        "image": "https://images.neopets.com/items/foo_minty_roll.gif",
+        "restock_shop_link": "",
+        "effects": [
+            "edible"
+        ]
+    }
+}
