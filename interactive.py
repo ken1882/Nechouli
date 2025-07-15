@@ -1,6 +1,7 @@
 from nch import Nechouli
 from module.logger import logger
 from tasks.base.base_page import BasePageUI
+from tasks.daily.pet_cares import PetCaresUI
 from module.exception import TaskError
 from module.db.models.neopet import Neopet
 from module.db.models.neoitem import NeoItem
@@ -12,6 +13,14 @@ alas = Nechouli()
 config, device = alas.config, alas.device
 device.start_browser()
 self = BasePageUI(config, device)
+self = PetCaresUI(config, device)
+self.run()
+
+def unselect():
+    if not self.selected_pet:
+        return
+    self.selected_pet = None
+    self.device.click((10, 200)) # just click somewhere to unselect
 
 def scan_all_pets():
     self.pets = []
@@ -33,7 +42,7 @@ def scan_all_pets():
             color=node.get_attribute('data-color'),
             mood=node.get_attribute('data-mood'),
             is_active=node.get_attribute('data-active') == 'true',
-            locator=node,
+            _locator=node,
         ))
 
 def select_pet(index):
@@ -53,7 +62,10 @@ def feed_all_pets():
 
 def scan_usable_items():
     self.items = []
-    item_cnt = str2int(self.device.wait_for_element('.petCare-itemcount').inner_text() or '') or 0
+    item_cnt   = None
+    # wait until loaded
+    while item_cnt == None:
+        item_cnt = str2int(self.device.wait_for_element('.petCare-itemcount').inner_text() or '')
     if not item_cnt:
         logger.warning("No usable items found.")
         return []
@@ -80,6 +92,7 @@ def scan_usable_items():
             restock_price=node.get_attribute('data-itemvalue'),
             market_price=0,
             item_type=node.get_attribute('data-itemtype'),
+            _locator=node,
         )
         item.node = node
         self.items.append(item)
@@ -87,3 +100,14 @@ def scan_usable_items():
     for item in self.items:
         item.update_jn()
     return self.items
+
+def use_item(item: NeoItem):
+    item.locator.click()
+    self.device.wait_for_element('#petCareUseItem').click()
+
+self.goto('https://www.neopets.com/home')
+scan_all_pets()
+select_pet(0)
+self.device.wait_for_element('#petCareLinkFeed').click()
+items = [i for i in scan_usable_items() if i.is_edible(self.config)]
+items = sorted(items, key=lambda x: x.market_price)

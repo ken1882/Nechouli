@@ -1,5 +1,5 @@
 from module.logger import logger
-from module.db.models import base
+from module.db.models import base_model
 from module.base import utils
 import module.db.models as models
 import struct
@@ -26,7 +26,7 @@ class DataManager:
         page_size = 0x100
         with open(self.save_path, 'wb') as file:
             for key, dat in self.data.items():
-                if not issubclass(type(dat), base.BaseModel):
+                if not issubclass(type(dat), base_model.BaseModel):
                     raise ValueError(f"Only models can be saved")
                 blob = dat.serialize()
                 blk_size = len(blob)

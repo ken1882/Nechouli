@@ -1,5 +1,6 @@
 import re
-from module.db.models.base import BaseModel
+from module.db.models.base_model import BaseModel
+from module.config.config import AzurLaneConfig
 from datetime import datetime
 from typing import Any, List
 import module.jelly_neo as jn
@@ -21,6 +22,7 @@ class NeoItem(BaseModel):
         # sensible defaults
         self.name = ""
         self.id = ""
+        self.quantity = 0
         self.market_price = 0.0
         self.restock_price = 0.0
         self.price_timestamp = datetime(1999, 11, 15).timestamp()
@@ -30,19 +32,6 @@ class NeoItem(BaseModel):
         self.restock_shop_link = ""
         self.effects = []
         super().__init__(**kwargs)
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-            "quantity": self.quantity,
-            "image": self.image,
-            "value_npc": self.value_npc,
-            "value_pc": self.value_pc,
-            "description": self.description,
-            "rarity": self.rarity,
-            "item_type": self.item_type
-        }
 
     def update_jn(self):
         '''
@@ -72,9 +61,9 @@ class NeoItem(BaseModel):
             return 'grooming'
         return 'other'
 
-    def is_rubbish(self):
-        if any(re.search(regex, self.name, re.I) for regex in TRASH_NAME_REGEXES):
-            return True
+    def is_edible(self, config: AzurLaneConfig) -> bool:
+        if any(re.search(regex, self.name, re.I) for regex in config.PetCares_FeedBlacklist.split("\n") if regex):
+            return False
         if all([e in self.effects for e in ['diseases','edible']]):
-            return True
-        return False
+            return False
+        return True

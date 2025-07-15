@@ -4,6 +4,7 @@ import gzip
 import json
 import os
 import pathlib
+from playwright.sync_api import Locator
 from abc import ABC, abstractmethod
 from copy import deepcopy
 from datetime import datetime
@@ -155,7 +156,13 @@ class BaseModel:
         self.__dict__.update(data)
 
     def to_dict(self) -> MutableMapping[str, Any]:
-        return self.__dict__.copy()
+        d = self.__dict__.copy()
+        # remove keys starts with underscore
+        # which supposed to be unserializable attributes such as Playwright Locators
+        for k in list(d.keys()):
+            if k.startswith('_'):
+                d.pop(k)
+        return deepcopy(d)
 
     # ------------------------------------------------------------------
     # persistence helpers
@@ -196,6 +203,11 @@ class BaseModel:
             data = pathlib.Path(data).read_bytes()
         obj_dict = json.loads(gzip.decompress(data).decode())
         return cls(**obj_dict)
+
+    # common unserializable attributes ------------------------------------
+    @property
+    def locator(self) -> Locator:
+        return self.__dict__.get("_locator", None)
 
     # pretty repr ---------------------------------------------------------
     def __str__(self) -> str:  # noqa: D401

@@ -8,6 +8,12 @@ class Nechouli(AzurLaneAutoScript):
     def __init__(self, config_name: str = 'nechouli'):
         super().__init__(config_name)
 
+    def loop(self):
+        try:
+            super().loop()
+        except Exception as e:
+            pass
+
     def altador_council(self):
         from tasks.daily.altador_council import AltadorCouncilUI
         AltadorCouncilUI(config=self.config, device=self.device).run()

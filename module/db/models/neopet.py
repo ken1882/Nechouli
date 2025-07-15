@@ -1,4 +1,4 @@
-from module.db.models.base import BaseModel
+from module.db.models.base_model import BaseModel
 from copy import deepcopy
 from typing import Any, List, Optional, MutableMapping
 
@@ -35,8 +35,3 @@ class Neopet(BaseModel):
         self.ailments = []
         super().__init__(**kwargs)
 
-    # we don't want to serialise the Playwright Locator
-    def to_dict(self) -> MutableMapping[str, Any]:  # noqa: D401
-        d = deepcopy(super().to_dict())
-        d.pop("locator", None)
-        return d

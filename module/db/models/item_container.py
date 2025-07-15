@@ -1,4 +1,4 @@
-from module.db.models import base
+from module.db.models import base_model
 
-class ItemContainer(base.BaseModel):
+class ItemContainer(base_model.BaseModel):
     pass

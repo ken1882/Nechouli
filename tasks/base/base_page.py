@@ -16,13 +16,7 @@ class BasePageUI(ModuleBase):
     def page(self) -> Page:
         return self.device.page
 
-    def check_connection(self):
-        if not self.device.pw:
-            self.device.start_browser()
-        return True
-
     def run(self):
-        self.check_connection()
         try:
             ok = self.main()
             self.dm.save()
@@ -75,6 +69,7 @@ class BasePageUI(ModuleBase):
     def goto(self, url):
         try:
             self.device.goto(url)
+            self.execute_script('remove_antiadb') # Remove annoying popup showing adblock detected
         except TimeoutError:
             logger.warning("Page load timeout, assume main content loaded.")
         except Error as e:
@@ -107,3 +102,8 @@ class BasePageUI(ModuleBase):
         except Exception as e:
             logger.exception(f"Failed to execute script {script_name}: {e}")
             return
+    
+    def is_node_loading(self, node):
+        if node.inner_text() == 'Loading...':
+            return True
+        return False

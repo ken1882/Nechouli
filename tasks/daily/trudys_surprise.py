@@ -5,7 +5,7 @@ class TrudysSurpriseUI(BasePageUI):
 
     def main(self):
         self.goto('https://www.neopets.com/trudys_surprise.phtml')
-        canvas = self.page.locator('#trudyContainer')
+        canvas = self.device.wait_for_element('#trudyContainer')
         if not canvas.count():
             logger.warning("Canvas not found")
             return

@@ -295,11 +295,11 @@
     },
     "MaxFeedValue": {
       "name": "Max Item Value",
-      "help": "Upper price limit (NP) of a food item the script is allowed to feed."
+      "help": "Upper market price limit (NP) of a food item the script is allowed to feed."
     },
     "MaxFeedLevel": {
       "name": "Max Feed Level",
-      "help": "Feeding pet when its hunger status is at or below this level.",
+      "help": "Feeding pet when its hunger status is below this level.",
       "dying": "Dying",
       "starving": "Starving",
       "famished": "Famished",

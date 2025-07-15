@@ -1,3 +1,4 @@
+from playwright.sync_api import Locator
 from module.logger import logger
 from tasks.base.base_page import BasePageUI
 from module.exception import TaskError
@@ -23,8 +24,9 @@ class PetCaresUI(BasePageUI):
         self.goto('https://www.neopets.com/home')
         self.scan_all_pets()
         self.feed_all_pets()
+        self.unselect()
 
-    def scan_all_pets():
+    def scan_all_pets(self):
         self.pets = []
         nodes = self.page.locator('.hp-carousel-nameplate')
         num = nodes.count()
@@ -44,8 +46,14 @@ class PetCaresUI(BasePageUI):
                 color=node.get_attribute('data-color'),
                 mood=node.get_attribute('data-mood'),
                 is_active=node.get_attribute('data-active') == 'true',
-                locator=node,
+                _locator=node,
             ))
+
+    def unselect(self):
+        if not self.selected_pet:
+            return
+        self.selected_pet = None
+        self.device.click((10, 200)) # just click somewhere to unselect
 
     def select_pet(self, index):
         if index < 0 or index >= len(self.pets):
@@ -56,15 +64,53 @@ class PetCaresUI(BasePageUI):
 
     def feed_all_pets(self):
         for i, pet in enumerate(self.pets):
-            if pet.hunger >= HUNGER_LEVEL['full up']:
-                continue
-            logger.info(f'Feeding pet {pet.name} with hunger {HUNGER_VALUE[pet.hunger]}')
+            self.unselect()
             self.select_pet(i)
-            self.page.locator('#petCareLinkFeed').click()
+            self.device.wait_for_element('#petCareLinkFeed').click()
+            while pet.hunger < HUNGER_LEVEL[self.config.PetCares_MaxFeedLevel]:
+                logger.info(f'Feeding pet {pet.name} with hunger {HUNGER_VALUE[pet.hunger]}')
+                ret = self.feed_pet()
+                if ret < 0:
+                    logger.warning('Stopped feeding due to no usable items.')
+                    return
+                pet.hunger = ret
+                logger.info(f'Neopet {pet.name} hunger after feeding: {HUNGER_VALUE[pet.hunger]}')
+                back_node = self.page.locator('#petCareResultBack')
+                self.device.wait(1)  # prevent rapid clicking
+                if back_node and back_node.count():
+                    back_node.click()
+                else:
+                    logger.warning("No back button found after feeding, proceeding to next pet.")
+                    break
+
+    def feed_pet(self) -> int:
+        items = [i for i in self.scan_usable_items() if i.is_edible(self.config)]
+        if not items:
+            logger.warning(f'No usable items found for pet {self.selected_pet.name}')
+            return -1
+        items = sorted(items, key=lambda x: x.market_price)
+        result_node = self.use_item(items[0])
+        result_text = result_node.inner_text().lower()
+        return max([v for k, v in HUNGER_LEVEL.items() if k in result_text], default=10)
+
+    def use_item(self, item: NeoItem) -> Locator:
+        logger.info(f'Using item: {item.name} on pet {self.selected_pet.name}')
+        item.locator.click()
+        self.device.wait(0.5)
+        self.device.wait_for_element('#petCareUseItem').click()
+        result_node = self.device.wait_for_element('#petCareResult')
+        while self.is_node_loading(result_node):
+            self.device.sleep(0.3)
+            result_node = self.device.wait_for_element('#petCareResult')
+        logger.info(f'Result after using {item.name}: {result_node.inner_text()}')
+        return result_node
 
     def scan_usable_items(self):
         self.items = []
-        item_cnt = str2int(self.device.wait_for_element('.petCare-itemcount').inner_text() or '') or 0
+        item_cnt   = None
+        # wait until loaded
+        while item_cnt == None:
+            item_cnt = str2int(self.device.wait_for_element('.petCare-itemcount').inner_text() or '')
         if not item_cnt:
             logger.warning("No usable items found.")
             return []
@@ -91,6 +137,7 @@ class PetCaresUI(BasePageUI):
                 restock_price=node.get_attribute('data-itemvalue'),
                 market_price=0,
                 item_type=node.get_attribute('data-itemtype'),
+                _locator=node,
             )
             item.node = node
             self.items.append(item)

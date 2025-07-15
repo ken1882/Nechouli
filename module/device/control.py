@@ -140,7 +140,7 @@ class Control(Connection):
             if modifiers:
                 raise ValueError("`page.mouse` does not support modifiers")
             logger.info(f"Clicking on Page at ({mx+x}, {my+y})")
-            self.page.mouse.click(mx+x, my+y, button=button, delay=md)
+            self.page.mouse.click(max(mx+x, 0), max(my+y, 0), button=button, delay=md)
         if nav:
             logger.info("Waiting for navigation")
         if nav == True:
