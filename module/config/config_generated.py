@@ -47,5 +47,7 @@ class GeneratedConfig:
 
     # Group `PetCares`
     PetCares_FeedBlacklist = 'poison\nrotten\ndung\nglowing\nclay\nsmelly\n'
+    PetCares_PlayBlackList = None
+    PetCares_GroomBlackList = None
     PetCares_MaxFeedValue = 1000
     PetCares_MaxFeedLevel = 'full up'  # dying, starving, famished, very hungry, hungry, not hungry, fine, satiated, full up, very full, bloated

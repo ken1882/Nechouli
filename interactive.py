@@ -111,3 +111,4 @@ select_pet(0)
 self.device.wait_for_element('#petCareLinkFeed').click()
 items = [i for i in scan_usable_items() if i.is_edible(self.config)]
 items = sorted(items, key=lambda x: x.market_price)
+

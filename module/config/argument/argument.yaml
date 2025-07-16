@@ -79,6 +79,12 @@ PetCares:
       glowing
       clay
       smelly
+  PlayBlackList:
+    type: textarea
+    value: ""
+  GroomBlackList:
+    type: textarea
+    value: ""
   MaxFeedValue: 1000
   MaxFeedLevel:
     type: select

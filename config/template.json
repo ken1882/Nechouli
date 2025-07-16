@@ -46,6 +46,8 @@
     },
     "PetCares": {
       "FeedBlacklist": "poison\nrotten\ndung\nglowing\nclay\nsmelly\n",
+      "PlayBlackList": null,
+      "GroomBlackList": null,
       "MaxFeedValue": 1000,
       "MaxFeedLevel": "full up"
     }

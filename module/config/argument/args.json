@@ -169,6 +169,14 @@
         "type": "textarea",
         "value": "poison\nrotten\ndung\nglowing\nclay\nsmelly\n"
       },
+      "PlayBlackList": {
+        "type": "textarea",
+        "value": ""
+      },
+      "GroomBlackList": {
+        "type": "textarea",
+        "value": ""
+      },
       "MaxFeedValue": {
         "type": "input",
         "value": 1000

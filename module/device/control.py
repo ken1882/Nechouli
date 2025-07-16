@@ -36,7 +36,12 @@ class Control(Connection):
             setTimeout(() => marker.remove(), {timeout});
         """)
 
-    def wait_for_element(self, *locators:list, timeout:float=60, wait_interval:float=1, condition:Callable=None):
+    def wait_for_element(self,
+                         *locators:list,
+                         timeout:float=60,
+                         wait_interval:float=1,
+                         condition:Callable=None,
+                         gone:bool=False) -> Locator:
         '''
         Wait until one of the selectors is met given condition.
 
@@ -45,12 +50,16 @@ class Control(Connection):
             timeout (float): Timeout in seconds.
             wait_interval (float): Interval to wait between each check.
             condition (Callable): Condition to check. If None, will check if the element is visible and found.
+            gone (bool): If True, will wait until the element is invisible.
 
         Returns:
             Locator: The first locator that meets the condition.
         '''
         if not condition:
-            condition = lambda x: x.count() > 0 and x.is_visible()
+            if gone:
+                condition = lambda x: x.count() > 0 and not x.is_visible()
+            else:
+                condition = lambda x: x.count() > 0 and x.is_visible()
         while timeout > 0:
             node = None
             for selector in locators:
@@ -149,9 +158,15 @@ class Control(Connection):
             self.page.wait_for_url(nav)
 
     def drag_to(self,
-            locator_a, locator_b, speed=1000, shake=(0, 15), point_random=(-10, -10, 10, 10),
-            shake_random=(-5, -5, 5, 5), swipe_duration=0.1, shake_duration=0.03,
-            random_duration=(-50, 50)
+            locator_a: Locator,
+            locator_b: Locator,
+            speed: int = 1000,
+            shake: tuple[int] = (0, 15),
+            point_random: tuple[int] = (-10, -10, 10, 10),
+            shake_random: tuple[int] = (-5, -5, 5, 5),
+            swipe_duration: float = 0.1,
+            shake_duration: float = 0.03,
+            random_duration: tuple[int] = (-50, 50)
         ):
         '''
         Drag an entity from a to b.
@@ -171,8 +186,12 @@ class Control(Connection):
         self.page.mouse.down()
         ba = locator_a.bounding_box()
         bb = locator_b.bounding_box()
-        p1 = np.array((ba['x'], ba['y'])) - utils.random_rectangle_point(point_random)
-        p2 = np.array((bb['x'], bb['y'])) - utils.random_rectangle_point(point_random)
+        ax = (ba['x'] + ba['width'] * 0.5)
+        ay = (ba['y'] + ba['height'] * 0.5)
+        bx = (bb['x'] + bb['width'] * 0.5)
+        by = (bb['y'] + bb['height'] * 0.5)
+        p1 = np.array((ax, ay)) - utils.random_rectangle_point(point_random)
+        p2 = np.array((bx, by)) - utils.random_rectangle_point(point_random)
         distance = np.linalg.norm(p2 - p1)
         duration = distance / speed
         steps = max(2, int(duration / swipe_duration))

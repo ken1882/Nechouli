@@ -286,12 +286,20 @@
   },
   "PetCares": {
     "_info": {
-      "name": "Feeding Configuration",
+      "name": "Care Configuration",
       "help": ""
     },
     "FeedBlacklist": {
       "name": "Feeding Blacklist",
-      "help": "List of names of items that will not be fed to pets, separated by line, supports regex."
+      "help": "List of names of items that will not be fed to pets, separated by line, supports regex. Never feeds diseased items."
+    },
+    "PlayBlackList": {
+      "name": "Toys Blacklist",
+      "help": "Same logic as FeedBlacklist, but for toys. Never plays with toys with `openable` effect, such as some pet-altering magical toys."
+    },
+    "GroomBlackList": {
+      "name": "Grooming Blacklist",
+      "help": "Same logic as FeedBlacklist, but for grooming. Never grooms pets with `openable` effect."
     },
     "MaxFeedValue": {
       "name": "Max Item Value",

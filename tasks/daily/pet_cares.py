@@ -25,6 +25,10 @@ class PetCaresUI(BasePageUI):
         self.scan_all_pets()
         self.feed_all_pets()
         self.unselect()
+        self.play_all_pets()
+        self.unselect()
+        self.groom_all_pets()
+        self.unselect()
 
     def scan_all_pets(self):
         self.pets = []
@@ -64,6 +68,9 @@ class PetCaresUI(BasePageUI):
 
     def feed_all_pets(self):
         for i, pet in enumerate(self.pets):
+            if pet.hunger >= HUNGER_LEVEL['full up']:
+                logger.info(f'Pet {pet.name} is already full, skipping feeding.')
+                continue
             self.unselect()
             self.select_pet(i)
             self.device.wait_for_element('#petCareLinkFeed').click()
@@ -128,17 +135,7 @@ class PetCaresUI(BasePageUI):
             if not name:
                 continue
             item_names.add(name)
-            item = NeoItem(
-                name=name,
-                id=node.get_attribute('id'),
-                image=node.get_attribute('data-image'),
-                description=node.get_attribute('data-itemdesc'),
-                rarity=node.get_attribute('data-rarity'),
-                restock_price=node.get_attribute('data-itemvalue'),
-                market_price=0,
-                item_type=node.get_attribute('data-itemtype'),
-                _locator=node,
-            )
+            item = NeoItem.load_from_locator(node)
             item.node = node
             self.items.append(item)
         jn.batch_search(item_names)
@@ -146,6 +143,117 @@ class PetCaresUI(BasePageUI):
             item.update_jn()
         return self.items
 
+    def play_all_pets(self):
+        for i, pet in enumerate(self.pets):
+            self.unselect()
+            self.select_pet(i)
+            self.play_pet()
+            self.device.wait(1)
+
+    def groom_all_pets(self):
+        for i, pet in enumerate(self.pets):
+            self.unselect()
+            self.select_pet(i)
+            self.groom_pet()
+            self.device.wait(1)
+
+    def play_pet(self) -> bool:
+        self.device.wait_for_element('#petCareLinkPlay').click()
+        logger.info(f'Playing with pet {self.selected_pet.name}')
+        items = [i for i in self.scan_usable_items() if i.is_playable(self.config)]
+        if not items:
+            logger.warning(f'No toys found for pet {self.selected_pet.name}')
+            return False
+        items = sorted(items, key=lambda x: x.market_price)
+        result_node = self.use_item(items[0])
+        logger.info(f'Played with {items[0].name}, result:\n{result_node.inner_text()}')
+        return True
+
+    def groom_pet(self) -> bool:
+        self.device.wait_for_element('#petCareLinkGroom').click()
+        logger.info(f'Grooming pet {self.selected_pet.name}')
+        items = [i for i in self.scan_usable_items() if i.is_groomable(self.config)]
+        if not items:
+            logger.warning(f'No grooming items found for pet {self.selected_pet.name}')
+            return False
+        items = sorted(items, key=lambda x: x.market_price)
+        result_node = self.use_item(items[0])
+        logger.info(f'Groomed with {items[0].name}, result:\n{result_node.inner_text()}')
+        return True
+
+    def customise_pet(self) -> bool:
+        node = self.device.wait_for_element('#petCareCustomiseLink')
+        self.device.click(node, nav=True)
+        self.device.wait_for_element('#npcma_loader')
+        self.device.wait_for_element('#npcma_loader', gone=True)
+        if not self.switch_closet():
+            return False
+        weared_items = self.scan_wearables()
+        if not weared_items:
+            return False
+        item_name = self.takeoff_item(weared_items[0])
+        if not item_name:
+            return False
+        if not self.save_customise():
+            return False
+        if not self.search_item(item_name):
+            return False
+        self.device.sleep(3) # probably long, depends on your network and closet size
+        available_items = self.scan_wearables()
+        if not available_items:
+            logger.warning("No available items found after customisation.")
+            return False
+        src = available_items[0]
+        dst = self.page.locator('#npcma_customMainContent')
+        self.device.drag_to(src, dst)
+        return self.save_customise()
+
+    def switch_closet(self) -> bool:
+        node = self.page.locator('.npcma-switch')
+        if not node.count():
+            logger.warning("No closet switch found.")
+            return False
+        self.device.click(node)
+        self.device.sleep(2) # wait for switch animation
+        return True
+
+    def scan_wearables(self) -> list[Locator]:
+        nodes = self.page.locator('.npcma-pet-content')
+        if not nodes.count():
+            logger.warning("No wearables found.")
+            return []
+        return [node for node in nodes.all() if node.is_visible()]
+
+    def takeoff_item(self, item: Locator) -> str:
+        item_name = item.inner_text().strip()
+        takeoff_btn = item.locator('.npcma-icon-close')
+        if not takeoff_btn.count():
+            logger.warning(f"Unable to take off cloth {item_name}.")
+            return ''
+        logger.info(f'Taking off cloth: {item_name}')
+        takeoff_btn.click()
+        self.device.sleep(1)
+        return item_name
+
+    def save_customise(self) -> bool:
+        save_btn = self.page.locator('.npcma-icon-save-snap')
+        if not save_btn.count():
+            logger.warning("No save button found in customisation.")
+            return False
+        self.device.click(save_btn)
+        popup = self.device.wait_for_element('.npcma-align_center')
+        self.device.sleep(2)
+        self.device.click(popup.locator('.npcma-icon-close'))
+        logger.info("Customisation saved successfully.")
+        return True
+
+    def search_item(self, item_name: str) -> Locator:
+        search_input = self.page.locator('.header-search').locator('input')
+        if not search_input.count():
+            logger.warning("Search input not found.")
+            return None
+        search_input.fill(item_name)
+        self.device.sleep(1)
 
 if __name__ == '__main__':
     self = PetCaresUI()

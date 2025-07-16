@@ -1,86 +1,55 @@
 {
-    "half blunella jelly": {
-        "id": "21584",
-        "name": "Half Blunella Jelly",
-        "market_price": 35,
-        "restock_price": 1700,
-        "price_timestamp": 1752336000.0,
+    "pirate elephante plushie": {
+        "id": "64576",
+        "name": "Pirate Elephante Plushie",
+        "market_price": 1,
+        "restock_price": 0,
+        "price_timestamp": 1752508800.0,
         "recent_prices": [],
         "price_dates": [],
         "rarity": 101,
-        "category": "Jelly Food",
-        "image": "https://images.neopets.com/items/jel_halfblunella.gif",
+        "category": "Plushies",
+        "image": "https://images.neopets.com/items/plu_pirate_elephante.gif",
         "restock_shop_link": "",
         "effects": [
-            "edible"
+            "avatars",
+            "mood changing",
+            "playable"
         ]
     },
-    "strawberry jelly": {
-        "id": "1023",
-        "name": "Strawberry Jelly",
-        "market_price": 75,
-        "restock_price": 900,
-        "price_timestamp": 1752249600.0,
+    "grey tdmbgpop plushie": {
+        "id": "76016",
+        "name": "Grey TDMBGPOP Plushie",
+        "market_price": 3,
+        "restock_price": 0,
+        "price_timestamp": 1752422400.0,
         "recent_prices": [],
         "price_dates": [],
         "rarity": 101,
-        "category": "Jelly Food",
-        "image": "https://images.neopets.com/items/jel_strawberry_whole.gif",
+        "category": "Plushies",
+        "image": "https://images.neopets.com/items/plush_gtdmbgpop.gif",
         "restock_shop_link": "",
         "effects": [
-            "edible",
-            "openable"
+            "avatars",
+            "mood changing",
+            "playable"
         ]
     },
-    "lime jelly": {
-        "id": "1064",
-        "name": "Lime Jelly",
-        "market_price": 50,
-        "restock_price": 600,
-        "price_timestamp": 1752076800.0,
+    "golden moon comb": {
+        "id": "13712",
+        "name": "Golden Moon Comb",
+        "market_price": 4,
+        "restock_price": 225,
+        "price_timestamp": 1752508800.0,
         "recent_prices": [],
         "price_dates": [],
-        "rarity": 101,
-        "category": "Jelly Food",
-        "image": "https://images.neopets.com/items/jel_lime_whole.gif",
+        "rarity": 89,
+        "category": "Grooming",
+        "image": "https://images.neopets.com/items/grooming_mooncomb.gif",
         "restock_shop_link": "",
         "effects": [
-            "edible",
-            "openable"
-        ]
-    },
-    "smelly jelly": {
-        "id": "14062",
-        "name": "Smelly Jelly",
-        "market_price": 7,
-        "restock_price": 2000,
-        "price_timestamp": 1752249600.0,
-        "recent_prices": [],
-        "price_dates": [],
-        "rarity": 101,
-        "category": "Jelly Food",
-        "image": "https://images.neopets.com/items/jel_smelly_whole.gif",
-        "restock_shop_link": "",
-        "effects": [
-            "edible",
-            "openable",
-            "artists' day off"
-        ]
-    },
-    "half lime jelly": {
-        "id": "3587",
-        "name": "Half Lime Jelly",
-        "market_price": 30,
-        "restock_price": 1000,
-        "price_timestamp": 1752336000.0,
-        "recent_prices": [],
-        "price_dates": [],
-        "rarity": 101,
-        "category": "Jelly Food",
-        "image": "https://images.neopets.com/items/jel_lime_half.gif",
-        "restock_shop_link": "",
-        "effects": [
-            "edible"
+            "avatars",
+            "mood changing"
         ]
     }
 }
