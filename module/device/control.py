@@ -87,7 +87,7 @@ class Control(Connection):
             x_mul=0.5, y_mul=0.5, nth=0, point_random=(-10, -10, 10, 10),
             delay=50, random_delay=(-20, 20),
             button='left', modifiers=[], debug=False,
-            nav=None
+            nav=None, wait=0.03,
         ):
         '''
         Click on a target.
@@ -104,6 +104,7 @@ class Control(Connection):
             modifiers (list): Keyboard modifiers to hold while clicking.
             debug (bool): Draw a red dot on the clicked point.
             nav (bool | str): Wait for navigation loaded (if True) or to given url after clicking.
+            wait (float): Wait time after clicking before returning.
 
         References:
             https://playwright.dev/python/docs/api/class-locator#locator-click
@@ -156,6 +157,8 @@ class Control(Connection):
             self.page.wait_for_url('**')
         elif nav and type(nav) == str:
             self.page.wait_for_url(nav)
+        if wait > 0:
+            self.wait(wait)
 
     def drag_to(self,
             locator_a: Locator,

@@ -14,7 +14,7 @@ class LunarTempleUI(BasePageUI):
         self.execute_script('lunar_temple')
         self.device.sleep(3)
         try: # eats js navigation
-            self.page.reload()
+            self.reload()
         except Exception:
             pass
         return True

@@ -103,6 +103,9 @@ class BasePageUI(ModuleBase):
             logger.exception(f"Failed to execute script {script_name}: {e}")
             return
     
+    def reload(self):
+        return self.goto(self.page.url)
+    
     def is_node_loading(self, node):
         if node.inner_text() == 'Loading...':
             return True
