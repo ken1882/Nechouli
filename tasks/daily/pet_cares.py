@@ -13,12 +13,14 @@ class PetCaresUI(BasePageUI):
     selected_pet: Neopet
     pets: List[Neopet]
     items: List[NeoItem]
+    _last_action_result: str
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.pets = []
         self.items = []
         self.selected_pet = None
+        self._last_action_result = ''
 
     def main(self):
         self.goto('https://www.neopets.com/home')
@@ -29,6 +31,9 @@ class PetCaresUI(BasePageUI):
         self.unselect()
         self.groom_all_pets()
         self.unselect()
+        self.select_pet(0)
+        self.customise_pet()
+        return True
 
     def scan_all_pets(self):
         self.pets = []
@@ -109,7 +114,14 @@ class PetCaresUI(BasePageUI):
         while self.is_node_loading(result_node):
             self.device.sleep(0.3)
             result_node = self.device.wait_for_element('#petCareResult')
-        logger.info(f'Result after using {item.name}: {result_node.inner_text()}')
+        result_text = result_node.inner_text()
+        # chance loading text not appeared but stuck with last action result
+        while result_text == self._last_action_result:
+            self.device.wait(0.3)
+            result_node = self.device.wait_for_element('#petCareResult')
+            result_text = result_node.inner_text()
+        self._last_action_result = result_text
+        logger.info(f'Result after using {item.name}: {result_text}')
         return result_node
 
     def scan_usable_items(self):
@@ -196,6 +208,8 @@ class PetCaresUI(BasePageUI):
             return False
         if not self.save_customise():
             return False
+        if not self.switch_closet():
+            return False
         if not self.search_item(item_name):
             return False
         self.device.sleep(3) # probably long, depends on your network and closet size
@@ -254,6 +268,7 @@ class PetCaresUI(BasePageUI):
             return None
         search_input.fill(item_name)
         self.device.sleep(1)
+        return True
 
 if __name__ == '__main__':
     self = PetCaresUI()

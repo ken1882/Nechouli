@@ -9,10 +9,23 @@ class Nechouli(AzurLaneAutoScript):
         super().__init__(config_name)
 
     def loop(self):
+        self.device.start_browser()
         try:
             super().loop()
         except Exception as e:
             pass
+
+    def restart(self):
+        pass
+
+    def start(self):
+        pass
+
+    def stop(self):
+        pass
+
+    def goto_main(self):
+        pass
 
     def altador_council(self):
         from tasks.daily.altador_council import AltadorCouncilUI
@@ -122,8 +135,11 @@ class Nechouli(AzurLaneAutoScript):
         from tasks.daily.moltara_quarry import MoltaraQuarryUI
         MoltaraQuarryUI(config=self.config, device=self.device).run()
 
+    def pet_cares(self):
+        from tasks.daily.pet_cares import PetCaresUI
+        PetCaresUI(config=self.config, device=self.device).run()
+
 
 if __name__ == '__main__':
     nch = Nechouli()
-    nch.device.start_browser()
     nch.loop()

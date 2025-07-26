@@ -207,6 +207,6 @@ class Control(Connection):
         path = [(int(x), int(y), round(d+randint(*random_duration)/1000.0, 3)) for x, y, d in path]
         for wp in path:
             self.page.mouse.move(*wp[:2])
-            self.sleep(wp[2])
+            self.sleep(max(0.003, wp[2]))
         self.page.mouse.up()
         return True

@@ -1,10 +1,144 @@
 {
+    "2/3 bbq sauce omelette": {
+        "id": "2310",
+        "name": "2/3 BBQ Sauce Omelette",
+        "market_price": 3950,
+        "restock_price": 330,
+        "price_timestamp": 1753113600.0,
+        "recent_prices": [],
+        "price_dates": [],
+        "rarity": 115115,
+        "category": "Tyrannian Food",
+        "image": "https://images.neopets.com/items/om_bbq_sauce2.gif",
+        "restock_shop_link": "",
+        "effects": [
+            "edible",
+            "openable"
+        ]
+    },
+    "bbq sauce omelette": {
+        "id": "586",
+        "name": "BBQ Sauce Omelette",
+        "market_price": 3200,
+        "restock_price": 330,
+        "price_timestamp": 1753113600.0,
+        "recent_prices": [],
+        "price_dates": [],
+        "rarity": 115115,
+        "category": "Tyrannian Food",
+        "image": "https://images.neopets.com/items/om_bbq_sauce1.gif",
+        "restock_shop_link": "",
+        "effects": [
+            "edible",
+            "openable"
+        ]
+    },
+    "mouldy potato": {
+        "id": "950",
+        "name": "Mouldy Potato",
+        "market_price": 480,
+        "restock_price": 253,
+        "price_timestamp": 1753200000.0,
+        "recent_prices": [],
+        "price_dates": [],
+        "rarity": 47,
+        "category": "Medieval Food",
+        "image": "https://images.neopets.com/items/ps_mouldypotato.gif",
+        "restock_shop_link": "",
+        "effects": [
+            "edible"
+        ]
+    },
+    "1/3 bbq sauce omelette": {
+        "id": "2311",
+        "name": "1/3 BBQ Sauce Omelette",
+        "market_price": 3850,
+        "restock_price": 330,
+        "price_timestamp": 1753113600.0,
+        "recent_prices": [],
+        "price_dates": [],
+        "rarity": 115115,
+        "category": "Tyrannian Food",
+        "image": "https://images.neopets.com/items/om_bbq_sauce3.gif",
+        "restock_shop_link": "",
+        "effects": [
+            "edible"
+        ]
+    },
+    "smelly jelly": {
+        "id": "14062",
+        "name": "Smelly Jelly",
+        "market_price": 3,
+        "restock_price": 2000,
+        "price_timestamp": 1753113600.0,
+        "recent_prices": [],
+        "price_dates": [],
+        "rarity": 101,
+        "category": "Jelly Food",
+        "image": "https://images.neopets.com/items/jel_smelly_whole.gif",
+        "restock_shop_link": "",
+        "effects": [
+            "edible",
+            "openable",
+            "artists' day off"
+        ]
+    },
+    "lesser spotted fish": {
+        "id": "8756",
+        "name": "Lesser Spotted Fish",
+        "market_price": 380,
+        "restock_price": 0,
+        "price_timestamp": 1753200000.0,
+        "recent_prices": [],
+        "price_dates": [],
+        "rarity": 101,
+        "category": "Food",
+        "image": "https://images.neopets.com/items/vor_lesser_spotted_fish.gif",
+        "restock_shop_link": "",
+        "effects": [
+            "avatars",
+            "edible"
+        ]
+    },
+    "rhuby fruit": {
+        "id": "247",
+        "name": "Rhuby Fruit",
+        "market_price": 12,
+        "restock_price": 278,
+        "price_timestamp": 1753459200.0,
+        "recent_prices": [],
+        "price_dates": [],
+        "rarity": 89,
+        "category": "Desert Food",
+        "image": "https://images.neopets.com/items/ldf_fruit4.gif",
+        "restock_shop_link": "",
+        "effects": [
+            "edible"
+        ]
+    },
+    "1/3 cheese and onion omelette": {
+        "id": "2314",
+        "name": "1/3 Cheese and Onion Omelette",
+        "market_price": 4000,
+        "restock_price": 440,
+        "price_timestamp": 1753286400.0,
+        "recent_prices": [],
+        "price_dates": [],
+        "rarity": 118118,
+        "category": "Tyrannian Food",
+        "image": "https://images.neopets.com/items/om_cheese_onion3.gif",
+        "restock_shop_link": "",
+        "effects": [
+            "edible",
+            "special feeding effects"
+        ]
+    },
     "pirate elephante plushie": {
         "id": "64576",
         "name": "Pirate Elephante Plushie",
         "market_price": 1,
         "restock_price": 0,
-        "price_timestamp": 1752508800.0,
+        "price_timestamp": 1753372800.0,
         "recent_prices": [],
         "price_dates": [],
         "rarity": 101,
@@ -17,12 +151,30 @@
             "playable"
         ]
     },
+    "speckled faerie chomby plushie": {
+        "id": "64316",
+        "name": "Speckled Faerie Chomby Plushie",
+        "market_price": 1,
+        "restock_price": 0,
+        "price_timestamp": 1753200000.0,
+        "recent_prices": [],
+        "price_dates": [],
+        "rarity": 101,
+        "category": "Plushies",
+        "image": "https://images.neopets.com/items/plu_specks_faechomby.gif",
+        "restock_shop_link": "",
+        "effects": [
+            "avatars",
+            "mood changing",
+            "playable"
+        ]
+    },
     "grey tdmbgpop plushie": {
         "id": "76016",
         "name": "Grey TDMBGPOP Plushie",
         "market_price": 3,
         "restock_price": 0,
-        "price_timestamp": 1752422400.0,
+        "price_timestamp": 1753286400.0,
         "recent_prices": [],
         "price_dates": [],
         "rarity": 101,
@@ -35,17 +187,52 @@
             "playable"
         ]
     },
+    "pirate ogrin plushie": {
+        "id": "36349",
+        "name": "Pirate Ogrin Plushie",
+        "market_price": 1300,
+        "restock_price": 1283,
+        "price_timestamp": 1753027200.0,
+        "recent_prices": [],
+        "price_dates": [],
+        "rarity": 86,
+        "category": "Plushies",
+        "image": "https://images.neopets.com/items/plu_ogrin_pirate.gif",
+        "restock_shop_link": "",
+        "effects": [
+            "avatars",
+            "mood changing",
+            "playable"
+        ]
+    },
     "golden moon comb": {
         "id": "13712",
         "name": "Golden Moon Comb",
-        "market_price": 4,
+        "market_price": 1,
         "restock_price": 225,
-        "price_timestamp": 1752508800.0,
+        "price_timestamp": 1753372800.0,
         "recent_prices": [],
         "price_dates": [],
         "rarity": 89,
         "category": "Grooming",
         "image": "https://images.neopets.com/items/grooming_mooncomb.gif",
+        "restock_shop_link": "",
+        "effects": [
+            "avatars",
+            "mood changing"
+        ]
+    },
+    "moon and star stickies": {
+        "id": "17174",
+        "name": "Moon and Star Stickies",
+        "market_price": 1,
+        "restock_price": 553,
+        "price_timestamp": 1753113600.0,
+        "recent_prices": [],
+        "price_dates": [],
+        "rarity": 82,
+        "category": "Grooming",
+        "image": "https://images.neopets.com/items/gro_moonstar_crystaltattoo.gif",
         "restock_shop_link": "",
         "effects": [
             "avatars",

@@ -5,7 +5,7 @@ class TombolaUI(BasePageUI):
 
     def main(self):
         self.goto('https://www.neopets.com/island/tombola.phtml')
-        btn = self.page.locate('input[value="Play Tombola!"]')
+        btn = self.page.locator('input[value="Play Tombola!"]')
         if not btn.count():
             logger.info('Tombola is not available')
             return False

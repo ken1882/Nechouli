@@ -16,3 +16,10 @@ alas = Nechouli()
 config, device = alas.config, alas.device
 device.start_browser()
 self = BasePageUI(config, device)
+
+
+self = PetCaresUI(config, device)
+self.goto('https://www.neopets.com/home')
+self.scan_all_pets()
+self.select_pet(0)
+self.customise_pet()

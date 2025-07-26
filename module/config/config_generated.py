@@ -13,7 +13,7 @@ class GeneratedConfig:
     Scheduler_Enable = False  # True, False
     Scheduler_NextRun = datetime.datetime(2020, 1, 1, 0, 0)
     Scheduler_Command = 'Alas'
-    Scheduler_ServerUpdate = '16:00'
+    Scheduler_ServerUpdate = '00:00'
 
     # Group `Error`
     Error_Restart = 'game'  # game, game_emulator
