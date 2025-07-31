@@ -2,8 +2,11 @@ import json
 import os
 import random
 import string
+import pytz, tzlocal
+from pytz.tzfile import DstTzInfo
 from collections import deque
 from datetime import datetime, timedelta, timezone
+from typing import List, Union
 
 import yaml
 from filelock import FileLock
@@ -19,7 +22,7 @@ LANGUAGES = [
 ]
 
 SERVER_TO_TIMEZONE = {
-    'EN-Official': timedelta(hours=-8), # PST
+    'EN-Official': pytz.timezone('US/Pacific'),
 }
 DEFAULT_TIME = datetime(2020, 1, 1, 0, 0)
 
@@ -478,7 +481,7 @@ def dict_to_kv(dictionary, allow_none=True):
     return ', '.join([f'{k}={repr(v)}' for k, v in dictionary.items() if allow_none or v is not None])
 
 
-def server_timezone() -> timedelta:
+def server_timezone() -> DstTzInfo:
     return SERVER_TO_TIMEZONE.get(server_.server, SERVER_TO_TIMEZONE['EN-Official'])
 
 
@@ -489,7 +492,12 @@ def server_time_offset() -> timedelta:
     To convert server time to local time:
         local_time = server_time - server_time_offset()
     """
-    return datetime.now(timezone.utc).astimezone().utcoffset() - server_timezone()
+    server_tz = server_timezone()
+    local_tz = tzlocal.get_localzone()
+    now_utc = datetime.now(timezone.utc)
+    server_dt = now_utc.astimezone(server_tz)
+    local_dt = now_utc.astimezone(local_tz)
+    return server_dt.utcoffset() - local_dt.utcoffset()
 
 
 def random_normal_distribution_int(a, b, n=3):
@@ -575,6 +583,29 @@ def get_os_reset_remain():
     logger.attr('ResetRemain', remain)
     return remain
 
+def pst2localt(pst: datetime):
+    pst_tz = pytz.timezone('US/Pacific')
+    local_tz = tzlocal.get_localzone()
+    try:
+        pst = pst_tz.localize(pst)
+    except ValueError:
+        pst = pst.replace(tzinfo=pst_tz)
+    local_time = pst.astimezone(local_tz)
+    return local_time
+
+def localt2pst(localt: datetime):
+    pst_tz = pytz.timezone('US/Pacific')
+    local_tz = pytz.timezone(tzlocal.get_localzone().key)
+    try:
+        localt = local_tz.localize(localt)
+    except ValueError:
+        localt = localt.replace(tzinfo=local_tz)
+    pst = localt.astimezone(pst_tz)
+    return pst
+
+# Neopets server time is in PST
+nst2localt = pst2localt
+localt2nst = localt2pst
 
 def get_server_next_update(daily_trigger) -> datetime:
     """
@@ -600,6 +631,49 @@ def get_server_next_update(daily_trigger) -> datetime:
     return update
 
 
+def get_server_next_update(daily_trigger: Union[str, List[str]]) -> datetime:
+    """
+    Args:
+        daily_trigger: list/str of server-time triggers, e.g. ["00:00","12:00"]
+
+    Returns:
+        Local-timezone `datetime` when the next trigger will occur.
+    """
+    # Normalise to list[str]
+    if isinstance(daily_trigger, str):
+        daily_trigger = [t.strip() for t in daily_trigger.split(",") if t.strip()]
+
+    # Offset that converts local → server time
+    diff = server_time_offset()             # timedelta (server - local)
+
+    local_now   = datetime.now()
+    server_now  = local_now + diff          # what time it is on the server
+
+    next_local  = None
+    shortest_dt = timedelta(days=1)
+
+    for trig in daily_trigger:
+        hour, minute = map(int, trig.split(":"))
+
+        # Candidate trigger in *server* zone today
+        cand_server = server_now.replace(hour=hour,
+                                         minute=minute,
+                                         second=0,
+                                         microsecond=0)
+
+        # If already passed, roll to next day
+        if cand_server <= server_now:
+            cand_server += timedelta(days=1)
+
+        # How long until that moment (still in server frame)
+        wait_delta = cand_server - server_now
+
+        if wait_delta < shortest_dt:
+            shortest_dt = wait_delta
+            next_local = local_now + wait_delta   # convert back to local
+
+    return next_local
+
 def get_server_last_update(daily_trigger):
     """
     Args:
@@ -608,21 +682,9 @@ def get_server_last_update(daily_trigger):
     Returns:
         datetime.datetime
     """
-    if isinstance(daily_trigger, str):
-        daily_trigger = daily_trigger.replace(' ', '').split(',')
-
-    diff = server_time_offset()
-    local_now = datetime.now()
-    trigger = []
-    for t in daily_trigger:
-        h, m = [int(x) for x in t.split(':')]
-        future = local_now.replace(hour=h, minute=m, second=0, microsecond=0) + diff
-        s = (future - local_now).total_seconds() % 86400 - 86400
-        future = local_now + timedelta(seconds=s)
-        trigger.append(future)
-    update = sorted(trigger)[-1]
+    update = get_server_next_update(daily_trigger)
+    update = update - timedelta(days=1)
     return update
-
 
 def get_server_last_monday_update(daily_trigger):
     """

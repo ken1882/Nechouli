@@ -10,13 +10,18 @@ class Nechouli(AzurLaneAutoScript):
 
     def loop(self):
         self.device.start_browser()
+        self.device.page.goto('https://www.neopets.com/questlog/')
+        self.device.wait(3) # quest won't start if not visited
         try:
             super().loop()
         except Exception as e:
             pass
 
     def restart(self):
-        pass
+        from tasks.base.base_page import BasePageUI
+        t = BasePageUI(config=self.config, device=self.device)
+        t.goto('https://www.neopets.com/questlog/')
+        t.calc_next_run()
 
     def start(self):
         pass

@@ -26,7 +26,7 @@
       "Enable": true,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "Restart",
-      "ServerUpdate": "04:00"
+      "ServerUpdate": "00:00"
     }
   },
   "GeneralSettings": {
@@ -42,7 +42,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "PetCares",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     },
     "PetCares": {
       "FeedBlacklist": "poison\nrotten\ndung\nglowing\nclay\nsmelly\n",
@@ -57,7 +57,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "AltadorCouncil",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     }
   },
   "AnchorManagement": {
@@ -65,7 +65,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "AnchorManagement",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     }
   },
   "AppleBobbing": {
@@ -73,7 +73,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "AppleBobbing",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     }
   },
   "BankInterest": {
@@ -81,7 +81,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "BankInterest",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     },
     "NeopianBank": {
       "DepositThreshold": 1000000,
@@ -93,7 +93,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "ColtzansShrine",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     }
   },
   "DailyPuzzle": {
@@ -101,7 +101,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "DailyPuzzle",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     }
   },
   "DesertedTomb": {
@@ -109,7 +109,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "DesertedTomb",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     }
   },
   "FaerieCrossword": {
@@ -117,7 +117,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "FaerieCrossword",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     }
   },
   "Fishing": {
@@ -125,7 +125,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "Fishing",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     }
   },
   "ForgottenShore": {
@@ -133,7 +133,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "ForgottenShore",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     }
   },
   "FruitMachine": {
@@ -141,7 +141,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "FruitMachine",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     }
   },
   "GiantJelly": {
@@ -149,7 +149,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "GiantJelly",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     }
   },
   "GiantOmelette": {
@@ -157,7 +157,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "GiantOmelette",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     }
   },
   "GraveDanger": {
@@ -165,7 +165,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "GraveDanger",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     }
   },
   "GrumpyKing": {
@@ -173,7 +173,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "GrumpyKing",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     }
   },
   "LunarTemple": {
@@ -181,7 +181,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "LunarTemple",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     }
   },
   "MeteorCrashSite": {
@@ -189,7 +189,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "MeteorCrashSite",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     }
   },
   "MoltaraQuarry": {
@@ -197,7 +197,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "MoltaraQuarry",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     }
   },
   "NeggCave": {
@@ -205,7 +205,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "NeggCave",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     }
   },
   "PotatoCounter": {
@@ -213,7 +213,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "PotatoCounter",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     }
   },
   "QasalanExpellibox": {
@@ -221,7 +221,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "QasalanExpellibox",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     }
   },
   "RichSlorg": {
@@ -229,7 +229,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "RichSlorg",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     }
   },
   "Snowager": {
@@ -237,7 +237,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "Snowager",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     }
   },
   "TDMBGPOP": {
@@ -245,7 +245,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "TDMBGPOP",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     }
   },
   "Tombola": {
@@ -253,7 +253,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "Tombola",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     }
   },
   "TrudysSurprise": {
@@ -261,7 +261,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "TrudysSurprise",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     }
   },
   "WiseKing": {
@@ -269,7 +269,7 @@
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
       "Command": "WiseKing",
-      "ServerUpdate": "16:00"
+      "ServerUpdate": "00:00"
     }
   }
 }

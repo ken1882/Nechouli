@@ -154,6 +154,8 @@ coverage.xml
 *.cover
 .hypothesis/
 .pytest_cache/
+cache/
+!cache/.gitkeep
 
 # Translations
 *.mo

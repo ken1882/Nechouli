@@ -16,6 +16,7 @@ class FaerieCrosswordUI(BasePageUI):
             return False
         answers = res.json()['clues']
         answers = {o.get('clue') or o.get('question'): o.get('answer') for o in answers}
+        answers = {k.lower(): v for k, v in answers.items()}
         loc = self.page.locator('input[value="Start today\'s puzzle!"]')
         if not loc.count():
             loc = self.page.locator('input[value="Continue today\'s puzzle!"]')
@@ -31,7 +32,7 @@ class FaerieCrosswordUI(BasePageUI):
             listings = list(listings.all())
             listing = listings[index]
             question = listing.text_content().strip()
-            question = re.match(r'^\d+\.\s*(.*)', question).groups()[0]
+            question = re.match(r'^\d+\.\s*(.*)', question).groups()[0].lower()
             if question in answers:
                 answer = answers[question]
                 logger.info(f"Answering: {question} -> {answer}")

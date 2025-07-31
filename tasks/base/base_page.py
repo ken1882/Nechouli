@@ -35,6 +35,7 @@ class BasePageUI(ModuleBase):
     def calc_next_run(self, s='daily'):
         now = datetime.now()
         future = now
+        logger.info(f"Calculating next run time, preset: {s}")
         if s == 'now':
             pass
         elif s == 'failed':
@@ -86,6 +87,7 @@ class BasePageUI(ModuleBase):
                     if 'navigation' in str(e):
                         logger.info("Page navigation interrupted, retrying...")
                         continue
+            self.goto('https://www.neopets.com/questlog/') # quest won't start if not visited
             return self.goto(url)
 
     def execute_script(self, script_name):
@@ -107,6 +109,6 @@ class BasePageUI(ModuleBase):
         return self.goto(self.page.url)
     
     def is_node_loading(self, node):
-        if node.inner_text() == 'Loading...':
+        if 'Loading...' in node.inner_text():
             return True
         return False
