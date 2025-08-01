@@ -5,6 +5,9 @@ class NeggCaveUI(BasePageUI):
 
     def main(self):
         self.goto('https://www.neopets.com/shenkuu/neggcave')
+        if 'already completed' in self.page.content():
+            logger.info("Looks like already completed today, skip task")
+            return True
         html = self.page.evaluate("document.documentElement.outerHTML").replace('\\', '')
         self.goto('https://thedailyneopets.com/articles/negg-solver/')
         script = f"document.getElementById('PageSourceBox').value = `{html}`"

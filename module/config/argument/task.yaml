@@ -17,9 +17,9 @@ Alas:
     GeneralSettings:
       - ProfileSettings
 
-# ==================== Daily ====================
+# ==================== Chore ====================
 
-Daily:
+Chore:
   menu: list
   page: setting
   tasks:
@@ -83,9 +83,9 @@ Daily:
       - Scheduler
 
 
-# ==================== Weekly ====================
+# ==================== Games ====================
 
-Weekly:
+Games:
   menu: 'list'
   page: 'setting'
   tasks: {}

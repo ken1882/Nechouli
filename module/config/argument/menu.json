@@ -8,7 +8,7 @@
       "GeneralSettings"
     ]
   },
-  "Daily": {
+  "Chore": {
     "menu": "list",
     "page": "setting",
     "tasks": [
@@ -42,7 +42,7 @@
       "WiseKing"
     ]
   },
-  "Weekly": {
+  "Games": {
     "menu": "list",
     "page": "setting",
     "tasks": []

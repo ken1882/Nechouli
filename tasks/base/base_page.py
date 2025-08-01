@@ -26,6 +26,9 @@ class BasePageUI(ModuleBase):
                 self.calc_next_run()
             else:
                 self.calc_next_run('failed')
+        except TimeoutError as e:
+            logger.exception(e)
+            self.calc_next_run('failed')
         except Exception as e:
             raise e
 

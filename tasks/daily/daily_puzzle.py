@@ -11,6 +11,9 @@ class DailyPuzzleUI(BasePageUI):
         logger.info(f"Found answer: {answer}")
         self.goto('https://www.neopets.com/community/index.phtml')
         sel = self.device.page.locator('select[name=trivia_response]')
+        if not sel.count():
+            logger.warning("Puzzle looks like already answered today.")
+            return True
         self.device.scroll_to(loc=sel)
         opts = sel.locator('option')
         for i in range(opts.count()):
