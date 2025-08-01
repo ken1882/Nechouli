@@ -1,7 +1,8 @@
 import asyncio
 import collections
 import itertools
-
+import numpy as np
+from playwright.sync_api import Locator
 from lxml import etree
 
 from module.device.env import IS_WINDOWS
@@ -68,12 +69,9 @@ class Device(Control, Screenshot):
     def method_check(self):
         return True
 
-    def screenshot(self):
-        """
-        Returns:
-            np.ndarray:
-        """
-        return
+    def screenshot(self, target:Locator=None) -> np.ndarray:
+        self._screenshot_target = target
+        return super().screenshot()
 
     def dump_hierarchy(self) -> etree._Element:
         self.stuck_record_check()

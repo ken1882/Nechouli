@@ -148,14 +148,13 @@ class Timer:
         else:
             return False
 
-    async def wait(self):
+    def wait(self):
         """
-        Asynchronously wait until the timer reaches its limit.
-        This replaces the synchronous time.sleep() with asyncio.sleep().
+        Wait until the timer reaches its limit.
         """
         diff = self._current + self.limit - time.time()
         if diff > 0:
-            await asyncio.sleep(diff)
+            time.sleep(diff)
 
     def show(self):
         from module.logger import logger

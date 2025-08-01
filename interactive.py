@@ -1,9 +1,8 @@
 from nch import Nechouli
 from module.logger import logger
-from tasks.base.base_page import BasePageUI
+from tasks.base import base_page, base_flash
 from module.exception import TaskError
-from module.db.models.neopet import Neopet
-from module.db.models.neoitem import NeoItem
+from module.db.models import neopet, neoitem
 from module.db.data_map import *
 from module.base.utils import str2int
 import module.jelly_neo as jn
@@ -12,8 +11,35 @@ from tasks.daily.pet_cares import PetCaresUI
 from tasks.daily.faerie_crossword import FaerieCrosswordUI
 from tasks.daily.trudys_surprise import TrudysSurpriseUI
 
+BaseFlash = base_flash.BaseFlash
+BasePageUI = base_page.BasePageUI
+NeoPet = neopet.Neopet
+NeoItem = neoitem.NeoItem
+
+def reload_modules():
+    global BaseFlash, BasePageUI, NeoPet, NeoItem
+    from importlib import reload
+    reload(base_page)
+    reload(base_flash)
+    reload(neopet)
+    reload(neoitem)
+    BaseFlash = base_flash.BaseFlash
+    BasePageUI = base_page.BasePageUI
+    NeoPet = neopet.Neopet
+    NeoItem = neoitem.NeoItem
+
+class TestUI(BaseFlash, BasePageUI):
+    pass
+
+
 alas = Nechouli()
 config, device = alas.config, alas.device
 device.start_browser()
-self = BasePageUI(config, device)
+device.disable_stuck_detection()
+device.screenshot_interval_set(0.1)
+self = TestUI(config, device)
 
+self.page.evaluate("""() => {
+    const canvas = document.querySelector('#game_frame ruffle-embed canvas');
+    return canvas.toDataURL('image/png');
+}""")

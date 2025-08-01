@@ -3,10 +3,11 @@ import cv2
 import asyncio
 import time
 import numpy as np
+from io import BytesIO
 from PIL import Image
 from datetime import datetime
 from collections import deque
-from playwright.sync_api import Page
+from playwright.sync_api import Page, Locator
 from cached_property import cached_property
 from module.base.utils import get_color, image_size, limit_in, save_image
 from module.device.connection import Connection
@@ -19,13 +20,17 @@ class Screenshot(Connection):
     _screen_black_checked = False
     _minicap_uninstalled = False
     _screenshot_interval = Timer(0.1)
+    _screenshot_target = None
     _last_save_time = {}
     image: np.ndarray
 
-    def screenshot_playwright(self, page:Page=None):
-        if page is None:
-            page = self.page
-        return page.screenshot(full_page=True)
+    def screenshot_playwright(self):
+        target = self.page if not self._screenshot_target else self._screenshot_target
+        if type(target) is Locator:
+            ibytes = target.screenshot()
+        else:
+            ibytes = target.screenshot(full_page=True)
+        return np.asarray(Image.open(BytesIO(ibytes)).convert('RGB'))
 
     @cached_property
     def screenshot_methods(self):
@@ -37,11 +42,7 @@ class Screenshot(Connection):
     def screenshot_method_override(self) -> str:
         return ''
 
-    def screenshot(self):
-        """
-        Returns:
-            np.ndarray:
-        """
+    def screenshot(self) -> np.ndarray:
         self._screenshot_interval.wait()
         self._screenshot_interval.reset()
 
@@ -57,7 +58,7 @@ class Screenshot(Connection):
             # if self.config.Emulator_ScreenshotDedithering:
             #     # This will take 40-60ms
             #     cv2.fastNlMeansDenoising(self.image, self.image, h=17, templateWindowSize=1, searchWindowSize=2)
-            self.image = self._handle_orientated_image(self.image)
+            # self.image = self._handle_orientated_image(self.image)
 
             if self.config.Error_SaveError:
                 self.screenshot_deque.append({'time': datetime.now(), 'image': self.image})
@@ -114,26 +115,25 @@ class Screenshot(Connection):
     def screenshot_tracking(self):
         return []
 
-    def save_screenshot(self, genre='items', interval=None, to_base_folder=False):
+    def save_screenshot(self, genre='items', interval=None):
         """Save a screenshot. Use millisecond timestamp as file name.
 
         Args:
             genre (str, optional): Screenshot type.
             interval (int, float): Seconds between two save. Saves in the interval will be dropped.
-            to_base_folder (bool): If save to base folder.
 
         Returns:
             bool: True if save succeed.
         """
         now = time.time()
         if interval is None:
-            interval = self.config.SCREEN_SHOT_SAVE_INTERVAL
+            interval = 0.2
 
         if now - self._last_save_time.get(genre, 0) > interval:
             fmt = 'png'
             file = '%s.%s' % (int(now * 1000), fmt)
 
-            folder = self.config.SCREEN_SHOT_SAVE_FOLDER_BASE if to_base_folder else self.config.SCREEN_SHOT_SAVE_FOLDER
+            folder = 'assets'
             folder = os.path.join(folder, genre)
             if not os.path.exists(folder):
                 os.mkdir(folder)
