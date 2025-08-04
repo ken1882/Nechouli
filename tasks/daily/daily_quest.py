@@ -8,10 +8,5 @@ class DailyQuestUI(BasePageUI):
         self.goto('https://www.neopets.com/questlog/')
         return True
 
-class DailyQuestTouchUI(BasePageUI):
-    def main(self):
-        self.goto('https://www.neopets.com/questlog/')
-        return True
-
 if __name__ == '__main__':
     self = DailyQuestUI()

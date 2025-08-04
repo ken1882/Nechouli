@@ -4,7 +4,7 @@ from module.logger import logger
 from datetime import datetime, timedelta
 from time import sleep
 from playwright.sync_api import sync_playwright, Page
-from playwright._impl._errors import TimeoutError, Error
+from playwright._impl._errors import TimeoutError
 from cached_property import cached_property
 from module.config.utils import get_server_next_update
 from module.exception import *
@@ -29,6 +29,11 @@ class BasePageUI(ModuleBase):
         except TimeoutError as e:
             logger.exception(e)
             self.calc_next_run('failed')
+        except PlaywrightError as e:
+            logger.error(f"Playwright error:")
+            logger.exception(e)
+            logger.error("Nechouli will skip this task, if this keeps happening, please report to dev.")
+            return self.calc_next_run('failed')
         except Exception as e:
             raise e
 

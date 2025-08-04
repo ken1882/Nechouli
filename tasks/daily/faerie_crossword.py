@@ -24,7 +24,7 @@ class FaerieCrosswordUI(BasePageUI):
         index = 0
         listings = [None] * 15  # placeholder
         while index < len(listings):
-            self.device.scroll_to(0, 200)
+            self.device.scroll_to(0, 250)
             listings = self.page.locator('td[valign="top"] > a')
             if not listings.count():
                 logger.error("Unable to find crossword questions")

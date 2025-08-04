@@ -37,7 +37,7 @@ class Control(Connection):
         """)
 
     def wait_for_element(self,
-                         *locators:list,
+                         *locators:list[str | Locator],
                          timeout:float=60,
                          wait_interval:float=1,
                          condition:Callable=None,
@@ -46,7 +46,7 @@ class Control(Connection):
         Wait until one of the selectors is met given condition.
 
         Args:
-            locators (list): List of locators to execute.
+            locators (list): List of queryString or locators to check.
             timeout (float): Timeout in seconds.
             wait_interval (float): Interval to wait between each check.
             condition (Callable): Condition to check. If None, will check if the element is visible and found.
@@ -64,7 +64,10 @@ class Control(Connection):
             node = None
             for selector in locators:
                 try:
-                    node = self.page.locator(selector)
+                    if isinstance(selector, str):
+                        node = self.page.locator(selector)
+                    else: # locator
+                        node = selector
                 except Exception as e:
                     pass
                 if node and condition(node):
