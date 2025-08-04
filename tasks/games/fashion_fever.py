@@ -13,7 +13,10 @@ class FashionFeverUI(BaseFlash, BasePageUI):
         )
 
     def start_game(self):
-        x1, y1, x2, y2 = assets.start.area
+        self.click(assets.start)
+        self.click(assets.end)
+        self.click(assets.send)
+        self.click(assets.restart, random_y=(-2, 2))
 
 if __name__ == '__main__':
     self = FashionFeverUI()

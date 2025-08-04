@@ -45,7 +45,9 @@
   "Games": {
     "menu": "list",
     "page": "setting",
-    "tasks": []
+    "tasks": [
+      "FashionFever"
+    ]
   },
   "Tool": {
     "menu": "list",

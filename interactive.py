@@ -39,7 +39,3 @@ device.disable_stuck_detection()
 device.screenshot_interval_set(0.1)
 self = TestUI(config, device)
 
-self.page.evaluate("""() => {
-    const canvas = document.querySelector('#game_frame ruffle-embed canvas');
-    return canvas.toDataURL('image/png');
-}""")

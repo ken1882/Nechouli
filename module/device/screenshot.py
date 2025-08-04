@@ -25,12 +25,16 @@ class Screenshot(Connection):
     image: np.ndarray
 
     def screenshot_playwright(self):
-        target = self.page if not self._screenshot_target else self._screenshot_target
-        if type(target) is Locator:
-            ibytes = target.screenshot()
-        else:
-            ibytes = target.screenshot(full_page=True)
-        return np.asarray(Image.open(BytesIO(ibytes)).convert('RGB'))
+        target = self._screenshot_target or self.page
+        ibytes = self.page.screenshot(full_page=False)
+        img = Image.open(BytesIO(ibytes)).convert('RGB')
+        if isinstance(target, Locator):
+            box = target.bounding_box()
+            if not box:
+                raise RuntimeError("Failed to get bounding box for target.")
+            x, y, w, h = int(box['x']), int(box['y']), int(box['width']), int(box['height'])
+            img = img.crop((x, y, x + w, y + h))
+        return np.asarray(img)
 
     @cached_property
     def screenshot_methods(self):

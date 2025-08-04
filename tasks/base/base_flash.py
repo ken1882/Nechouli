@@ -3,9 +3,9 @@ from module.logger import logger
 from module.device.device import Device
 from module.base.button import ButtonWrapper
 from random import randint
-from playwright.sync_api import Page
+from playwright.sync_api import Page, Locator
 from module.exception import *
-
+from typing import Union
 
 class BaseFlash():
     # these properties will be in the inherited class (tasks)
@@ -24,27 +24,21 @@ class BaseFlash():
             return self.page.frame_locator(self.frame).locator(self.locator)
         return self.page.locator(self.locator)
 
+    def screenshot(self, target:Locator=None):
+        return self.device.screenshot(target or self.find_flash())
+
     def playable_count(self):
         try:
             played = int(self.page.locator('.sent-cont').text_content().split()[-1].split('/')[0])
             self.played_times = played
             logger.info(f"Played times: {played}")
-            return 3 - played
+            return self.max_plays - played
         except Exception as err:
             logger.exception(f"Error getting playable count: {err}")
             return 0
 
     def play_game(self):
         self.device.click('.play-text', nav=True)
-
-    def click(self, x:int, y:int, button='left', modifiers=[], random_x=(-10, 10), random_y=(-10, 10), debug=False):
-        dom = self.find_flash()
-        if debug:
-            bb = dom.bounding_box()
-            cx = bb['x'] + x
-            cy = bb['y'] + y
-            self.device.draw_debug_point(self.page, cx, cy)
-        return self.device.click(dom, x, y, button, modifiers, random_x, random_y)
 
     def hover(self, x, y, random_x=(-10, 10), random_y=(-10, 10)):
         return self.device.hover(self.find_flash(), x, y, random_x, random_y)
@@ -55,16 +49,25 @@ class BaseFlash():
         return self.find_flash().press(key, delay=delay)
 
     def play(self, start_button:ButtonWrapper, timeout:int=60):
-        if self.playable_count() <= 0:
+        times = self.playable_count()
+        if times <= 0:
             logger.info("No more plays left.")
             return True
         while self.find_flash().count() == 0:
             logger.info("Waiting for ruffle/flash to load...")
             self.device.wait(1)
+        self.device.scroll_to(0, 100)
         if not self.wait_until_game_loaded(start_button, timeout):
             logger.warning("Game did not load in time, assume unplayable.")
             return False
-        return self.start_game()
+        try:
+            while times > 0:
+                self.start_game()
+                times -= 1
+        except Exception as e:
+            logger.error(f"Error during game play: {e}")
+            return False
+        return True
 
     def wait_until_game_loaded(self, start_button:ButtonWrapper, timeout:int=60):
         curt = time.time()
@@ -77,28 +80,48 @@ class BaseFlash():
                 logger.info("Game loaded.")
                 return True
 
+    def wait_for_button(self, button:ButtonWrapper, timeout:int=60):
+        curt = time.time()
+        while True:
+            self.screenshot()
+            if time.time() - curt > timeout:
+                logger.warning(f"Button#{button.name} not found in time.")
+                return False
+            if button.match_template(self.device.image):
+                logger.info(f"Button#{button.name} found.")
+                return True
+
     def start_game(self):
         raise NotImplementedError("start_game method not implemented")
 
-    def click(self, ui:ButtonWrapper,
+    def click(self, target:Union[ButtonWrapper, tuple[int,int]],
               mright=False, modifiers=[],
-              random_x=(-10, 10), random_y=(-10, 10), debug=False):
+              random_x=(-10, 10), random_y=(-10, 10),
+              debug=False, wait=True):
         """
         Clicks a button on the flash game.
 
         FYI: https://playwright.dev/python/docs/api/class-locator#locator-click
 
         Args:
-            button (ButtonWrapper): The button to click.
+            target (ButtonWrapper|tuple[int,int]): The target to click, either a button or a coordinate tuple.
             mright (bool): If True, click with right mouse button.
             modifiers (list): List of modifiers to apply.
             random_x (tuple): Random offset for x coordinate.
             random_y (tuple): Random offset for y coordinate.
             debug (bool): If True, draw a debug point on the clicked position.
+            wait (bool): If True, wait for target button available before clicking.
         """
-        x1, y1, x2, y2 = ui.area
-        mx = (x1 + x2) // 2
-        my = (y1 + y2) // 2
+        if isinstance(target, ButtonWrapper):
+            if wait:
+                self.wait_for_button(target)
+            x1, y1, x2, y2 = target.area
+            mx = (x1 + x2) // 2
+            my = (y1 + y2) // 2
+            logger.info(f"Clicking on button: {target.name} at ({mx}, {my})")
+        else:
+            mx, my = target
+            logger.info(f"Clicking at coordinates: ({mx}, {my})")
         mx = max(0, mx + randint(*random_x))
         my = max(0, my + randint(*random_y))
         canvas = self.find_flash()

@@ -4,20 +4,12 @@
       "name": "Nechouli",
       "help": ""
     },
-    "Daily": {
-      "name": "Daily",
-      "help": ""
-    },
     "Chore": {
       "name": "Chore",
       "help": ""
     },
     "Games": {
       "name": "Games",
-      "help": ""
-    },
-    "Tool": {
-      "name": "Tool",
       "help": ""
     }
   },
@@ -145,6 +137,10 @@
     "WiseKing": {
       "name": "Wise Old King",
       "help": "https://www.jellyneo.net/?go=wise_old_king"
+    },
+    "FashionFever": {
+      "name": "Fashion Fever",
+      "help": "https://www.jellyneo.net/?go=fashion_fever_flash"
     }
   },
   "Scheduler": {
@@ -303,15 +299,15 @@
     },
     "FeedBlacklist": {
       "name": "Feeding Blacklist",
-      "help": "List of names of items that will not be fed to pets, separated by line, supports regex. Never feeds diseased items."
+      "help": "List of names of items that will not be fed to pets, separated by line, supports regex. Nechouli will never feeds diseased items."
     },
     "PlayBlackList": {
       "name": "Toys Blacklist",
-      "help": "Same logic as FeedBlacklist, but for toys. Never plays with toys with `openable` effect, such as some pet-altering magical toys."
+      "help": "Same logic as FeedBlacklist, but for toys. Nechouli will never plays with toys with `openable` effect, such as some pet-altering magical toys."
     },
     "GroomBlackList": {
       "name": "Grooming Blacklist",
-      "help": "Same logic as FeedBlacklist, but for grooming. Never grooms pets with `openable` effect."
+      "help": "Same logic as FeedBlacklist, but for grooming. Nechouli will never grooms pets with `openable` effect."
     },
     "MaxFeedValue": {
       "name": "Max Item Value",

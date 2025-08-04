@@ -88,7 +88,9 @@ Chore:
 Games:
   menu: 'list'
   page: 'setting'
-  tasks: {}
+  tasks:
+    FashionFever:
+      - Scheduler
 
 # ==================== Tool ====================
 

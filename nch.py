@@ -144,6 +144,10 @@ class Nechouli(AzurLaneAutoScript):
         from tasks.daily.pet_cares import PetCaresUI
         PetCaresUI(config=self.config, device=self.device).run()
 
+    def fashion_fever(self):
+        from tasks.games.fashion_fever import FashionFeverUI
+        FashionFeverUI(config=self.config, device=self.device).run()
+
 
 if __name__ == '__main__':
     nch = Nechouli()
