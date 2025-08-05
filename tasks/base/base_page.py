@@ -52,14 +52,12 @@ class BasePageUI(ModuleBase):
             return self.config.task_delay(server_update=True)
         elif s == 'monthly':
             future = get_server_next_update('00:00')
-            if future.month != now.month:
-                return future
-            future = future + timedelta(days=31)
-            future = future.replace(day=1)
+            if future.month == now.month:
+                future = future + timedelta(days=31)
+                future = future.replace(day=1)
         else:
             logger.warning(f'Unknown delay preset: {s}')
         self.config.task_delay(target=future)
-        return future
 
     def on_failed_delay(self):
         future = datetime.now() + timedelta(hours=1)

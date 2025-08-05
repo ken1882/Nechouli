@@ -140,10 +140,11 @@ class Connection:
         time.sleep(1)  # Give some time for the browser to start
         self.page = self.context.pages[0] if self.context.pages else self.context.new_page()
         self.page.goto("about:blank")
-        for p in self.context.pages:
-            if p.url.startswith('about:'):
+        for i,p in enumerate(self.context.pages):
+            if i < 2:
                 continue
-            p.close()
+            if p.url == "about:blank":
+                p.close()
         if self.config.Playwright_AutoAcceptDialog:
             self.page.on('dialog', lambda dialog: dialog.accept())
         logger.info("Browser started.")

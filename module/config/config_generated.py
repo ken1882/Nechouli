@@ -51,3 +51,23 @@ class GeneratedConfig:
     PetCares_GroomBlackList = None
     PetCares_MaxFeedValue = 1000
     PetCares_MaxFeedLevel = 'full up'  # dying, starving, famished, very hungry, hungry, not hungry, fine, satiated, full up, very full, bloated
+
+    # Group `Restocking`
+    Restocking_ShopRefreshes = 3
+    Restocking_ShopRefreshInterval = 10
+    Restocking_MinProfit = 2000
+    Restocking_MaxShopStock = 5
+    Restocking_MaxCost = 1000000
+    Restocking_ImmediateProfit = 3500
+    Restocking_ShopList = '1,2,3,5,14,15,16,20,25,34,35,39,40,42,44,46,50,56,57,61,81,95,97,101,103'
+    Restocking_DailyQuestTimesLeft = 0
+
+    # Group `QuickStock`
+    QuickStock_KeepInventorySlot = 5
+    QuickStock_DepositValue = 90000
+    QuickStock_RestockProfit = 1000
+    QuickStock_CategoryKeeps = 'food:5\ngrooming: 1\ntoy: 1\n'
+    QuickStock_PriceStrategyScript = "mkp = item['market_price']\nif mkp < 10000:\n  return mkp * 0.99\nreturn mkp\n"
+
+    # Group `PlayerStorage`
+    PlayerStorage_InventoryData = {}

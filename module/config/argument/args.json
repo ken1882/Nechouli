@@ -965,5 +965,127 @@
         "display": "hide"
       }
     }
+  },
+  "QuickStock": {
+    "Scheduler": {
+      "Enable": {
+        "type": "checkbox",
+        "value": false,
+        "option": [
+          true,
+          false
+        ]
+      },
+      "NextRun": {
+        "type": "datetime",
+        "value": "2020-01-01 00:00:00",
+        "validate": "datetime"
+      },
+      "Command": {
+        "type": "input",
+        "value": "QuickStock",
+        "display": "hide"
+      },
+      "ServerUpdate": {
+        "type": "input",
+        "value": "00:00",
+        "display": "hide"
+      }
+    },
+    "QuickStock": {
+      "KeepInventorySlot": {
+        "type": "input",
+        "value": 5
+      },
+      "DepositValue": {
+        "type": "input",
+        "value": 90000
+      },
+      "RestockProfit": {
+        "type": "input",
+        "value": 1000
+      },
+      "CategoryKeeps": {
+        "type": "textarea",
+        "value": "food:5\ngrooming: 1\ntoy: 1\n"
+      },
+      "PriceStrategyScript": {
+        "type": "textarea",
+        "value": "mkp = item['market_price']\nif mkp < 10000:\n  return mkp * 0.99\nreturn mkp\n"
+      }
+    }
+  },
+  "Restocking": {
+    "Scheduler": {
+      "Enable": {
+        "type": "checkbox",
+        "value": false,
+        "option": [
+          true,
+          false
+        ]
+      },
+      "NextRun": {
+        "type": "datetime",
+        "value": "2020-01-01 00:00:00",
+        "validate": "datetime"
+      },
+      "Command": {
+        "type": "input",
+        "value": "Restocking",
+        "display": "hide"
+      },
+      "ServerUpdate": {
+        "type": "input",
+        "value": "00:00",
+        "display": "hide"
+      }
+    },
+    "Restocking": {
+      "ShopRefreshes": {
+        "type": "input",
+        "value": 3
+      },
+      "ShopRefreshInterval": {
+        "type": "input",
+        "value": 10
+      },
+      "MinProfit": {
+        "type": "input",
+        "value": 2000
+      },
+      "MaxShopStock": {
+        "type": "input",
+        "value": 5
+      },
+      "MaxCost": {
+        "type": "input",
+        "value": 1000000
+      },
+      "ImmediateProfit": {
+        "type": "input",
+        "value": 3500
+      },
+      "ShopList": {
+        "type": "textarea",
+        "value": "1,2,3,5,14,15,16,20,25,34,35,39,40,42,44,46,50,56,57,61,81,95,97,101,103"
+      },
+      "DailyQuestTimesLeft": {
+        "type": "input",
+        "value": 0,
+        "display": "hide"
+      }
+    }
+  },
+  "InventoryTool": {
+    "PlayerStorage": {
+      "InventoryData": {
+        "type": "stored",
+        "value": {},
+        "display": "display",
+        "stored": "StoredItemContainer",
+        "color": "#ffcf70"
+      }
+    }
   }
 }

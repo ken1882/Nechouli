@@ -38,6 +38,6 @@ config, device = alas.config, alas.device
 device.start_browser()
 device.disable_stuck_detection()
 device.screenshot_interval_set(0.1)
-# self = TestUI(config, device)
-self = GraveDangerUI(config=config, device=device)
+self = TestUI(config, device)
+
 

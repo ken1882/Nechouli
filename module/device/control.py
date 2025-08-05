@@ -68,12 +68,13 @@ class Control(Connection):
                         node = self.page.locator(selector)
                     else: # locator
                         node = selector
-                except Exception as e:
+                except Exception:
                     pass
                 if node and condition(node):
                     return node
             timeout -= wait_interval
             self.sleep(wait_interval)
+        logger.warning(f"Timeout waiting for element: {locators}")
         return False
 
     def scroll_to(self, x:int=0, y:int=0, loc:Locator=None):

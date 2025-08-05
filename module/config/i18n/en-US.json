@@ -11,6 +11,10 @@
     "Games": {
       "name": "Games",
       "help": ""
+    },
+    "Utility": {
+      "name": "Utility",
+      "help": ""
     }
   },
   "Task": {
@@ -141,6 +145,18 @@
     "FashionFever": {
       "name": "Fashion Fever",
       "help": "https://www.jellyneo.net/?go=fashion_fever_flash"
+    },
+    "QuickStock": {
+      "name": "Quick Stock",
+      "help": ""
+    },
+    "Restocking": {
+      "name": "Restocking",
+      "help": "https://www.jellyneo.net/?go=restocking"
+    },
+    "InventoryTool": {
+      "name": "Task.InventoryTool.name",
+      "help": "Task.InventoryTool.help"
     }
   },
   "Scheduler": {
@@ -327,6 +343,80 @@
       "full up": "Full Up",
       "very full": "Very Full",
       "bloated": "Bloated"
+    }
+  },
+  "Restocking": {
+    "_info": {
+      "name": "Restocking",
+      "help": ""
+    },
+    "ShopRefreshes": {
+      "name": "Shop Refreshes",
+      "help": "Number of times to refresh (F5) the shop page or goods bought before moving into the next shop"
+    },
+    "ShopRefreshInterval": {
+      "name": "Shop Refresh Interval",
+      "help": "Time to wait between shop refreshes (in seconds)"
+    },
+    "MinProfit": {
+      "name": "Min Profit",
+      "help": "Minimum profit to buy the item"
+    },
+    "MaxShopStock": {
+      "name": "Max Shop Stock",
+      "help": "Maximum number of items to keep in your shop, will not buy if your shop already has this many items"
+    },
+    "MaxCost": {
+      "name": "Max Cost",
+      "help": "Maximum cost to buy an item"
+    },
+    "ImmediateProfit": {
+      "name": "Immediate Profit",
+      "help": "Bypass bargain if item's profit is above this value"
+    },
+    "ShopList": {
+      "name": "Shop List",
+      "help": "List of shops to restock from, separated by comma.\nFor list of shops, see https://www.jellyneo.net/?go=shopsdirectory"
+    },
+    "DailyQuestTimesLeft": {
+      "name": "Restocking.DailyQuestTimesLeft.name",
+      "help": "Restocking.DailyQuestTimesLeft.help"
+    }
+  },
+  "QuickStock": {
+    "_info": {
+      "name": "Quick Stock",
+      "help": ""
+    },
+    "KeepInventorySlot": {
+      "name": "Keep Inventory Slot",
+      "help": "When your inventory has fewer free slots than this, the task will run to free up inventory space"
+    },
+    "DepositValue": {
+      "name": "Deposit Value",
+      "help": "Item will force to put in safe deposit box if its market price is above this value"
+    },
+    "RestockProfit": {
+      "name": "Restock Profit",
+      "help": "Minimum profit to restock this item to your shop"
+    },
+    "CategoryKeeps": {
+      "name": "Category Keeps",
+      "help": "Number of items of a category to keep in inventory, separated by line. Format: `category:number` \ne.g. `food:10` will keep 10 food items in inventory.\n For list of categories, see source `module/db/models/neoitem.py#category`"
+    },
+    "PriceStrategyScript": {
+      "name": "Price Strategy Script",
+      "help": "!!!NEVER PASTE UNKNOWN SCRIPTS HERE!!!\nThis script will be executed to determine the price of an item in your shop, it should return a number. Do not touch this if you have no idea what you're doing."
+    }
+  },
+  "PlayerStorage": {
+    "_info": {
+      "name": "PlayerStorage._info.name",
+      "help": "PlayerStorage._info.help"
+    },
+    "InventoryData": {
+      "name": "PlayerStorage.InventoryData.name",
+      "help": "PlayerStorage.InventoryData.help"
     }
   },
   "Gui": {

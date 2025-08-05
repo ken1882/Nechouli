@@ -3,10 +3,14 @@ import os
 import random
 import string
 import pytz, tzlocal
+import base64
+import importlib
+from pathlib import Path
 from pytz.tzfile import DstTzInfo
 from collections import deque
 from datetime import datetime, timedelta, timezone
-from typing import List, Union
+from typing import List, Union, Any, Dict
+JSONLike = Union[Dict[str, Any], List[Any]]
 
 import yaml
 from filelock import FileLock
@@ -60,77 +64,121 @@ def filepath_config(filename, mod_name='alas'):
 def filepath_code():
     return './module/config/config_generated.py'
 
+# --------------------------------------------------------------------- #
+# Helpers for safe (de)serialisation
+# --------------------------------------------------------------------- #
+_TAG_CLASS = "__class__"
+_TAG_DATA = "__data__"
 
-def read_file(file):
+
+def _encode_obj(obj: Any) -> Any:  # → JSON-serialisable
+    """Convert custom objects to a JSON/YAML friendly structure."""
+    if hasattr(obj, "serialize") and callable(obj.serialize):
+        data = obj.serialize()
+        if not isinstance(data, (bytes, bytearray)):
+            raise TypeError("serialize() must return bytes")
+        return {
+            _TAG_CLASS: f"{obj.__class__.__module__}.{obj.__class__.__qualname__}",
+            _TAG_DATA: base64.b64encode(data).decode("ascii"),
+        }
+    return str(obj)  # fallback
+
+
+def _decode_obj(node: Any) -> Any:
+    """Rebuild objects that were encoded by `_encode_obj`."""
+    if (
+        isinstance(node, dict)
+        and _TAG_CLASS in node
+        and _TAG_DATA in node
+    ):
+        mod_name, _, cls_name = node[_TAG_CLASS].rpartition(".")
+        mod = importlib.import_module(mod_name)
+        cls = getattr(mod, cls_name)
+        raw = base64.b64decode(node[_TAG_DATA])
+        return cls.deserialize(raw)
+    return node
+
+
+def _recursively_convert(obj: Any, encode: bool) -> Any:
+    """Walk nested lists/dicts and (en/de)code."""
+    if isinstance(obj, dict):
+        decoded = _decode_obj(obj)
+        if not isinstance(decoded, dict):
+            return decoded
+        return {
+            k: _recursively_convert(v, encode) for k, v in obj.items()
+        }
+    if isinstance(obj, list):
+        return [_recursively_convert(v, encode) for v in obj]
+    return _encode_obj(obj) if encode else _decode_obj(obj)
+
+def read_file(file: str | os.PathLike) -> JSONLike:
     """
-    Read a file, support both .yaml and .json format.
-    Return empty dict if file not exists.
-
-    Args:
-        file (str):
-
-    Returns:
-        dict, list:
+    Read a YAML or JSON file and return Python data.
+    Automatically deserialises objects stored with `_encode_obj`.
     """
-    folder = os.path.dirname(file)
-    if not os.path.exists(folder):
-        os.mkdir(folder)
+    file = Path(file)
+    file.parent.mkdir(parents=True, exist_ok=True)
 
-    if not os.path.exists(file):
+    if not file.exists():
         return {}
 
     _, ext = os.path.splitext(file)
     lock = FileLock(f"{file}.lock")
     with lock:
-        print(f'read: {file}')
-        if ext == '.yaml':
-            with open(file, mode='r', encoding='utf-8') as f:
-                s = f.read()
-                data = list(yaml.safe_load_all(s))
-                if len(data) == 1:
-                    data = data[0]
-                if not data:
-                    data = {}
-                return data
-        elif ext == '.json':
-            with open(file, mode='r', encoding='utf-8') as f:
-                s = f.read()
-                return json.loads(s)
+        print(f"read: {file}")
+        if ext == ".yaml":
+            with open(file, "r", encoding="utf-8") as f:
+                content = list(yaml.safe_load_all(f))
+                data: JSONLike = content[0] if len(content) == 1 else content
+        elif ext == ".json":
+            with open(file, "r", encoding="utf-8") as f:
+                data = json.load(f)
         else:
-            print(f'Unsupported config file extension: {ext}')
+            print(f"Unsupported config file extension: {ext}")
             return {}
 
+    return _recursively_convert(data, encode=False)  # decode custom objects
 
-def write_file(file, data):
-    """
-    Write data into a file, supports both .yaml and .json format.
 
-    Args:
-        file (str):
-        data (dict, list):
+def write_file(file: str | os.PathLike, data: JSONLike) -> None:
     """
-    folder = os.path.dirname(file)
-    if not os.path.exists(folder):
-        os.mkdir(folder)
+    Write `data` into YAML or JSON.
+    Custom objects with `serialize()` are encoded automatically.
+    """
+    file = Path(file)
+    file.parent.mkdir(parents=True, exist_ok=True)
+
+    data_to_write = _recursively_convert(data, encode=True)  # encode custom objs
 
     _, ext = os.path.splitext(file)
     lock = FileLock(f"{file}.lock")
     with lock:
-        print(f'write: {file}')
-        if ext == '.yaml':
-            with atomic_write(file, overwrite=True, encoding='utf-8', newline='') as f:
-                if isinstance(data, list):
-                    yaml.safe_dump_all(data, f, default_flow_style=False, encoding='utf-8', allow_unicode=True,
-                                       sort_keys=False)
+        print(f"write: {file}")
+        if ext == ".yaml":
+            with atomic_write(file, overwrite=True, encoding="utf-8", newline="") as f:
+                if isinstance(data_to_write, list):
+                    yaml.safe_dump_all(
+                        data_to_write, f, default_flow_style=False,
+                        allow_unicode=True, sort_keys=False
+                    )
                 else:
-                    yaml.safe_dump(data, f, default_flow_style=False, encoding='utf-8', allow_unicode=True,
-                                   sort_keys=False)
-        elif ext == '.json':
-            with atomic_write(file, overwrite=True, encoding='utf-8', newline='') as f:
-                s = json.dumps(data, indent=2, ensure_ascii=False, sort_keys=False, default=str)
-                f.write(s)
+                    yaml.safe_dump(
+                        data_to_write, f, default_flow_style=False,
+                        allow_unicode=True, sort_keys=False
+                    )
+        elif ext == ".json":
+            def _json_default(o):
+                # Shouldn’t be reached – everything encoded already
+                return _encode_obj(o)
+
+            with atomic_write(file, overwrite=True, encoding="utf-8") as f:
+                json.dump(
+                    data_to_write, f, indent=2, ensure_ascii=False,
+                    sort_keys=False, default=_json_default
+                )
         else:
-            print(f'Unsupported config file extension: {ext}')
+            print(f"Unsupported config file extension: {ext}")
 
 
 def iter_folder(folder, is_dir=False, ext=None):

@@ -92,6 +92,20 @@ Games:
     FashionFever:
       - Scheduler
 
+# ==================== Utility ====================
+Utility:
+  menu: 'list'
+  page: 'setting'
+  tasks:
+    QuickStock:
+      - Scheduler
+      - QuickStock
+    Restocking:
+      - Scheduler
+      - Restocking
+    InventoryTool:
+      - PlayerStorage
+
 # ==================== Tool ====================
 
 Tool:

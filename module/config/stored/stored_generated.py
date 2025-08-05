@@ -2,6 +2,7 @@ from module.config.stored.classes import (
     StoredBase,
     StoredCounter,
     StoredInt,
+    StoredItemContainer,
 )
 
 
@@ -9,4 +10,4 @@ from module.config.stored.classes import (
 # ``` python -m module/config/config_updater.py ```
 
 class StoredGenerated:
-    pass
+    InventoryData = StoredItemContainer("InventoryTool.PlayerStorage.InventoryData")

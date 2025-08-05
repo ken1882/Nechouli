@@ -49,6 +49,15 @@
       "FashionFever"
     ]
   },
+  "Utility": {
+    "menu": "list",
+    "page": "setting",
+    "tasks": [
+      "QuickStock",
+      "Restocking",
+      "InventoryTool"
+    ]
+  },
   "Tool": {
     "menu": "list",
     "page": "tool",

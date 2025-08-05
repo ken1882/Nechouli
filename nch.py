@@ -148,6 +148,10 @@ class Nechouli(AzurLaneAutoScript):
         from tasks.games.fashion_fever import FashionFeverUI
         FashionFeverUI(config=self.config, device=self.device).run()
 
+    def snowager(self):
+        from tasks.daily.snowager import SnowagerUI
+        SnowagerUI(config=self.config, device=self.device).run()
+
 
 if __name__ == '__main__':
     nch = Nechouli()

@@ -2,9 +2,14 @@ from datetime import datetime
 from functools import cached_property as functools_cached_property
 
 from module.base.decorator import cached_property
-from module.config.utils import DEFAULT_TIME, deep_get, get_server_last_monday_update, get_server_last_update
+from module.config.utils import DEFAULT_TIME, deep_get, _recursively_convert
 from module.exception import ScriptError
+from typing import TYPE_CHECKING
+from ast import literal_eval
 
+if TYPE_CHECKING:
+    from module.db.models.neoitem import NeoItem
+    from module.config.config import AzurLaneConfig
 
 def now():
     return datetime.now().replace(microsecond=0)
@@ -28,6 +33,7 @@ def iter_attribute(cls):
 
 class StoredBase:
     time = DEFAULT_TIME
+    _config: 'AzurLaneConfig'
 
     def __init__(self, key):
         self._key = key
@@ -61,9 +67,13 @@ class StoredBase:
                         logger.warning(f'{self._name} has invalid attr: {attr}={value}, use default={default}')
                         value = default
             else:
+                logger.info(f"Converting {attr}: {value}")
+                value = _recursively_convert(value, False)
                 if not isinstance(value, type(default)):
-                    logger.warning(f'{self._name} has invalid attr: {attr}={value}, use default={default}')
-                    value = default
+                    value = literal_eval(value) if isinstance(value, str) else value
+                    if not isinstance(value, type(default)):
+                        logger.warning(f'{self._name} has invalid attr: {attr}={value}, use default={default}')
+                        value = default
 
             out[attr] = value
         return out
@@ -158,3 +168,26 @@ class StoredCounter(StoredBase):
         if self.FIXED_TOTAL:
             stored['total'] = self.FIXED_TOTAL
         return stored
+
+
+class StoredItemContainer(StoredBase):
+    items: list['NeoItem'] = []
+    capacity: int = 50
+
+    def set(self, items: list['NeoItem']):
+        if any(not isinstance(i, NeoItem) for i in items):
+            raise ScriptError(f'Unsupported item type in {self._name} for container')
+        self.items = items
+
+    def add(self, *items: 'NeoItem'):
+        items = list(items)
+        if any(not isinstance(i, NeoItem) for i in items):
+            raise ScriptError(f'Unsupported item type in {self._name} for container')
+        self.items = self.items + list(items)
+
+    def is_full(self, keeps: int = 0) -> bool:
+        return len(self.items) + keeps >= self.capacity
+
+    def __iter__(self):
+        return iter(self.items)
+

@@ -1,20 +1,24 @@
 import re
 from module.db.models.base_model import BaseModel
-from module.config.config import AzurLaneConfig
 from playwright.sync_api import Locator
 from datetime import datetime
-from typing import Any, List
+from typing import Any, List, TYPE_CHECKING
 import module.jelly_neo as jn
+
+if TYPE_CHECKING:
+    from module.config.config import AzurLaneConfig
 
 class NeoItem(BaseModel):
     name: str
     id: str
+    index: int
     market_price: float
     restock_price: float
     price_timestamp: float
     rarity: int
     image: str
     restock_shop_link: str
+    parent_container: str
     effects: List[str]
 
     @classmethod
@@ -35,6 +39,7 @@ class NeoItem(BaseModel):
         # sensible defaults
         self.name = ""
         self.id = ""
+        self.index = 0
         self.quantity = 0
         self.market_price = 0.0
         self.restock_price = 0.0
@@ -42,6 +47,7 @@ class NeoItem(BaseModel):
         self.rarity = 0
         self.image = ""
         self.restock_shop_link = ""
+        self.parent_container = ""
         self.effects = []
         super().__init__(**kwargs)
 
@@ -74,7 +80,7 @@ class NeoItem(BaseModel):
             return 'grooming'
         return 'other'
 
-    def is_edible(self, config: AzurLaneConfig) -> bool:
+    def is_edible(self, config: 'AzurLaneConfig') -> bool:
         conf = config.PetCares_FeedBlacklist or ""
         if any(re.search(regex, self.name, re.I) for regex in conf.split("\n") if regex):
             return False
@@ -82,7 +88,7 @@ class NeoItem(BaseModel):
             return False
         return True
 
-    def is_playable(self, config: AzurLaneConfig) -> bool:
+    def is_playable(self, config: 'AzurLaneConfig') -> bool:
         if 'openable' in self.effects:
             return False
         conf = config.PetCares_PlayBlackList or ""
@@ -92,7 +98,7 @@ class NeoItem(BaseModel):
             return False
         return True
 
-    def is_groomable(self, config: AzurLaneConfig) -> bool:
+    def is_groomable(self, config: 'AzurLaneConfig') -> bool:
         if self.category != 'grooming':
             return False
         if 'openable' in self.effects:
