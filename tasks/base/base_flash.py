@@ -53,6 +53,7 @@ class BaseFlash():
         if times <= 0:
             logger.info("No more plays left.")
             return True
+        self.play_game()
         while self.find_flash().count() == 0:
             logger.info("Waiting for ruffle/flash to load...")
             self.device.wait(1)
@@ -76,6 +77,7 @@ class BaseFlash():
                 logger.warning("Game did not load in time.")
                 return False
             time.sleep(1)
+            self.screenshot()
             if start_button.match_template(self.device.image):
                 logger.info("Game loaded.")
                 return True

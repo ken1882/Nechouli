@@ -16,7 +16,9 @@ class ManualConfig:
     > GiantOmelette > GraveDanger > GrumpyKing > WiseKing > LunarTemple
     > NeggCave > MeteorCrashSite > PotatoCounter > RichSlorg > QasalanExpellibox
     > TDMBGPOP > Tombola > TrudysSurprise > Snowager > MoltaraQuarry
+    > FashionFever
     > PetCares
+    > QuickStock
     """
 
     """

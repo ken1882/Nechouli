@@ -79,8 +79,11 @@ class BasePageUI(ModuleBase):
             self.execute_script('remove_antiadb') # Remove annoying popup showing adblock detected
         except TimeoutError:
             logger.warning("Page load timeout, assume main content loaded.")
-        except Error as e:
-            logger.warning(f"Page load error: {e}, likely interrupted by login or maintenance.")
+        except PlaywrightError as e:
+            logger.warning(f"Page load error: {e}, likely interrupted by login or maintenance. Retrying")
+            self.device.wait(1)
+            self.page.reload()
+            return self.goto(url)
         if not self.is_logged_in():
             logger.critical("You have to login first, launch with gui then navigate to https://www.neopets.com/home after you logged in.")
             while True:

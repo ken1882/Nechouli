@@ -149,10 +149,6 @@ class Nechouli(AzurLaneAutoScript):
         from tasks.games.fashion_fever import FashionFeverUI
         FashionFeverUI(config=self.config, device=self.device).run()
 
-    def snowager(self):
-        from tasks.daily.snowager import SnowagerUI
-        SnowagerUI(config=self.config, device=self.device).run()
-
     def quick_stock(self):
         from tasks.utility.quick_stock import QuickStockUI
         QuickStockUI(config=self.config, device=self.device).run()
