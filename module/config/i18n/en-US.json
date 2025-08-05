@@ -249,6 +249,10 @@
       "name": "Headless Mode",
       "help": "Run without a visible UI"
     },
+    "CleanPagesOnStart": {
+      "name": "Clean Redundant Tabs",
+      "help": "When start the browser, only left first two tabs and close all others"
+    },
     "AutoOpenDevtools": {
       "name": "Auto Open DevTools",
       "help": ""
@@ -407,6 +411,18 @@
     "PriceStrategyScript": {
       "name": "Price Strategy Script",
       "help": "!!!NEVER PASTE UNKNOWN SCRIPTS HERE!!!\nThis script will be executed to determine the price of an item in your shop, it should return a number. Do not touch this if you have no idea what you're doing."
+    },
+    "ForceDepositList": {
+      "name": "QuickStock.ForceDepositList.name",
+      "help": "QuickStock.ForceDepositList.help"
+    },
+    "DepositBlacklist": {
+      "name": "QuickStock.DepositBlacklist.name",
+      "help": "QuickStock.DepositBlacklist.help"
+    },
+    "DonateNameList": {
+      "name": "QuickStock.DonateNameList.name",
+      "help": "QuickStock.DonateNameList.help"
     }
   },
   "PlayerStorage": {

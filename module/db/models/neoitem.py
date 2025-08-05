@@ -38,6 +38,7 @@ class NeoItem(BaseModel):
     def __init__(self, **kwargs: Any) -> None:
         # sensible defaults
         self.name = ""
+        self.description = ""
         self.id = ""
         self.index = 0
         self.quantity = 0
@@ -48,6 +49,7 @@ class NeoItem(BaseModel):
         self.image = ""
         self.restock_shop_link = ""
         self.parent_container = ""
+        self.item_type = ""
         self.effects = []
         super().__init__(**kwargs)
 
@@ -70,6 +72,10 @@ class NeoItem(BaseModel):
 
     @property
     def category(self) -> str:
+        if self.rarity == 500:
+            return 'cash'
+        if self.rarity == 200:
+            return 'artifact'
         if 'food' in self.item_type.lower() or 'edible' in self.effects:
             return 'food'
         if 'playable' in self.effects:

@@ -19,6 +19,10 @@
         "type": "checkbox",
         "value": false
       },
+      "CleanPagesOnStart": {
+        "type": "checkbox",
+        "value": true
+      },
       "AutoOpenDevtools": {
         "type": "checkbox",
         "value": false
@@ -1007,11 +1011,23 @@
       },
       "CategoryKeeps": {
         "type": "textarea",
-        "value": "food:5\ngrooming: 1\ntoy: 1\n"
+        "value": "food:10\ngrooming: 1\ntoy: 1\n"
       },
       "PriceStrategyScript": {
         "type": "textarea",
         "value": "mkp = item['market_price']\nif mkp < 10000:\n  return mkp * 0.99\nreturn mkp\n"
+      },
+      "ForceDepositList": {
+        "type": "textarea",
+        "value": "Basic Gift Box\n"
+      },
+      "DepositBlacklist": {
+        "type": "textarea",
+        "value": ""
+      },
+      "DonateNameList": {
+        "type": "textarea",
+        "value": ""
       }
     }
   },

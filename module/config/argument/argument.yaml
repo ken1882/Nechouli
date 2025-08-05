@@ -44,6 +44,7 @@ Playwright:
       - chrome-dev
       - chrome-canary
   Headless: false
+  CleanPagesOnStart: true
   AutoOpenDevtools: false
   AutoAcceptDialog: true
   ExtensionDirectory: "$LOCALAPPDATA/Microsoft/Edge/User Data/Default/Extensions"
@@ -121,7 +122,7 @@ QuickStock:
   CategoryKeeps:
     type: textarea
     value: |
-      food:5
+      food:10
       grooming: 1
       toy: 1
   PriceStrategyScript:
@@ -131,6 +132,16 @@ QuickStock:
       if mkp < 10000:
         return mkp * 0.99
       return mkp
+  ForceDepositList:
+    type: textarea
+    value: |
+      Basic Gift Box
+  DepositBlacklist:
+    type: textarea
+    value: ""
+  DonateNameList:
+    type: textarea
+    value: ""
 
 PlayerStorage:
   InventoryData:

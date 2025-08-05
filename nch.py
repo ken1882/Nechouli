@@ -12,6 +12,7 @@ class Nechouli(AzurLaneAutoScript):
         self.device.start_browser()
         self.device.page.goto('https://www.neopets.com/questlog/')
         self.device.wait(3) # quest won't start if not visited
+        self.device.clean_redundant_pages()
         try:
             super().loop()
         except Exception as e:
@@ -151,6 +152,10 @@ class Nechouli(AzurLaneAutoScript):
     def snowager(self):
         from tasks.daily.snowager import SnowagerUI
         SnowagerUI(config=self.config, device=self.device).run()
+
+    def quick_stock(self):
+        from tasks.utility.quick_stock import QuickStockUI
+        QuickStockUI(config=self.config, device=self.device).run()
 
 
 if __name__ == '__main__':

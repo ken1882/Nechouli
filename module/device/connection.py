@@ -140,14 +140,17 @@ class Connection:
         time.sleep(1)  # Give some time for the browser to start
         self.page = self.context.pages[0] if self.context.pages else self.context.new_page()
         self.page.goto("about:blank")
-        for i,p in enumerate(self.context.pages):
-            if i < 2:
-                continue
-            if p.url == "about:blank":
-                p.close()
+        self.clean_redundant_pages()
         if self.config.Playwright_AutoAcceptDialog:
             self.page.on('dialog', lambda dialog: dialog.accept())
         logger.info("Browser started.")
+
+    def clean_redundant_pages(self):
+        for i,p in enumerate(self.context.pages):
+            if i < 2 or p == self.page:
+                continue
+            if p.url.startswith('about:') or p.url.startswith('file://'):
+                p.close()
 
     def goto(self, url, page=None):
         if page is None:

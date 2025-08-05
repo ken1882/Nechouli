@@ -71,7 +71,7 @@ _TAG_CLASS = "__class__"
 _TAG_DATA = "__data__"
 
 
-def _encode_obj(obj: Any) -> Any:  # → JSON-serialisable
+def _encode_obj(obj: Any) -> Any: # searialize custom objects
     """Convert custom objects to a JSON/YAML friendly structure."""
     if hasattr(obj, "serialize") and callable(obj.serialize):
         data = obj.serialize()
@@ -81,7 +81,7 @@ def _encode_obj(obj: Any) -> Any:  # → JSON-serialisable
             _TAG_CLASS: f"{obj.__class__.__module__}.{obj.__class__.__qualname__}",
             _TAG_DATA: base64.b64encode(data).decode("ascii"),
         }
-    return str(obj)  # fallback
+    return obj
 
 
 def _decode_obj(node: Any) -> Any:
@@ -168,14 +168,10 @@ def write_file(file: str | os.PathLike, data: JSONLike) -> None:
                         allow_unicode=True, sort_keys=False
                     )
         elif ext == ".json":
-            def _json_default(o):
-                # Shouldn’t be reached – everything encoded already
-                return _encode_obj(o)
-
             with atomic_write(file, overwrite=True, encoding="utf-8") as f:
                 json.dump(
                     data_to_write, f, indent=2, ensure_ascii=False,
-                    sort_keys=False, default=_json_default
+                    sort_keys=False, default=str
                 )
         else:
             print(f"Unsupported config file extension: {ext}")

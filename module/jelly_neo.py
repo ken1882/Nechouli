@@ -51,6 +51,7 @@ def get_item_details_by_name(item_name, forced=False, agent=None):
     page = BS(response.content, "html.parser")
     ret = {
         "id": "",
+        "description": "",
         "name": "",
         "market_price": 0,
         "restock_price": 0,
@@ -88,6 +89,7 @@ def get_item_details_by_name(item_name, forced=False, agent=None):
         ret["category"] = grids[1].text.strip()
         ret["restock_price"] = str2int(grids[2].text.strip())
         ret["image"] = grids[-1].select('a')[0]['href']
+        ret["description"] = doc.select('div > p > em')[0].text.strip()
     except Exception as e:
         logger.exception(e)
         return ret

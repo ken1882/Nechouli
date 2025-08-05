@@ -29,6 +29,7 @@ class GeneratedConfig:
     # Group `Playwright`
     Playwright_Browser = 'msedge'  # msedge, msedge-beta, msedge-dev, msedge-canary, chrome, chrome-beta, chrome-dev, chrome-canary
     Playwright_Headless = False
+    Playwright_CleanPagesOnStart = True
     Playwright_AutoOpenDevtools = False
     Playwright_AutoAcceptDialog = True
     Playwright_ExtensionDirectory = '$LOCALAPPDATA/Microsoft/Edge/User Data/Default/Extensions'
@@ -66,8 +67,11 @@ class GeneratedConfig:
     QuickStock_KeepInventorySlot = 5
     QuickStock_DepositValue = 90000
     QuickStock_RestockProfit = 1000
-    QuickStock_CategoryKeeps = 'food:5\ngrooming: 1\ntoy: 1\n'
+    QuickStock_CategoryKeeps = 'food:10\ngrooming: 1\ntoy: 1\n'
     QuickStock_PriceStrategyScript = "mkp = item['market_price']\nif mkp < 10000:\n  return mkp * 0.99\nreturn mkp\n"
+    QuickStock_ForceDepositList = '^Basic Gift Box$\n'
+    QuickStock_DepositBlacklist = None
+    QuickStock_DonateNameList = None
 
     # Group `PlayerStorage`
     PlayerStorage_InventoryData = {}
