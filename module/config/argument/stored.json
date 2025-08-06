@@ -7,9 +7,12 @@
     "attrs": {
       "time": "2020-01-01 00:00:00",
       "capacity": 50,
-      "items": []
+      "items": [],
+      "np": 0,
+      "total": 0,
+      "value": 0
     },
     "order": 0,
-    "color": "#ffcf70"
+    "color": "#777777"
   }
 }

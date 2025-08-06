@@ -17,6 +17,11 @@ class SnowagerUI(BasePageUI):
             logger.info("Snowager is awake, will try again later")
             return False
         self.goto("https://www.neopets.com/winter/snowager.phtml")
+        btn = self.page.locator('#process_snowager > button')
+        if not btn.count():
+            logger.info("Awake or already claimed today, skip")
+            return False
+        self.device.click(btn)
         return True
 
     def is_hibernate(self):

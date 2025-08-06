@@ -140,7 +140,6 @@ class Connection:
         time.sleep(1)  # Give some time for the browser to start
         self.page = self.context.pages[0] if self.context.pages else self.context.new_page()
         self.page.goto("about:blank")
-        self.clean_redundant_pages()
         if self.config.Playwright_AutoAcceptDialog:
             self.page.on('dialog', lambda dialog: dialog.accept())
         logger.info("Browser started.")

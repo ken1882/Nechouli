@@ -5,18 +5,38 @@ from module.db.data_map import SHOP_NAME
 from tasks.base.base_page import BasePageUI
 from copy import copy
 import module.jelly_neo as jn
+import re
 
 class RestockingUI(BasePageUI):
     goods: list[NeoItem]
 
     def main(self):
+        self.check_inventory()
+        if self.inventory_free <= self.config.QuickStock_KeepInventorySlots:
+            logger.warning(
+                f"Not enough inventory space: {self.inventory_free} slots available, "
+                f"need at least {self.config.QuickStock_KeepInventorySlots+1} (by QuickStock setting)"
+            )
+            self.config.task_call('QuickStock')
+            self.config.task_delay(minute=1)
+            return None
+        self.update_np()
+        if not self.has_enough_np():
+            logger.warning("No enough NP to restock, skip restocking")
+            return False
         self.goods = []
         for shop_id in copy(self.config.Restocking_ShopList):
             self.do_shopping(shop_id)
         return True
 
     def check_inventory(self):
-        pass
+        self.goto('https://www.neopets.com/inventory.phtml')
+        line = self.page.locator('.inv-total-count').text_content().strip()
+        r = re.search(r"(\d+) / (\d+)", line)
+        self.inventory_free = 0
+        if r:
+            cur, total = r.groups()
+            self.inventory_free = int(total) - int(cur)
 
     def calc_next_run(self, *args):
         self.config.Restocking_DailyQuestTimesLeft = 0 # reset temp variable
@@ -69,6 +89,9 @@ class RestockingUI(BasePageUI):
                 good.profit = profit
                 ret.append(good)
         return sorted(ret, key=lambda x: x.profit, reverse=True)
+
+    def has_enough_np(self):
+        return self.config.stored.InventoryData.np >= self.config.ProfileSettings_MinNpKeep
 
 if __name__ == '__main__':
     self = RestockingUI()

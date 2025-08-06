@@ -2,13 +2,10 @@ import numpy as np
 from typing import Callable
 from random import randint
 from module.exception import *
-from module.base.button import ClickButton
 from module.base import utils
 from cached_property import cached_property
-from module.base.timer import Timer
 from module.logger import logger
-from module.config.config import AzurLaneConfig
-from module.device.connection import Connection, retry
+from module.device.connection import Connection
 from playwright.sync_api import Locator
 
 class Control(Connection):
@@ -97,7 +94,7 @@ class Control(Connection):
         Click on a target.
 
         Args:
-            target: Target to click on. Can be a tuple of (x, y), a string of selector, or a Locator object.
+            target: Target to click on. Can be a tuple of (x, y), a string of selector, Locator or Button.
             nth (int): Which element to click if there are multiple elements
             x_mul (float): Which portion of the element to click on the x-axis. 0.5 means center of its width.
             y_mul (float): Which portion of the element to click on the y-axis. 0.5 means center of its height.

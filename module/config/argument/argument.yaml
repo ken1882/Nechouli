@@ -130,7 +130,7 @@ QuickStock:
     value: |
       mkp = item['market_price']
       if mkp < 10000:
-        return mkp * 0.99
+          return mkp * 0.99
       return mkp
   ForceDepositList:
     type: textarea
@@ -146,7 +146,6 @@ QuickStock:
 PlayerStorage:
   InventoryData:
     stored: StoredItemContainer
-    color: "#ffcf70"
     display: display
 
 # ==================== Games ====================

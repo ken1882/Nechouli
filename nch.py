@@ -1,18 +1,20 @@
 from module.alas import AzurLaneAutoScript
 from module.logger import logger
-
+import module.jelly_neo as jn
 
 
 class Nechouli(AzurLaneAutoScript):
-
+    
     def __init__(self, config_name: str = 'nechouli'):
         super().__init__(config_name)
 
     def loop(self):
+        jn.CACHE_TTL = self.config.ProfileSettings_JellyNeoExpiry * 3600
         self.device.start_browser()
         self.device.page.goto('https://www.neopets.com/questlog/')
         self.device.wait(3) # quest won't start if not visited
-        self.device.clean_redundant_pages()
+        if self.config.Playwright_CleanPagesOnStart:
+            self.device.clean_redundant_pages()
         try:
             super().loop()
         except Exception as e:

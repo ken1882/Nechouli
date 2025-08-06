@@ -170,24 +170,65 @@ class StoredCounter(StoredBase):
         return stored
 
 
-class StoredItemContainer(StoredBase):
+class StoredItemContainer(StoredCounter):
     items: list['NeoItem'] = []
+    np: int = 0
     capacity: int = 50
 
     def set(self, items: list['NeoItem']):
-        if any(not isinstance(i, NeoItem) for i in items):
+        if any(type(i).__name__ != 'NeoItem' for i in items):
             raise ScriptError(f'Unsupported item type in {self._name} for container')
         self.items = items
 
     def add(self, *items: 'NeoItem'):
         items = list(items)
-        if any(not isinstance(i, NeoItem) for i in items):
+        if any(type(i).__name__ != 'NeoItem' for i in items):
             raise ScriptError(f'Unsupported item type in {self._name} for container')
         self.items = self.items + list(items)
 
+    def normal_items(self) -> list['NeoItem']:
+        return [i for i in self.items if i.category != 'cash']
+
+    @property
+    def size(self) -> int:
+        return len([i for i in self.items if i.category != 'cash'])
+
     def is_full(self, keeps: int = 0) -> bool:
-        return len(self.items) + keeps >= self.capacity
+        return self.size + keeps >= self.capacity
 
     def __iter__(self):
         return iter(self.items)
+
+    def __getitem__(self, item):
+        if isinstance(item, int):
+            return self.items[item]
+        elif isinstance(item, str):
+            for i in self.items:
+                if i.name == item:
+                    return i
+            raise KeyError(f'Item {item} not found in {self._name}')
+        else:
+            raise TypeError(f'Unsupported item type: {type(item)} for {self._name}')
+
+    def __setitem__(self, key, value):
+        if isinstance(key, int):
+            if type(value).__name__ != 'NeoItem':
+                raise ScriptError(f'Unsupported item type in {self._name} for container')
+            self.items[key] = value
+        else:
+            raise TypeError(f'Unsupported item type: {type(key)} for {self._name}')
+
+    def __contains__(self, item):
+        if isinstance(item, str):
+            return any(i.name == item for i in self.items)
+        elif type(item).__name__ == 'NeoItem':
+            return item in self.items
+        else:
+            raise TypeError(f'Unsupported item type: {type(item)} for {self._name}')
+
+    def __len__(self):
+        return len(self.items)
+
+    def __bool__(self):
+        return bool(self.items)
 

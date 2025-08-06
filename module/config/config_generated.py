@@ -68,8 +68,8 @@ class GeneratedConfig:
     QuickStock_DepositValue = 90000
     QuickStock_RestockProfit = 1000
     QuickStock_CategoryKeeps = 'food:10\ngrooming: 1\ntoy: 1\n'
-    QuickStock_PriceStrategyScript = "mkp = item['market_price']\nif mkp < 10000:\n  return mkp * 0.99\nreturn mkp\n"
-    QuickStock_ForceDepositList = '^Basic Gift Box$\n'
+    QuickStock_PriceStrategyScript = "mkp = item['market_price']\nif mkp < 10000:\n    return mkp * 0.99\nreturn mkp\n"
+    QuickStock_ForceDepositList = 'Basic Gift Box\n'
     QuickStock_DepositBlacklist = None
     QuickStock_DonateNameList = None
 

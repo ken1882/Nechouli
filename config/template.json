@@ -293,7 +293,7 @@
       "DepositValue": 90000,
       "RestockProfit": 1000,
       "CategoryKeeps": "food:10\ngrooming: 1\ntoy: 1\n",
-      "PriceStrategyScript": "mkp = item['market_price']\nif mkp < 10000:\n  return mkp * 0.99\nreturn mkp\n",
+      "PriceStrategyScript": "mkp = item['market_price']\nif mkp < 10000:\n    return mkp * 0.99\nreturn mkp\n",
       "ForceDepositList": "Basic Gift Box\n",
       "DepositBlacklist": null,
       "DonateNameList": null

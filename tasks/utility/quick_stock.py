@@ -2,6 +2,8 @@ import re
 from module.logger import logger
 from tasks.base.base_page import BasePageUI
 from module.db.models.neoitem import NeoItem
+from module.base.utils import str2int
+from module.config.utils import get_server_next_update
 import module.jelly_neo as jn
 
 class QuickStockUI(BasePageUI):
@@ -9,9 +11,13 @@ class QuickStockUI(BasePageUI):
 
     def main(self):
         self.items = []
+        self._stocked = False
         self.goto('https://www.neopets.com/quickstock.phtml')
         self.scan_all_items()
         self.process_actions()
+        self.update_inventory_data()
+        if self._stocked:
+            self.update_stock_price()
         return True
 
     def scan_all_items(self):
@@ -49,7 +55,7 @@ class QuickStockUI(BasePageUI):
         keep_dict = self.get_keep_dict()
         blacklist = [l.strip() for l in (self.config.QuickStock_DepositBlacklist or '').split('\n') if l.strip()]
         donate_list = [l.strip() for l in (self.config.QuickStock_DonateNameList or '').split('\n') if l.strip()]
-        deposit_list = [l.strip() for l in (self.config.QuickStock_ForceDepositList or '').split('\n') if l.strip()]
+        deposit_list = [l.strip().lower() for l in (self.config.QuickStock_ForceDepositList or '').split('\n') if l.strip()]
         for item in self.items:
             if item.category == 'cash':
                 item._act = 'keep'
@@ -60,7 +66,7 @@ class QuickStockUI(BasePageUI):
             if any(re.search(regex, item.name, re.I) for regex in blacklist):
                 item._act = 'keep'
                 continue
-            if any(re.search(regex, item.name, re.I) for regex in donate_list):
+            if item.name.lower() in donate_list:
                 item._act = 'donate'
                 continue
             available_acts = [act.get_attribute('value') for act in item._locator.locator('input').all()]
@@ -69,6 +75,7 @@ class QuickStockUI(BasePageUI):
                 keep_dict[item.category] -= 1
             elif item.market_price - item.restock_price > self.config.QuickStock_RestockProfit:
                 item._act = 'stock'
+                self._stocked = True
             elif 'closet' in available_acts:
                 item._act = 'closet'
         row_height = 24
@@ -91,6 +98,77 @@ class QuickStockUI(BasePageUI):
         self.device.scroll_to(loc=btn)
         self.device.click(btn)
 
+    def update_stock_price(self):
+        self.goto("https://www.neopets.com/market.phtml?type=your")
+        while True:
+            rows = self.page.locator('form[action] > table > tbody > tr')
+            if rows.count() < 3:
+                logger.warning("No stocked items in your shop")
+                break
+            goods = rows.all()[1:-1]
+            for good in goods:
+                self.device.scroll_to(loc=good)
+                cells = good.locator('td')
+                name = cells.first.text_content().strip()
+                item_data = jn.get_item_details_by_name(name)
+                price = self.evaluate_price_strategy(item_data)
+                old_price = 0
+                input = cells.nth(4).locator('input')
+                try:
+                    old_price = str2int(input.get_attribute('value'))
+                except Exception as e:
+                    logger.error(f"Failed to parse old price for {name}: {e}")
+                    continue
+                if price <= 0 or old_price == price:
+                    continue
+                logger.info(f"Setting price for {name} to {price}")
+                input.fill(str(price))
+            upd_btn = self.page.locator('input[type=submit][value="Update"]')
+            self.device.click(upd_btn, nav=True)
+            next_page = self.page.locator('input[name=subbynext]')
+            if not next_page.count():
+                break
+            disabled = next_page.get_property('disabled').json_value()
+            if disabled:
+                break
+            self.device.click(next_page, nav=True)
+
+    def evaluate_price_strategy(self, item: dict):
+        script = self.config.QuickStock_PriceStrategyScript
+        safe_globals = {
+            '__builtins__': {
+                'min': min,
+                'max': max,
+                'abs': abs,
+                'round': round,
+            },
+        }
+
+        # Locals where user code will run
+        safe_locals = {
+            'item': item,
+            'return_value': None,
+        }
+
+        # Wrap user code to capture return
+        wrapped_script = f'{script.replace("return ", "return_value = ")}\n'
+        try:
+            exec(wrapped_script, safe_globals, safe_locals)
+            return int(safe_locals.get('return_value', 0))
+        except Exception as e:
+            raise ValueError(f"Script execution failed: {e}")
+
+    def update_inventory_data(self):
+        self.page.reload()
+        self.scan_all_items()
+        self.config.stored.InventoryData.set(self.items)
+        logger.info(f"Updated inventory with {len(self.items)} items (size={self.config.stored.InventoryData.size}).")
+
+    def calc_next_run(self, *args):
+        future = get_server_next_update('02:00')
+        self.config.task_delay(target=future)
+        # this task is normally called by other tasks so cancel itself after run
+        self.config.task_cancel('QuickStock')
 
 if __name__ == '__main__':
     self = QuickStockUI()

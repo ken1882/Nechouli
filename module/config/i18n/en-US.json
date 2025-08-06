@@ -413,26 +413,26 @@
       "help": "!!!NEVER PASTE UNKNOWN SCRIPTS HERE!!!\nThis script will be executed to determine the price of an item in your shop, it should return a number. Do not touch this if you have no idea what you're doing."
     },
     "ForceDepositList": {
-      "name": "QuickStock.ForceDepositList.name",
-      "help": "QuickStock.ForceDepositList.help"
+      "name": "Force Deposit List",
+      "help": "Name/regex of items to force deposit into safe deposit box, separated by line."
     },
     "DepositBlacklist": {
-      "name": "QuickStock.DepositBlacklist.name",
-      "help": "QuickStock.DepositBlacklist.help"
+      "name": "Deposit Blacklist",
+      "help": "Name/regex of items to blacklist from being deposited into safe deposit box, separated by line."
     },
     "DonateNameList": {
-      "name": "QuickStock.DonateNameList.name",
-      "help": "QuickStock.DonateNameList.help"
+      "name": "Donate Name List",
+      "help": "Exact name of items to donate, separated by line."
     }
   },
   "PlayerStorage": {
     "_info": {
-      "name": "PlayerStorage._info.name",
-      "help": "PlayerStorage._info.help"
+      "name": "Storage Data",
+      "help": ""
     },
     "InventoryData": {
-      "name": "PlayerStorage.InventoryData.name",
-      "help": "PlayerStorage.InventoryData.help"
+      "name": "Inventory Data",
+      "help": ""
     }
   },
   "Gui": {

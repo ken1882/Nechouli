@@ -1,5 +1,6 @@
 import os
 from module.base.base import ModuleBase
+from module.base.utils import str2int
 from module.logger import logger
 from datetime import datetime, timedelta
 from time import sleep
@@ -20,11 +21,12 @@ class BasePageUI(ModuleBase):
         try:
             ok = self.main()
             self.dm.save()
-            logger.info("Task finished, soft sleep for 5 seconds.")
-            self.device.sleep(5)
+            stime = self.config.ProfileSettings_TaskSoftTerminationTime
+            logger.info(f"Task finished, soft sleep for {stime} seconds.")
+            self.device.sleep(stime)
             if ok:
                 self.calc_next_run()
-            else:
+            elif ok == False:
                 self.calc_next_run('failed')
         except TimeoutError as e:
             logger.exception(e)
@@ -113,11 +115,18 @@ class BasePageUI(ModuleBase):
         except Exception as e:
             logger.exception(f"Failed to execute script {script_name}: {e}")
             return
-    
+
     def reload(self):
         return self.goto(self.page.url)
-    
+
     def is_node_loading(self, node):
         if 'Loading...' in node.inner_text():
             return True
         return False
+
+    def update_np(self):
+        node = self.page.locator('#npanchor')
+        if not node.count():
+            return
+        np = str2int(node.first.text_content()) or 0
+        self.config.stored.InventoryData.np = np

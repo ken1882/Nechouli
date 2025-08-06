@@ -1015,7 +1015,7 @@
       },
       "PriceStrategyScript": {
         "type": "textarea",
-        "value": "mkp = item['market_price']\nif mkp < 10000:\n  return mkp * 0.99\nreturn mkp\n"
+        "value": "mkp = item['market_price']\nif mkp < 10000:\n    return mkp * 0.99\nreturn mkp\n"
       },
       "ForceDepositList": {
         "type": "textarea",
@@ -1099,8 +1099,7 @@
         "type": "stored",
         "value": {},
         "display": "display",
-        "stored": "StoredItemContainer",
-        "color": "#ffcf70"
+        "stored": "StoredItemContainer"
       }
     }
   }
