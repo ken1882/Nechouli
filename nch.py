@@ -18,7 +18,7 @@ class Nechouli(AzurLaneAutoScript):
         try:
             super().loop()
         except Exception as e:
-            pass
+            logger.exception(e)
 
     def restart(self):
         from tasks.base.base_page import BasePageUI
