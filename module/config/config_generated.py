@@ -53,7 +53,12 @@ class GeneratedConfig:
     PetCares_MaxFeedValue = 1000
     PetCares_MaxFeedLevel = 'full up'  # dying, starving, famished, very hungry, hungry, not hungry, fine, satiated, full up, very full, bloated
 
+    # Group `DailyQuest`
+    DailyQuest_PurchaseUnprofitableItems = False
+
     # Group `Restocking`
+    Restocking_ActiveRestocking = False
+    Restocking_ActiveRestockInterval = 60
     Restocking_RestockPerShop = 5
     Restocking_MinProfit = 1000
     Restocking_MaxShopStock = 5

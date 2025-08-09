@@ -34,8 +34,8 @@ def handle_inventory(kwargs):
     items: list['NeoItem'] = data.get('items', [])
     put_html('''
     <script>
-        function changeSelectedItem(name){
-            n = document.getElementById("_args-title_InventoryTool_PlayerStorage_InventoryData");
+        function changeSelectedItem_%s(name, type){
+            n = document.getElementById("_args-title_%s");
             if (name){
                 n.textContent = n.textContent.split(":")[0] + ": " + name;
             }
@@ -44,12 +44,15 @@ def handle_inventory(kwargs):
             }
         }
     </script>
-    ''')
+    ''' % (name, name))
     html = "<div>"
     tmp = ''
     for item in items:
+        text = item.name
+        if name.endswith('StockData'):
+            text += f" (has {item.quantity} stocked selling for {item.stocked_price} NP)"
         content = f'''
-        <div class="neoitem" onmouseover="changeSelectedItem('{item.name}')" onmouseleave="changeSelectedItem('')">
+        <div class="neoitem" onmouseover="changeSelectedItem_{name}('{text}')" onmouseleave="changeSelectedItem_{name}('')">
             <img src="{item.image}" alt="{item.name}">
         </div>
         '''
@@ -74,7 +77,8 @@ def handle_inventory(kwargs):
 
 
 HANDLE_TABLE = {
-    "InventoryTool_PlayerStorage_InventoryData": handle_inventory
+    "InventoryTool_PlayerStorage_InventoryData": handle_inventory,
+    "InventoryTool_PlayerStorage_StockData": handle_inventory,
 }
 
 def can_handle(name: str) -> bool:

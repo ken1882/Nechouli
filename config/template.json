@@ -59,6 +59,9 @@
       "NextRun": "2020-01-01 00:00:00",
       "Command": "DailyQuest",
       "ServerUpdate": "00:00"
+    },
+    "DailyQuest": {
+      "PurchaseUnprofitableItems": false
     }
   },
   "AltadorCouncil": {
@@ -323,6 +326,8 @@
       "ServerUpdate": "00:00"
     },
     "Restocking": {
+      "ActiveRestocking": false,
+      "ActiveRestockInterval": 60,
       "RestockPerShop": 5,
       "MinProfit": 1000,
       "MaxShopStock": 5,

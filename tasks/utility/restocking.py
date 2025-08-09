@@ -75,9 +75,11 @@ class RestockingUI(BasePageUI):
         return True
 
     def calc_next_run(self, s=None):
-        self.config.Restocking_DailyQuestTimesLeft = 0 # reset temp variable
         if not s:
-            return self.config.task_delay(minute=60)
+            if self.config.Restocking_ActiveRestocking:
+                return self.config.task_delay(minute=self.config.Restocking_ActiveRestockInterval)
+            else:
+                return self.config.task_cancel('Restocking')
         super().calc_next_run(s)
 
     def do_shopping(self, shop_id: int):
@@ -94,8 +96,11 @@ class RestockingUI(BasePageUI):
                 logger.info(f"Item {t.name} exceeds max cost, skipping")
                 continue
             elif t.profit < self.config.Restocking_MinProfit:
-                logger.info(f"Item {t.name} profit {t.profit} is less than minimum profit {self.config.Restocking_MinProfit}, skipping")
-                continue
+                if self.config.DailyQuest_PurchaseUnprofitableItems and t.restock_price < 1000:
+                    logger.info(f"Buying unprofitable cheap item {t.name} for daily quest")
+                else:
+                    logger.info(f"Item {t.name} profit {t.profit} is less than minimum profit {self.config.Restocking_MinProfit}, skipping")
+                    continue
             else:
                 for stocked in self.config.stored.StockData:
                     if stocked.name == t.name and stocked.quantity >= self.config.Restocking_MaxShopStock:
@@ -145,7 +150,7 @@ class RestockingUI(BasePageUI):
         for item in self.goods:
             item.update_jn()
 
-    def get_profitable_goods(self):
+    def get_profitable_goods(self) -> list[NeoItem]:
         ret = []
         for good in self.goods:
             try:

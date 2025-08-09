@@ -9,11 +9,13 @@ def solve(page, debug=False):
     image_path = grab_captcha(page)
     if not image_path:
         return
+    output_image_path = None
     if debug:
         output_image_path = image_path.replace(".png", "_debug.png")
-    else:
+    ret = process_captcha(image_path, output_image_path)
+    if not debug:
         os.unlink(image_path)
-    return process_captcha(image_path, output_image_path)
+    return ret
 
 def get_captcha_url(page):
     try:

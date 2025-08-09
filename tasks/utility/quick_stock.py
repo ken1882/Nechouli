@@ -78,7 +78,7 @@ class QuickStockUI(BasePageUI):
                 self._stocked = True
             elif 'closet' in available_acts:
                 item._act = 'closet'
-        row_height = 24
+        row_height = 22
         viewport_height = 400
         viewport_y = 0
         cur_y = 100
@@ -105,14 +105,22 @@ class QuickStockUI(BasePageUI):
         self.config.stored.StockData.capacity = cap
         logger.info(f"Stock capacity: {cap} ({stock_text[-1]}/{stock_text[-2]})")
         stocked_data = []
+        self.device.scroll_to(0, 100)
         while True:
             rows = self.page.locator('form[action] > table > tbody > tr')
             if rows.count() < 3:
                 logger.warning("No stocked items in your shop")
                 break
             goods = rows.all()[1:-1]
+            row_height = 80
+            viewport_height = 400
+            viewport_y = 0
+            cur_y = 100
             for good in goods:
-                self.device.scroll_to(loc=good)
+                cur_y += row_height
+                if cur_y > viewport_y + viewport_height:
+                    viewport_y = cur_y
+                    self.device.scroll_to(0, viewport_y)
                 cells = good.locator('td')
                 name = cells.first.text_content().strip()
                 item = NeoItem(name=name)
@@ -123,6 +131,7 @@ class QuickStockUI(BasePageUI):
                 price = self.evaluate_price_strategy(item_data)
                 old_price = 0
                 input = cells.nth(4).locator('input')
+                item.stocked_price = price
                 try:
                     old_price = str2int(input.get_attribute('value'))
                 except Exception as e:

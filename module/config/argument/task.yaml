@@ -28,6 +28,7 @@ Chore:
       - PetCares
     DailyQuest:
       - Scheduler
+      - DailyQuest
     AltadorCouncil:
       - Scheduler
     AnchorManagement:

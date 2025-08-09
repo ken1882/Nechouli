@@ -102,7 +102,11 @@ PetCares:
       - "full up"
       - "very full"
       - "bloated"
+DailyQuest:
+  PurchaseUnprofitableItems: false
 Restocking:
+  ActiveRestocking: false
+  ActiveRestockInterval: 60
   RestockPerShop: 5
   MinProfit: 1000
   MaxShopStock: 5

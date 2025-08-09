@@ -39,7 +39,7 @@ class TestUI(BaseFlash, BasePageUI):
 
 alas = Nechouli()
 config, device = alas.config, alas.device
-self = DailyQuestUI(config, device)
+self = QuickStockUI(config, device)
 
 
 device.start_browser()

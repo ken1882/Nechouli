@@ -213,3 +213,5 @@ def update_item_price(item, price):
             save_cache(item)
             return True
     return False
+
+load_cache()

@@ -229,6 +229,12 @@
         "value": "00:00",
         "display": "hide"
       }
+    },
+    "DailyQuest": {
+      "PurchaseUnprofitableItems": {
+        "type": "checkbox",
+        "value": false
+      }
     }
   },
   "AltadorCouncil": {
@@ -1112,6 +1118,14 @@
       }
     },
     "Restocking": {
+      "ActiveRestocking": {
+        "type": "checkbox",
+        "value": false
+      },
+      "ActiveRestockInterval": {
+        "type": "input",
+        "value": 60
+      },
       "RestockPerShop": {
         "type": "input",
         "value": 5

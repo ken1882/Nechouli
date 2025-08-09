@@ -163,8 +163,8 @@
       "help": "https://www.jellyneo.net/?go=restocking"
     },
     "ShopWizard": {
-      "name": "Task.ShopWizard.name",
-      "help": "Task.ShopWizard.help"
+      "name": "Shop Wizard",
+      "help": ""
     },
     "InventoryTool": {
       "name": "Inventory",
@@ -361,10 +361,28 @@
       "bloated": "Bloated"
     }
   },
+  "DailyQuest": {
+    "_info": {
+      "name": "Daily Quest",
+      "help": ""
+    },
+    "PurchaseUnprofitableItems": {
+      "name": "Purchase Unprofitable Items",
+      "help": "Allow purchase unprofitable cheap items (< 1000 NP) when calling restocking task to complete daily quest."
+    }
+  },
   "Restocking": {
     "_info": {
       "name": "Restocking",
       "help": ""
+    },
+    "ActiveRestocking": {
+      "name": "Active Restocking",
+      "help": "Actively restock items from shops, instead being called by other tasks."
+    },
+    "ActiveRestockInterval": {
+      "name": "Active Restocking Interval",
+      "help": "Interval in minutes between active restocking runs."
     },
     "RestockPerShop": {
       "name": "Restock Per Shop",
