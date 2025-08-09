@@ -543,9 +543,7 @@ class AlasGUI(Frame):
                     position="right",
                     color="success",
                 )
-                logger.info(
-                    f"Save config {filepath_config(config_name)}, {dict_to_kv(modified)}"
-                )
+                logger.info(f"Save config {filepath_config(config_name)}")
                 config_updater.write_file(config_name, config)
         except Exception as e:
             logger.exception(e)
@@ -1200,6 +1198,7 @@ class AlasGUI(Frame):
         else:
             add_css(filepath_css("light-alas"))
 
+        add_css(filepath_css("nechouli"))
         # Auto refresh when lost connection
         # [For develop] Disable by run `reload=0` in console
         run_js(

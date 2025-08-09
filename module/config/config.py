@@ -265,9 +265,7 @@ class AzurLaneConfig(ConfigUpdater, ManualConfig, GeneratedConfig, ConfigWatcher
         for path, value in self.modified.items():
             deep_set(self.data, keys=path, value=value)
 
-        logger.info(
-            f"Save config {filepath_config(self.config_name, mod_name)}, {dict_to_kv(self.modified)}"
-        )
+        logger.info(f"Save config {filepath_config(self.config_name, mod_name)}")
         # Don't use self.modified = {}, that will create a new object.
         self.modified.clear()
         del_cached_property(self, 'stored')

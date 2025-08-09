@@ -1,0 +1,13 @@
+#pywebio-scope-arg_container-stored-InventoryTool_PlayerStorage_InventoryData {
+    display: block;
+}
+
+.neoitem {
+    display: inline-block;
+    padding: 4px;
+}
+
+.neoitem img {
+    height: 48px;
+    width: 48px;
+}

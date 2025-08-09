@@ -8,29 +8,44 @@ class DailyQuestUI(BasePageUI):
 
     def main(self):
         self.goto('https://www.neopets.com/questlog/')
-        self.quests_queue = []
         self.scan_quests()
         if not self.do_quests():
+            self.config.task_delay(minute=5)
             return False
         self.claim_rewards()
         return True
 
     def claim_rewards(self):
         self.goto('https://www.neopets.com/questlog/')
+        logger.info("Claiming daily quest rewards")
+        loading = self.page.locator('#QuestLogLoader')
+        while loading.is_visible():
+            self.device.wait(0.3)
         quests = self.page.locator('.questlog-quest')
         while quests.count():
             quest = quests.first
             ok_btn = quest.locator('button')
             if ok_btn.is_disabled():
                 continue
-            self.device.click(ok_btn)
-            close_btn = self.page.locator('button').filter(has_text='Back to Quests').all()
-            close_btn = self.device.wait_for_element(*close_btn)
-            self.device.click(close_btn)
+            self.claim_and_close(ok_btn)
+        extra = self.page.locator('#QuestLogBonusAlert')
+        if extra.is_visible():
+            self.claim_and_close(extra)
+        self.device.click(self.page.locator('.ql-label-reward').first)
+        self.device.wait(1) # wait for animation
+        if extra.is_visible():
+            self.claim_and_close(extra)
+
+    def claim_and_close(self, btn):
+        self.device.click(btn)
+        close_btn = self.page.locator('button').filter(has_text='Back to Quests').all()
+        close_btn = self.device.wait_for_element(*close_btn)
+        self.device.click(close_btn)
 
     def scan_quests(self):
+        self.quests_queue = []
         quests = self.page.locator('.questlog-quest')
-        for quest in quests:
+        for quest in quests.all():
             ok_btn = quest.locator('button')
             if not ok_btn.is_disabled():
                 continue
@@ -63,7 +78,9 @@ class DailyQuestUI(BasePageUI):
             ret['url'] = 'https://www.neopets.com/medieval/knowledge.phtml'
         elif 'misfortune' in wheel_text:
             ret['url'] = 'https://www.neopets.com/halloween/wheel/index.phtml'
-        return None
+        else:
+            return None
+        return ret
 
     def do_quests(self):
         for quest in self.quests_queue:
@@ -72,18 +89,21 @@ class DailyQuestUI(BasePageUI):
                 self.device.scroll_to(0, 100)
                 self.device.wait(3) # wait for wheel canvas to load
                 self.device.click('canvas')
-                self.device.wait(7) # wheel spin
+                self.device.wait(10) # wheel spin
                 self.device.click('canvas') # claim reward
             elif quest['type'] == 'purchase':
-                self.config.Restocking_DailyQuestTimesLeft = quest['times']
+                self.config.stored.DailyQuestTimesLeft.set(quest['times'])
                 self.config.task_call('Restocking')
                 return False
         return True
 
     def calc_next_run(self, *args):
         if self.config.Restocking_DailyQuestTimesLeft:
-            return self.config.task_delay(minutes=10)
+            return self.config.task_delay(minute=10)
         super().calc_next_run(*args)
+
+    def on_failed_delay(self):
+        self.config.task_delay(minute=5)
 
 if __name__ == '__main__':
     self = DailyQuestUI()

@@ -13,6 +13,7 @@
     "page": "setting",
     "tasks": [
       "PetCares",
+      "DailyQuest",
       "AltadorCouncil",
       "AnchorManagement",
       "AppleBobbing",
@@ -39,7 +40,8 @@
       "TDMBGPOP",
       "Tombola",
       "TrudysSurprise",
-      "WiseKing"
+      "WiseKing",
+      "HealingSpring"
     ]
   },
   "Games": {
@@ -55,6 +57,7 @@
     "tasks": [
       "QuickStock",
       "Restocking",
+      "ShopWizard",
       "InventoryTool"
     ]
   },

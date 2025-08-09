@@ -29,6 +29,7 @@ snapshot_blob.bin
 vk_swiftshader_icd.json
 profiles/*
 !profiles/.gitkeep
+.captcha/*.png
 
 # Created by .ignore support plugin (hsz.mobi)
 

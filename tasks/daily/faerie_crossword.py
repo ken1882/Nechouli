@@ -50,5 +50,8 @@ class FaerieCrosswordUI(BasePageUI):
                 index += 1
         return True
 
+    def on_failed_delay(self):
+        self.config.task_delay(minute=1)
+
 if __name__ == '__main__':
     self = FaerieCrosswordUI()

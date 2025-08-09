@@ -103,18 +103,42 @@ PetCares:
       - "very full"
       - "bloated"
 Restocking:
-  ShopRefreshes: 3
-  ShopRefreshInterval: 10
-  MinProfit: 2000
+  RestockPerShop: 5
+  MinProfit: 1000
   MaxShopStock: 5
   MaxCost: 1000000
   ImmediateProfit: 3500
   ShopList:
     type: textarea
     value: "1,2,3,5,14,15,16,20,25,34,35,39,40,42,44,46,50,56,57,61,81,95,97,101,103"
-  DailyQuestTimesLeft:
-    value: 0
-    display: hide
+  BargainStrategyScript:
+    type: textarea
+    value: |
+      # purposes: list of shopkeeper's purposes
+      # offers: list of your offers
+      # depth: number of bargains made
+      purposed = purposes[-1]
+      last_offer = offers[-1] if offers else 0
+      if purposed > 100000 or depth > 5:
+        return purposed
+      if len(purposes) > 2 and purposes[-2] == purposes[-3]:
+        return purposed
+      if last_offer == 0:
+        return int(purposed * 0.4 // 10 * 10)
+      delta = purposed - last_offer
+      step  = 20
+      if delta > 3000:
+        step = 1000
+      elif delta > 1500:
+        step = 500
+      elif delta > 300:
+        step = 100
+      elif delta > 150:
+        step = 50
+      ret = max(1, min(purposed, last_offer + int(delta * 0.4 // step * step)))
+      if ret == last_offer:
+          ret = int(purposed // 10 * 10)
+      return ret
 QuickStock:
   KeepInventorySlot: 5
   DepositValue: 90000
@@ -141,11 +165,31 @@ QuickStock:
     value: ""
   DonateNameList:
     type: textarea
-    value: ""
+    value: |
+      Old Rotten Right Sandal
+      Old Rotten Left Sandal
+      Old Rotten Right Boot
+      Old Rotten Left Boot
+      Old Rotten Right Shoe
+      Old Rotten Left Shoe
+
+ShopWizard:
+  ShopWizardRequests:
+      stored: StoredShopWizardRequests
+      display: true
 
 PlayerStorage:
+  DailyQuestTimesLeft:
+    stored: StoredDailyQuestRestockCounter
+    display: true
   InventoryData:
     stored: StoredItemContainer
-    display: display
+    display: true
+  StockData:
+    stored: StoredItemContainer
+    display: true
+  DepositData:
+    stored: StoredItemContainer
+    display: true
 
 # ==================== Games ====================

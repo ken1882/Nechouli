@@ -42,8 +42,8 @@ class NeoItem(BaseModel):
         self.id = ""
         self.index = 0
         self.quantity = 0
-        self.market_price = 0.0
-        self.restock_price = 0.0
+        self.market_price = 0
+        self.restock_price = 0
         self.price_timestamp = datetime(1999, 11, 15).timestamp()
         self.rarity = 0
         self.image = ""
@@ -63,7 +63,7 @@ class NeoItem(BaseModel):
         self.id = data.get('id', self.id)
         self.image = data.get('image', self.image)
         self.market_price = data.get('market_price', self.market_price)
-        self.restock_price = data.get('restock_price', self.restock_price)
+        self.restock_price = data.get('restock_price', 0) if self.restock_price == 0 else self.restock_price
         self.description = data.get('description', self.description)
         self.rarity = data.get('rarity', self.rarity)
         self.item_type = data.get('category', self.item_type)

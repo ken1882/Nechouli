@@ -148,11 +148,16 @@ class Connection:
         for i,p in enumerate(self.context.pages):
             if i < 2 or p == self.page:
                 continue
-            if p.url.startswith('about:') or p.url.startswith('file://'):
-                p.close()
+            p.close()
 
     def goto(self, url, page=None):
         if page is None:
             page = self.page
         logger.info(f"Navigating to {url}")
         page.goto(url)
+
+    def respawn_page(self):
+        logger.info("Respawning page")
+        if self.page:
+            self.page.close()
+        self.page = self.context.new_page()

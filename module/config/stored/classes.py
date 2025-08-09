@@ -67,7 +67,6 @@ class StoredBase:
                         logger.warning(f'{self._name} has invalid attr: {attr}={value}, use default={default}')
                         value = default
             else:
-                logger.info(f"Converting {attr}: {value}")
                 value = _recursively_convert(value, False)
                 if not isinstance(value, type(default)):
                     value = literal_eval(value) if isinstance(value, str) else value
@@ -155,6 +154,11 @@ class StoredCounter(StoredBase):
     def add(self, value=1):
         self.value += value
 
+    def sub(self, value=1):
+        self.value -= value
+        if self.value < 0:
+            self.value = 0
+
     @cached_property
     def _attrs(self) -> dict:
         attrs = super()._attrs
@@ -169,6 +173,8 @@ class StoredCounter(StoredBase):
             stored['total'] = self.FIXED_TOTAL
         return stored
 
+class StoredDailyQuestRestockCounter(StoredCounter):
+    FIXED_TOTAL = 3
 
 class StoredItemContainer(StoredCounter):
     items: list['NeoItem'] = []
@@ -232,3 +238,35 @@ class StoredItemContainer(StoredCounter):
     def __bool__(self):
         return bool(self.items)
 
+class StoredShopWizardRequests(StoredBase):
+    requests: list[str] = []
+
+    def add(self, item_name: str, source: str):
+        self.requests.append(f'{item_name}@{source}')
+
+    def clear(self):
+        self.requests = []
+
+    def pop(self) -> str:
+        """
+        Returns:
+            str: The first request in the list, or an empty string if the list is empty.
+        """
+        if not self.requests:
+            return ''
+        return self.requests.pop(0)
+
+    def is_empty(self) -> bool:
+        return not self.requests
+
+    def __iter__(self):
+        return iter(self.requests)
+
+    def __getitem__(self, item):
+        return self.requests[item]
+
+    def __len__(self):
+        return len(self.requests)
+
+    def __bool__(self):
+        return bool(self.requests)

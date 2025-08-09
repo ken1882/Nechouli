@@ -10,7 +10,7 @@ from pywebio.output import *
 from pywebio.session import eval_js, local, run_js
 from rich.console import ConsoleRenderable
 
-from module.logger import WEB_THEME, Highlighter, HTMLConsole
+from module.logger import WEB_THEME, Highlighter, HTMLConsole, logger
 from module.webui.lang import t
 from module.webui.pin import put_checkbox, put_input, put_select, put_textarea
 from module.webui.process_manager import ProcessManager
@@ -21,6 +21,7 @@ from module.webui.utils import (
     LOG_CODE_FORMAT,
     Switch,
 )
+from module.webui import widget_renderer as renderer
 
 if TYPE_CHECKING:
     from module.webui.app import AlasGUI
@@ -341,6 +342,8 @@ def product_stored_row(key, value):
 def put_arg_stored(kwargs: T_Output_Kwargs) -> Output:
     name: str = kwargs["name"]
     # kwargs["disabled"] = True
+    if renderer.can_handle(name):
+        return renderer.render(name, kwargs)
 
     values = kwargs.pop("value", {})
     value = values.pop("value", "")

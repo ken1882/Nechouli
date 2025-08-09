@@ -100,6 +100,11 @@ class QuickStockUI(BasePageUI):
 
     def update_stock_price(self):
         self.goto("https://www.neopets.com/market.phtml?type=your")
+        stock_text = self.page.locator('center').first.text_content().split(':')
+        cap = str2int(stock_text[-1]) + str2int(stock_text[-2])
+        self.config.stored.StockData.capacity = cap
+        logger.info(f"Stock capacity: {cap} ({stock_text[-1]}/{stock_text[-2]})")
+        stocked_data = []
         while True:
             rows = self.page.locator('form[action] > table > tbody > tr')
             if rows.count() < 3:
@@ -110,6 +115,10 @@ class QuickStockUI(BasePageUI):
                 self.device.scroll_to(loc=good)
                 cells = good.locator('td')
                 name = cells.first.text_content().strip()
+                item = NeoItem(name=name)
+                item.update_jn()
+                item.quantity = str2int(cells.nth(2).text_content().strip())
+                stocked_data.append(item)
                 item_data = jn.get_item_details_by_name(name)
                 price = self.evaluate_price_strategy(item_data)
                 old_price = 0
@@ -128,10 +137,11 @@ class QuickStockUI(BasePageUI):
             next_page = self.page.locator('input[name=subbynext]')
             if not next_page.count():
                 break
-            disabled = next_page.get_property('disabled').json_value()
+            disabled = type(next_page.first.get_attribute('disabled')) is str
             if disabled:
                 break
-            self.device.click(next_page, nav=True)
+            self.device.click(next_page.first, nav=True)
+        self.config.stored.StockData.set(stocked_data)
 
     def evaluate_price_strategy(self, item: dict):
         script = self.config.QuickStock_PriceStrategyScript
@@ -142,16 +152,12 @@ class QuickStockUI(BasePageUI):
                 'abs': abs,
                 'round': round,
             },
-        }
-
-        # Locals where user code will run
-        safe_locals = {
             'item': item,
-            'return_value': None,
         }
-
-        # Wrap user code to capture return
-        wrapped_script = f'{script.replace("return ", "return_value = ")}\n'
+        safe_locals = { 'return_value': None }
+        wrapped_script = 'def wrapped_script():\n'
+        wrapped_script += '\n'.join(f'  {line}' for line in script.splitlines())
+        wrapped_script += '\nreturn_value = wrapped_script()\n'
         try:
             exec(wrapped_script, safe_globals, safe_locals)
             return int(safe_locals.get('return_value', 0))
@@ -164,11 +170,11 @@ class QuickStockUI(BasePageUI):
         self.config.stored.InventoryData.set(self.items)
         logger.info(f"Updated inventory with {len(self.items)} items (size={self.config.stored.InventoryData.size}).")
 
-    def calc_next_run(self, *args):
-        future = get_server_next_update('02:00')
-        self.config.task_delay(target=future)
-        # this task is normally called by other tasks so cancel itself after run
-        self.config.task_cancel('QuickStock')
+    # def calc_next_run(self, *args):
+    #     future = get_server_next_update('02:00')
+    #     self.config.task_delay(target=future)
+    #     # this task is normally called by other tasks so cancel itself after run
+    #     self.config.task_cancel('QuickStock')
 
 if __name__ == '__main__':
     self = QuickStockUI()

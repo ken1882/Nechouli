@@ -211,3 +211,21 @@ class Control(Connection):
             self.sleep(max(0.003, wp[2]))
         self.page.mouse.up()
         return True
+
+    def input_number(self, locator: Locator, number: int):
+        self.click(locator)
+        self.page.keyboard.press('Control+A')
+        input_str = str(number)+'E'
+        for i, char in enumerate(input_str):
+            if char == 'E':
+                break
+            self.page.keyboard.press(char)
+            self.sleep(self.calc_numkey_interval(input_str[i], input_str[i+1]))
+
+    def calc_numkey_interval(self, current, next):
+        keys = '1234567890..........E'
+        delta = abs(keys.index(current) - keys.index(next))
+        ret = 0.2
+        for _ in range(delta):
+            ret += randint(10, 50) / 500.0
+        return ret

@@ -4,7 +4,7 @@ import module.jelly_neo as jn
 
 
 class Nechouli(AzurLaneAutoScript):
-    
+
     def __init__(self, config_name: str = 'nechouli'):
         super().__init__(config_name)
 
@@ -155,6 +155,17 @@ class Nechouli(AzurLaneAutoScript):
         from tasks.utility.quick_stock import QuickStockUI
         QuickStockUI(config=self.config, device=self.device).run()
 
+    def healing_spring(self):
+        from tasks.daily.healing_spring import HealingSpringUI
+        HealingSpringUI(config=self.config, device=self.device).run()
+
+    def restocking(self):
+        from tasks.utility.restocking import RestockingUI
+        RestockingUI(config=self.config, device=self.device).run()
+
+    def daily_quest(self):
+        from tasks.daily.daily_quest import DailyQuestUI
+        DailyQuestUI(config=self.config, device=self.device).run()
 
 if __name__ == '__main__':
     nch = Nechouli()

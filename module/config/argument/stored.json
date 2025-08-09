@@ -1,8 +1,65 @@
 {
+  "ShopWizardRequests": {
+    "name": "ShopWizardRequests",
+    "path": "ShopWizard.ShopWizard.ShopWizardRequests",
+    "i18n": "ShopWizard.ShopWizardRequests.name",
+    "stored": "StoredShopWizardRequests",
+    "attrs": {
+      "time": "2020-01-01 00:00:00",
+      "requests": []
+    },
+    "order": 0,
+    "color": "#777777"
+  },
+  "DailyQuestTimesLeft": {
+    "name": "DailyQuestTimesLeft",
+    "path": "InventoryTool.PlayerStorage.DailyQuestTimesLeft",
+    "i18n": "PlayerStorage.DailyQuestTimesLeft.name",
+    "stored": "StoredDailyQuestRestockCounter",
+    "attrs": {
+      "time": "2020-01-01 00:00:00",
+      "total": 3,
+      "value": 0
+    },
+    "order": 0,
+    "color": "#777777"
+  },
   "InventoryData": {
     "name": "InventoryData",
     "path": "InventoryTool.PlayerStorage.InventoryData",
     "i18n": "PlayerStorage.InventoryData.name",
+    "stored": "StoredItemContainer",
+    "attrs": {
+      "time": "2020-01-01 00:00:00",
+      "capacity": 50,
+      "items": [],
+      "np": 0,
+      "total": 0,
+      "value": 0
+    },
+    "order": 0,
+    "color": "#777777"
+  },
+  "StockData": {
+    "name": "StockData",
+    "path": "InventoryTool.PlayerStorage.StockData",
+    "i18n": "PlayerStorage.StockData.name",
+    "stored": "StoredItemContainer",
+    "attrs": {
+      "time": "2020-01-01 00:00:00",
+      "capacity": 50,
+      "items": [],
+      "np": 0,
+      "total": 0,
+      "value": 0
+    },
+    "order": 0,
+    "color": "#777777"
+  },
+  "DepositData": {
+    "name": "DepositData",
+    "path": "InventoryTool.PlayerStorage.DepositData",
+    "i18n": "PlayerStorage.DepositData.name",
     "stored": "StoredItemContainer",
     "attrs": {
       "time": "2020-01-01 00:00:00",

@@ -13,6 +13,8 @@ from tasks.daily.faerie_crossword import FaerieCrosswordUI
 from tasks.daily.trudys_surprise import TrudysSurpriseUI
 from tasks.daily.grave_danger import GraveDangerUI
 from tasks.utility.quick_stock import QuickStockUI
+from tasks.utility.restocking import RestockingUI
+from tasks.daily.daily_quest import DailyQuestUI
 
 BaseFlash = base_flash.BaseFlash
 BasePageUI = base_page.BasePageUI
@@ -37,8 +39,11 @@ class TestUI(BaseFlash, BasePageUI):
 
 alas = Nechouli()
 config, device = alas.config, alas.device
+self = DailyQuestUI(config, device)
+
+
 device.start_browser()
 device.disable_stuck_detection()
 device.screenshot_interval_set(0.1)
-self = QuickStockUI(config, device)
+device.clean_redundant_pages()
 

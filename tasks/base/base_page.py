@@ -6,14 +6,13 @@ from datetime import datetime, timedelta
 from time import sleep
 from playwright.sync_api import sync_playwright, Page
 from playwright._impl._errors import TimeoutError
-from cached_property import cached_property
 from module.config.utils import get_server_next_update
 from module.exception import *
 from playwright._impl._errors import Error as PlaywrightError
 
 class BasePageUI(ModuleBase):
 
-    @cached_property
+    @property
     def page(self) -> Page:
         return self.device.page
 
@@ -29,6 +28,7 @@ class BasePageUI(ModuleBase):
             elif ok == False:
                 self.calc_next_run('failed')
         except TimeoutError as e:
+            self.device.respawn_page()
             logger.exception(e)
             self.calc_next_run('failed')
         except PlaywrightError as e:
@@ -46,7 +46,9 @@ class BasePageUI(ModuleBase):
         now = datetime.now()
         future = now
         logger.info(f"Calculating next run time, preset: {s}")
-        if s == 'now':
+        if not s or s == 'None':
+            return
+        elif s == 'now':
             pass
         elif s == 'failed':
             return self.on_failed_delay()

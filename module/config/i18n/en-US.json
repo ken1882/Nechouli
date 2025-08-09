@@ -34,6 +34,10 @@
       "name": "Pet Cares",
       "help": "Feeding pets and relative daily quests"
     },
+    "DailyQuest": {
+      "name": "Daily Quest",
+      "help": ""
+    },
     "AltadorCouncil": {
       "name": "Council Chamber",
       "help": "https://www.jellyneo.net/?go=altador_plot&id=council_chamber"
@@ -142,6 +146,10 @@
       "name": "Wise Old King",
       "help": "https://www.jellyneo.net/?go=wise_old_king"
     },
+    "HealingSpring": {
+      "name": "Healing Spring",
+      "help": "https://www.jellyneo.net/?go=healingsprings"
+    },
     "FashionFever": {
       "name": "Fashion Fever",
       "help": "https://www.jellyneo.net/?go=fashion_fever_flash"
@@ -154,9 +162,13 @@
       "name": "Restocking",
       "help": "https://www.jellyneo.net/?go=restocking"
     },
+    "ShopWizard": {
+      "name": "Task.ShopWizard.name",
+      "help": "Task.ShopWizard.help"
+    },
     "InventoryTool": {
-      "name": "Task.InventoryTool.name",
-      "help": "Task.InventoryTool.help"
+      "name": "Inventory",
+      "help": ""
     }
   },
   "Scheduler": {
@@ -354,13 +366,9 @@
       "name": "Restocking",
       "help": ""
     },
-    "ShopRefreshes": {
-      "name": "Shop Refreshes",
-      "help": "Number of times to refresh (F5) the shop page or goods bought before moving into the next shop"
-    },
-    "ShopRefreshInterval": {
-      "name": "Shop Refresh Interval",
-      "help": "Time to wait between shop refreshes (in seconds)"
+    "RestockPerShop": {
+      "name": "Restock Per Shop",
+      "help": "How many items to buy in each shop, ignored if no goods are available"
     },
     "MinProfit": {
       "name": "Min Profit",
@@ -382,9 +390,9 @@
       "name": "Shop List",
       "help": "List of shops to restock from, separated by comma.\nFor list of shops, see https://www.jellyneo.net/?go=shopsdirectory"
     },
-    "DailyQuestTimesLeft": {
-      "name": "Restocking.DailyQuestTimesLeft.name",
-      "help": "Restocking.DailyQuestTimesLeft.help"
+    "BargainStrategyScript": {
+      "name": "Bargain Strategy Script",
+      "help": "!!!NEVER PASTE UNKNOWN SCRIPTS HERE!!!\nThis script will be executed to determine the price of an item in your shop, it should return a number. Do not touch this if you have no idea what you're doing."
     }
   },
   "QuickStock": {
@@ -425,13 +433,35 @@
       "help": "Exact name of items to donate, separated by line."
     }
   },
+  "ShopWizard": {
+    "_info": {
+      "name": "Shop Wizard",
+      "help": ""
+    },
+    "ShopWizardRequests": {
+      "name": "Shop Wizard Requests",
+      "help": "Requests made to Shop Wizard from tasks, will block if you're on fairy quest"
+    }
+  },
   "PlayerStorage": {
     "_info": {
       "name": "Storage Data",
       "help": ""
     },
+    "DailyQuestTimesLeft": {
+      "name": "Daily Request Required Counter",
+      "help": "Numbers left to complete 'purchase items from shops' daily quest"
+    },
     "InventoryData": {
-      "name": "Inventory Data",
+      "name": "Inventory Content",
+      "help": ""
+    },
+    "StockData": {
+      "name": "Shop Stock",
+      "help": ""
+    },
+    "DepositData": {
+      "name": "Safety Deposit Box",
       "help": ""
     }
   },

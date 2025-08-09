@@ -77,7 +77,7 @@ def get_item_details_by_name(item_name, forced=False, agent=None):
         ret["price_timestamp"] = datetime.strptime(pn.attrs['title'], "%B %d, %Y").timestamp()
     except Exception:
         logger.warning(f"Failed to get price for {item_name}, probably cash item or heavily inflated")
-        ret["market_price"] = 10**10
+        ret["market_price"] = 999999
         ret["price_timestamp"] = datetime.now().timestamp()
     res = agent.get(link)
     doc = BS(res.content, "html.parser")
