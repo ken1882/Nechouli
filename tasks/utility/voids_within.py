@@ -25,9 +25,17 @@ class VoidsWithinUI(BasePageUI):
                 self.device.wait(1)
                 pets = self.page.locator('.vc-pet')
                 for p in pets.all():
+                    flag_sent = False
                     if p.locator('.volunteering').is_visible():
                         continue
-                    self.device.click(p)
+                    while 'selected' not in p.get_attribute('class'):
+                        self.device.click(p)
+                        self.device.wait(0.5)
+                        if p.locator('.volunteering').is_visible():
+                            flag_sent = True
+                            break
+                    if flag_sent:
+                        continue
                     send = self.page.locator('button').filter(has_text='Join Volunteer Team')
                     self.device.click(send)
                     back = self.device.wait_for_element('.popup-exit-icon')
