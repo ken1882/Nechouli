@@ -50,7 +50,9 @@ Playwright:
   ExtensionDirectory: "$LOCALAPPDATA/Microsoft/Edge/User Data/Default/Extensions"
   ExtensionNames:
     type: textarea
-    value: Ruffle
+    value: |
+      Ruffle
+      AdGuard
   ExtraChromiumArgs:
     type: textarea
     value: |
