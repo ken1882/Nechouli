@@ -39,7 +39,7 @@ class TestUI(BaseFlash, BasePageUI):
 
 alas = Nechouli()
 config, device = alas.config, alas.device
-self = QuickStockUI(config, device)
+self = PetCaresUI(config, device)
 
 
 device.start_browser()
@@ -47,3 +47,24 @@ device.disable_stuck_detection()
 device.screenshot_interval_set(0.1)
 device.clean_redundant_pages()
 
+i=1
+pane = self.page.locator(f'#Act{i}Pane')
+btn = self.page.locator(f'#Act{i}PaneBtn')
+self.device.scroll_to(loc=btn)
+self.device.click(btn)
+self.device.wait(0.5)
+joins = pane.locator('button[id*="VolunteerButton"]')
+j = joins.nth(0)
+if j.text_content() == 'Cancel':
+    pass
+self.device.click(j)
+confirm = self.page.locator('button').filter(has_text='Ready')
+self.device.click(confirm)
+pets = self.page.locator('.vc-pet')
+for p in pets.all():
+    if p.locator('.volunteering').is_visible():
+        continue
+    self.device.click(p)
+    send = self.page.locator('button').filter(has_text='Join Volunteer Team')
+    self.device.click(send)
+    break

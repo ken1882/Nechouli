@@ -111,6 +111,8 @@ Utility:
     ShopWizard:
       - Scheduler
       - ShopWizard
+    VoidsWithin:
+      - Scheduler
     InventoryTool:
       - PlayerStorage
 

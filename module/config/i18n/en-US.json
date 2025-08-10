@@ -166,6 +166,10 @@
       "name": "Shop Wizard",
       "help": ""
     },
+    "VoidsWithin": {
+      "name": "Voids Within",
+      "help": "Auto dispatch volunteer to the Void's Within hospital"
+    },
     "InventoryTool": {
       "name": "Inventory",
       "help": ""

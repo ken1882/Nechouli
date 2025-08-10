@@ -45,6 +45,10 @@ class PetCaresUI(BasePageUI):
             name = node.get_attribute('data-name')
             if not name: # empty slot
                 continue
+            if any(pet.name == name for pet in self.pets):
+                continue
+            if node.bounding_box()['x'] < 0:
+                continue
             self.pets.append(Neopet(
                 name = name,
                 health=int(node.get_attribute('data-health')),
@@ -68,6 +72,12 @@ class PetCaresUI(BasePageUI):
         if index < 0 or index >= len(self.pets):
             raise TaskError(f'Invalid pet index: {index}')
         self.selected_pet = self.pets[index]
+        while True:
+            dx = self.selected_pet.locator.bounding_box()['x']
+            if 0 <= dx and dx <= 1100:
+                break
+            self.device.click('button[class="slick-next slick-arrow"]')
+            self.device.wait(0.5)
         logger.info(f'Selected pet: {self.selected_pet.name}')
         self.selected_pet.locator.click()
 

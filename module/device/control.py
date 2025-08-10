@@ -67,8 +67,11 @@ class Control(Connection):
                         node = selector
                 except Exception:
                     pass
-                if node and condition(node):
-                    return node
+                if not node.count():
+                    continue
+                for n in node.all():
+                    if condition(n):
+                        return n
             timeout -= wait_interval
             self.sleep(wait_interval)
         logger.warning(f"Timeout waiting for element: {locators}")
@@ -129,14 +132,19 @@ class Control(Connection):
             if nth < 0:
                 nth = max(0, loc.count() - nth)
             loc = loc.nth(nth)
-            bb = loc.bounding_box()
+            bb = None
+            depth = 0
+            while not bb and depth < 300:
+                bb = loc.bounding_box()
+                if not bb:
+                    self.sleep(0.1)
+                    depth += 1
             if not bb:
-                raise InvisibleElement
-            else:
-                x = bb['x']
-                y = bb['y']
-                mx += int(bb['width'] * x_mul)
-                my += int(bb['height'] * y_mul)
+                raise InvisibleElement(f"Element {target} is not visible or not found.")
+            x = bb['x']
+            y = bb['y']
+            mx += int(bb['width'] * x_mul)
+            my += int(bb['height'] * y_mul)
         if debug:
             self.draw_debug_point(mx+x, my+y)
         if loc and loc.count():

@@ -167,6 +167,10 @@ class Nechouli(AzurLaneAutoScript):
         from tasks.daily.daily_quest import DailyQuestUI
         DailyQuestUI(config=self.config, device=self.device).run()
 
+    def voids_within(self):
+        from tasks.utility.voids_within import VoidsWithinUI
+        VoidsWithinUI(config=self.config, device=self.device).run()
+
 if __name__ == '__main__':
     nch = Nechouli()
     nch.loop()

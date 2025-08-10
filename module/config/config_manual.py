@@ -18,6 +18,7 @@ class ManualConfig:
     > TDMBGPOP > Tombola > TrudysSurprise > MoltaraQuarry > HealingSpring
     > FashionFever
     > PetCares
+    > VoidsWithin
     > QuickStock
     > DailyQuest > Restocking
     """
