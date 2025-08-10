@@ -25,9 +25,25 @@ class VoidsWithinUI(BasePageUI):
                 self.device.wait(1)
                 pets = self.page.locator('.vc-pet')
                 for p in pets.all():
+                    flag_sent = False
                     if p.locator('.volunteering').is_visible():
                         continue
-                    self.device.click(p)
+                    if not p.locator('img').first.get_attribute('src'):
+                        continue
+                    depth = 0
+                    while 'selected' not in p.get_attribute('class'):
+                        self.device.click(p)
+                        self.device.wait(0.5)
+                        if p.locator('.volunteering').is_visible():
+                            flag_sent = True
+                            break
+                        depth += 1
+                        if depth > 20:
+                            flag_sent = True
+                            logger.warning(f"Pet {p.text_content()} is not selectable, skipping")
+                            break
+                    if flag_sent:
+                        continue
                     send = self.page.locator('button').filter(has_text='Join Volunteer Team')
                     self.device.click(send)
                     back = self.device.wait_for_element('.popup-exit-icon')
