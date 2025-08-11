@@ -59,6 +59,7 @@ class GeneratedConfig:
     # Group `Restocking`
     Restocking_ActiveRestocking = False
     Restocking_ActiveRestockInterval = 60
+    Restocking_EnableCaptchaDebug = False
     Restocking_RestockPerShop = 5
     Restocking_MinProfit = 1000
     Restocking_MaxShopStock = 5
@@ -76,6 +77,9 @@ class GeneratedConfig:
     QuickStock_ForceDepositList = 'Basic Gift Box\n'
     QuickStock_DepositBlacklist = None
     QuickStock_DonateNameList = 'Old Rotten Right Sandal\nOld Rotten Left Sandal\nOld Rotten Right Boot\nOld Rotten Left Boot\nOld Rotten Right Shoe\nOld Rotten Left Shoe\n'
+
+    # Group `StockMarket`
+    StockMarket_SellProfitRatio = 20
 
     # Group `ShopWizard`
     ShopWizard_ShopWizardRequests = {}

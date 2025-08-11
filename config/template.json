@@ -292,6 +292,25 @@
       "ServerUpdate": "00:00"
     }
   },
+  "MonthlyFreebies": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "MonthlyFreebies",
+      "ServerUpdate": "00:00"
+    }
+  },
+  "StockMarket": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "StockMarket",
+      "ServerUpdate": "00:00"
+    },
+    "StockMarket": {
+      "SellProfitRatio": 20
+    }
+  },
   "FashionFever": {
     "Scheduler": {
       "Enable": false,
@@ -328,6 +347,7 @@
     "Restocking": {
       "ActiveRestocking": false,
       "ActiveRestockInterval": 60,
+      "EnableCaptchaDebug": false,
       "RestockPerShop": 5,
       "MinProfit": 1000,
       "MaxShopStock": 5,

@@ -57,11 +57,15 @@ class QuickStockUI(BasePageUI):
         donate_list = [l.strip() for l in (self.config.QuickStock_DonateNameList or '').split('\n') if l.strip()]
         deposit_list = [l.strip().lower() for l in (self.config.QuickStock_ForceDepositList or '').split('\n') if l.strip()]
         for item in self.items:
+            item.profit = item.market_price - item.restock_price
+            if (
+                any(re.search(regex, item.name, re.I) for regex in deposit_list)
+                or item.profit >= self.config.QuickStock_DepositValue
+            ):
+                item._act = 'deposit'
+                continue
             if item.category == 'cash':
                 item._act = 'keep'
-                continue
-            if any(re.search(regex, item.name, re.I) for regex in deposit_list):
-                item._act = 'deposit'
                 continue
             if any(re.search(regex, item.name, re.I) for regex in blacklist):
                 item._act = 'keep'
@@ -73,7 +77,7 @@ class QuickStockUI(BasePageUI):
             if item.category in keep_dict and keep_dict[item.category] > 0:
                 item._act = 'keep'
                 keep_dict[item.category] -= 1
-            elif item.market_price - item.restock_price > self.config.QuickStock_RestockProfit:
+            elif item.profit > self.config.QuickStock_RestockProfit:
                 item._act = 'stock'
                 self._stocked = True
             elif 'closet' in available_acts:

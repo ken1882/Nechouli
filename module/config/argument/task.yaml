@@ -86,6 +86,11 @@ Chore:
       - Scheduler
     HealingSpring:
       - Scheduler
+    MonthlyFreebies:
+      - Scheduler
+    StockMarket:
+      - Scheduler
+      - StockMarket
 
 
 # ==================== Games ====================

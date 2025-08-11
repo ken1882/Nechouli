@@ -167,6 +167,14 @@ class Nechouli(AzurLaneAutoScript):
         from tasks.daily.daily_quest import DailyQuestUI
         DailyQuestUI(config=self.config, device=self.device).run()
 
+    def monthly_freebies(self):
+        from tasks.daily.monthly_freebies import MonthlyFreebiesUI
+        MonthlyFreebiesUI(config=self.config, device=self.device).run()
+
+    def stock_market(self):
+        from tasks.daily.stock_market import StockMarketUI
+        StockMarketUI(config=self.config, device=self.device).run()
+
     def voids_within(self):
         from tasks.utility.voids_within import VoidsWithinUI
         VoidsWithinUI(config=self.config, device=self.device).run()

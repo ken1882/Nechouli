@@ -144,11 +144,13 @@ class Connection:
             self.page.on('dialog', lambda dialog: dialog.accept())
         logger.info("Browser started.")
 
-    def clean_redundant_pages(self):
-        for i,p in enumerate(self.context.pages):
-            if i < 2 or p == self.page:
+    def clean_redundant_pages(self, keeps:int=3):
+        for p in self.context.pages:
+            if p == self.page:
                 continue
             p.close()
+        for _ in range(keeps - 1):
+            self.context.new_page()
 
     def goto(self, url, page=None):
         if page is None:

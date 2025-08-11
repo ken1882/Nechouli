@@ -47,12 +47,3 @@ device.disable_stuck_detection()
 device.screenshot_interval_set(0.1)
 device.clean_redundant_pages()
 
-i = 3
-pane = self.page.locator(f'#Act{i}Pane')
-btn = self.page.locator(f'#Act{i}PaneBtn')
-self.device.scroll_to(loc=btn)
-if i != 1:
-    self.device.click(btn)
-    self.device.wait(0.5)
-
-joins = pane.locator('button[id*="VolunteerButton"]')

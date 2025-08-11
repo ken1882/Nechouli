@@ -12,11 +12,11 @@ class ManualConfig:
     Restart
     > DesertedTomb > Snowager > FaerieCrossword
     > AltadorCouncil > AnchorManagement > AppleBobbing > BankInterest > ColtzansShrine
-    > DailyPuzzle > Fishing > ForgottenShore > FruitMachine > GiantJelly
+    > Fishing > ForgottenShore > FruitMachine > GiantJelly
     > GiantOmelette > GraveDanger > GrumpyKing > WiseKing > LunarTemple
     > NeggCave > MeteorCrashSite > PotatoCounter > RichSlorg > QasalanExpellibox
-    > TDMBGPOP > Tombola > TrudysSurprise > MoltaraQuarry > HealingSpring
-    > FashionFever
+    > TDMBGPOP > Tombola > TrudysSurprise > MoltaraQuarry > HealingSpring > MonthlyFreebies
+    > StockMarket > DailyPuzzle > FashionFever
     > PetCares
     > VoidsWithin
     > QuickStock

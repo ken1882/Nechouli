@@ -150,6 +150,14 @@
       "name": "Healing Spring",
       "help": "https://www.jellyneo.net/?go=healingsprings"
     },
+    "MonthlyFreebies": {
+      "name": "Monthly Freebies",
+      "help": "https://www.jellyneo.net/?go=monthly_freebies"
+    },
+    "StockMarket": {
+      "name": "Stock Market",
+      "help": "https://www.jellyneo.net/?go=neopian_stock_market"
+    },
     "FashionFever": {
       "name": "Fashion Fever",
       "help": "https://www.jellyneo.net/?go=fashion_fever_flash"
@@ -388,6 +396,10 @@
       "name": "Active Restocking Interval",
       "help": "Interval in minutes between active restocking runs."
     },
+    "EnableCaptchaDebug": {
+      "name": "Enable Captcha Debug",
+      "help": "If enabled, will preserve captcha images in `.captcha/` directory."
+    },
     "RestockPerShop": {
       "name": "Restock Per Shop",
       "help": "How many items to buy in each shop, ignored if no goods are available"
@@ -453,6 +465,16 @@
     "DonateNameList": {
       "name": "Donate Name List",
       "help": "Exact name of items to donate, separated by line."
+    }
+  },
+  "StockMarket": {
+    "_info": {
+      "name": "Stock Market",
+      "help": ""
+    },
+    "SellProfitRatio": {
+      "name": "Sell Profit Ratio",
+      "help": "Sell the shares when their profit is above this ratio,\ne.g. 20 = 20%, sell when 18 if bought at 15"
     }
   },
   "ShopWizard": {

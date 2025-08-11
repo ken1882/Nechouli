@@ -11,6 +11,8 @@ from copy import copy
 import module.jelly_neo as jn
 from module import captcha
 import re
+import os
+from shutil import copy2
 
 class RestockingUI(BasePageUI):
     goods: list[NeoItem]
@@ -47,6 +49,7 @@ class RestockingUI(BasePageUI):
                     self.config.stored.DailyQuestRestockTimesLeft.sub()
                     if self.config.stored.DailyQuestRestockTimesLeft.value <= 0:
                         logger.info("Completed daily quest restocking, stopping")
+                        self.config.task_call('DailyQuest')
                         return True
         self.config.task_call('QuickStock')
         return True
@@ -187,6 +190,8 @@ class RestockingUI(BasePageUI):
                 purposed_price = str2int(' '.join(text.split()[-8:]))
         purposes.append(purposed_price)
         bargain_price = self.eval_bargain_script(offers.copy(), purposes.copy(), depth)
+        new_offers = offers.copy()
+        new_offers.append(bargain_price)
         logger.info(f"Making offer with {bargain_price} NP")
         self.device.input_number('input[name=current_offer]', bargain_price)
         self.solve_captcha()
@@ -197,12 +202,16 @@ class RestockingUI(BasePageUI):
                 elif 'SOLD OUT' in self.page.content():
                     logger.info("Item is sold out")
                     return False
+                elif 'must select the correct pet' in self.page.content():
+                    logger.info(f"Captcha failed, retry")
+                    new_offers.pop()
+                    if captcha.LAST_IMAGE_FILE:
+                        out = f"{captcha.SAVE_DIR}/{os.path.basename(captcha.LAST_IMAGE_FILE)}_failed.png"
+                        copy2(captcha.LAST_IMAGE_FILE, out)
                 break
             except PlaywrightError: # page navigation interrupted
                 self.device.wait(0.3)
-        ar = offers.copy()
-        ar.append(bargain_price)
-        return self.haggle(ar, purposes.copy(), depth + 1)
+        return self.haggle(new_offers, purposes.copy(), depth + 1)
 
     def finalize_purchase(self, offers, purposes):
         logger.info(f"Purchase done, offer history: {offers}, purpose history: {purposes}")
@@ -249,7 +258,7 @@ class RestockingUI(BasePageUI):
             raise ValueError(f"Script execution failed: {e}")
 
     def solve_captcha(self):
-        pos = captcha.solve(self.page)
+        pos = captcha.solve(self.page, debug=self.config.Restocking_EnableCaptchaDebug)
         if not pos:
             raise ScriptError("Failed to solve captcha")
         captcha_canvas = self.page.locator('input[type="image"][src*="/captcha_show.phtml"]')

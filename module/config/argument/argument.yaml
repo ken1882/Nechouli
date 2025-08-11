@@ -109,6 +109,7 @@ DailyQuest:
 Restocking:
   ActiveRestocking: false
   ActiveRestockInterval: 60
+  EnableCaptchaDebug: false
   RestockPerShop: 5
   MinProfit: 1000
   MaxShopStock: 5
@@ -178,6 +179,9 @@ QuickStock:
       Old Rotten Left Boot
       Old Rotten Right Shoe
       Old Rotten Left Shoe
+
+StockMarket:
+  SellProfitRatio: 20
 
 ShopWizard:
   ShopWizardRequests:

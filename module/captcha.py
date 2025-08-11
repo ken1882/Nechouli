@@ -4,6 +4,7 @@ from datetime import datetime
 from PIL import Image, ImageDraw
 
 SAVE_DIR = './.captcha'
+LAST_IMAGE_FILE = ''
 
 def solve(page, debug=False):
     image_path = grab_captcha(page)
@@ -46,6 +47,7 @@ def grab_captcha(page):
 
 
 def process_captcha(input_image_path, output_image_path=None):
+    global LAST_IMAGE_FILE
     image = Image.open(input_image_path).convert("RGB")
     pixels = image.load()
 
@@ -76,6 +78,7 @@ def process_captcha(input_image_path, output_image_path=None):
             fill="red",
         )
         debug_image.save(output_image_path)
+        LAST_IMAGE_FILE = output_image_path
     return click_position
 
 
