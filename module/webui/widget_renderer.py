@@ -1,6 +1,9 @@
 from pywebio.output import *
+from pywebio.session import run_js
 from pywebio.io_ctrl import Output
+from module.webui.lang import _t, t
 from typing import TYPE_CHECKING, Dict, Union, Any
+from datetime import datetime
 
 if TYPE_CHECKING:
     from module.db.models.neoitem import NeoItem
@@ -32,19 +35,6 @@ def handle_inventory(kwargs):
     rows = []
     data = kwargs.get('value', {})
     items: list['NeoItem'] = data.get('items', [])
-    put_html('''
-    <script>
-        function changeSelectedItem_%s(name, type){
-            n = document.getElementById("_args-title_%s");
-            if (name){
-                n.textContent = n.textContent.split(":")[0] + ": " + name;
-            }
-            else {
-                n.textContent = n.textContent.split(":")[0];
-            }
-        }
-    </script>
-    ''' % (name, name))
     html = "<div>"
     tmp = ''
     for item in items:
@@ -52,7 +42,7 @@ def handle_inventory(kwargs):
         if name.endswith('StockData'):
             text += f" (has {item.quantity} stocked selling for {item.stocked_price} NP)"
         content = f'''
-        <div class="neoitem" onmouseover="changeSelectedItem_{name}('{text}')" onmouseleave="changeSelectedItem_{name}('')">
+        <div class="neoitem" onmouseover="{generate_item_info_script(item)}">
             <img src="{item.image}" alt="{item.name}">
         </div>
         '''
@@ -75,10 +65,106 @@ def handle_inventory(kwargs):
         ]
     )
 
+@use_scope("navigator")
+def put_item_info_box(_):
+    put_html(f'''
+    <div class="infobox">
+        <div id="item_info_title">{t("Gui.ItemInfo.Title")}</div>
+        <div id="item_info_image" style="width: 80px; height: 80px; text-align: center;">
+        </div>
+        <div>
+            <span>{t("Gui.ItemInfo.Name")}:</span>
+            <p id="item_info_name"></p>
+        </div>
+        <div>
+            <span>{t("Gui.ItemInfo.Description")}:</span>
+            <p id="item_info_description"></p>
+        </div>
+        <div id="item_info_quantity_container">
+            <span>{t("Gui.ItemInfo.Quantity")}:</span>
+            <p id="item_info_quantity"></p>
+        </div>
+        <div>
+            <span>{t("Gui.ItemInfo.Type")}:</span>
+            <p id="item_info_type"></p>
+        </div>
+        <div style="display: none;"> <!-- Hidden due to useless -->
+            <span>{t("Gui.ItemInfo.Rarity")}:</span>
+            <p id="item_info_rarity"></p>
+        </div>
+        <div>
+            <span>{t("Gui.ItemInfo.MarketPrice")}:</span>
+            <p id="item_info_market_price"></p>
+        </div>
+        <div>
+            <span>{t("Gui.ItemInfo.PriceDate")}:</span>
+            <p id="item_info_price_date"></p>
+        </div>
+        <div id="item_info_stocked_price_container">
+            <span>{t("Gui.ItemInfo.StockedPrice")}:</span>
+            <p id="item_info_stocked_price"></p>
+        </div>
+        <div>
+            <span>{t("Gui.ItemInfo.JellyNeoLink")}:</span>
+            <p id="item_info_jellyneo_link"></p>
+        </div>
+    </div>
+    ''')
+    put_html('''
+    <script>
+        function changeItemInfo(i,n,d,q,t,r,mp,pd,sp,jl){
+            document.getElementById("item_info_image").innerHTML = `<img src="${i}" alt="${n}">`;
+            document.getElementById("item_info_name").textContent = n;
+            document.getElementById("item_info_description").textContent = d;
+            document.getElementById("item_info_quantity").textContent = q;
+            document.getElementById("item_info_type").textContent = t;
+            document.getElementById("item_info_rarity").textContent = r;
+            document.getElementById("item_info_market_price").textContent = mp;
+            document.getElementById("item_info_price_date").textContent = pd;
+            document.getElementById("item_info_stocked_price").textContent = sp;
+            document.getElementById("item_info_jellyneo_link").innerHTML = `<a href="${jl}" target="_blank">${jl}</a>`;
+            if (q > 0) {
+                document.getElementById("item_info_quantity_container").style.display = "block";
+            } else {
+                document.getElementById("item_info_quantity_container").style.display = "none";
+            }
+            if (sp > 0) {
+                document.getElementById("item_info_stocked_price_container").style.display = "block";
+            } else {
+                document.getElementById("item_info_stocked_price_container").style.display = "none";
+            }
+        }
+    </script>
+    ''')
+
+def generate_item_info_script(item: 'NeoItem'):
+    return f'''
+    changeItemInfo(
+        '{item.image}',
+        '{item.name}',
+        '{item.description}',
+        {item.quantity},
+        '{item.item_type}',
+        {item.rarity},
+        {item.market_price},
+        '{datetime.fromtimestamp(int(item.price_timestamp)).strftime("%Y-%m-%d %H:%M:%S")}',
+        {getattr(item, "stocked_price", 0)},
+        'https://items.jellyneo.net/item/{item.id}'
+    );
+    '''
+
+def handle_deposit(kwargs):
+    pass
 
 HANDLE_TABLE = {
     "InventoryTool_PlayerStorage_InventoryData": handle_inventory,
     "InventoryTool_PlayerStorage_StockData": handle_inventory,
+    "SafetyDepositBox_SafetyDepositBox_DepositData": handle_deposit,
+}
+
+NAVIGATOR_OVERRIDE = {
+    "InventoryTool": put_item_info_box,
+    "SafetyDepositBox": put_item_info_box,
 }
 
 def can_handle(name: str) -> bool:

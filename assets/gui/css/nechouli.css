@@ -15,3 +15,20 @@
     height: 48px;
     width: 48px;
 }
+
+.infobox {
+    border: 1px solid #202225;
+    background-color: #2f3136;
+    padding: .5rem;
+    color: #ffffff;
+}
+
+.infobox > div > span {
+    text-decoration: bold;
+}
+
+#item_info_title {
+    text-decoration: bold;
+    font-size: larger;
+    padding-bottom: 1rem;
+}

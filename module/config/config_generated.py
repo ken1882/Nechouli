@@ -39,7 +39,6 @@ class GeneratedConfig:
     # Group `ProfileSettings`
     ProfileSettings_MinNpKeep = 20000
     ProfileSettings_JellyNeoExpiry = 168
-    ProfileSettings_DataStorage = 'local'  # local, redis
     ProfileSettings_TaskSoftTerminationTime = 5
 
     # Group `NeopianBank`
@@ -89,4 +88,6 @@ class GeneratedConfig:
     PlayerStorage_DailyQuestFeedTimesLeft = {}
     PlayerStorage_InventoryData = {}
     PlayerStorage_StockData = {}
-    PlayerStorage_DepositData = {}
+
+    # Group `SafetyDepositBox`
+    SafetyDepositBox_DepositData = {}

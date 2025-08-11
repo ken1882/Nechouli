@@ -62,10 +62,6 @@ Playwright:
 ProfileSettings:
   MinNpKeep: 20000
   JellyNeoExpiry: 168
-  DataStorage:
-    type: select
-    value: local
-    option: [ local, redis ]
   TaskSoftTerminationTime: 5
 
 # ==================== Chore ====================
@@ -201,8 +197,10 @@ PlayerStorage:
   StockData:
     stored: StoredItemContainer
     display: true
+
+SafetyDepositBox:
   DepositData:
-    stored: StoredItemContainer
-    display: true
+      stored: StoredItemContainer
+      display: true
 
 # ==================== Games ====================

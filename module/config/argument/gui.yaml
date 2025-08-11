@@ -101,3 +101,15 @@ Remote:
 Text:
   InvalidFeedBack:
   Clear:
+
+ItemInfo:
+  Title:
+  Name:
+  Description:
+  Quantity:
+  Rarity:
+  Type:
+  MarketPrice:
+  PriceDate:
+  StockedPrice:
+  JellyNeoLink:

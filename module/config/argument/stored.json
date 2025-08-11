@@ -71,8 +71,8 @@
   },
   "DepositData": {
     "name": "DepositData",
-    "path": "InventoryTool.PlayerStorage.DepositData",
-    "i18n": "PlayerStorage.DepositData.name",
+    "path": "SafetyDepositBox.SafetyDepositBox.DepositData",
+    "i18n": "SafetyDepositBox.DepositData.name",
     "stored": "StoredItemContainer",
     "attrs": {
       "time": "2020-01-01 00:00:00",

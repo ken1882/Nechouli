@@ -6,8 +6,11 @@ from bs4 import BeautifulSoup as BS
 from datetime import datetime, timedelta
 from threading import Thread, Lock
 from urllib.parse import quote
+from dotenv import load_dotenv
 import json
 import requests
+
+load_dotenv()
 
 HTTP_HEADERS = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
@@ -27,26 +30,65 @@ for i in range(WORKER_COUNT):
     AgentPool.append(requests.Session())
     AgentPool[-1].headers.update(HTTP_HEADERS)
 
-REDIS_MEGA_KEY = "jellyneo_itemdb"
+REDIS_MEGA_KEY = "jellyneo_itemdb"  # Redis HASH key; each field is an item name (lowercased)
 REDIS_CACHE = os.getenv("REDIS_CACHE", None)
+
+redis_conn = None
 if REDIS_CACHE:
     import redis
+    # decode_responses=True so we get str instead of bytes
+    redis_conn = redis.Redis.from_url(REDIS_CACHE, decode_responses=True)
 
 CACHE_FILE = "cache/items.json"
 CACHE_TTL  = 60*60*24*7
 
+# In-memory hot cache (optional; we lazily hydrate from Redis when needed)
 Database = {}
 
-def get_item_details_by_name(item_name, forced=False, agent=None):
+
+def _redis_enabled() -> bool:
+    return redis_conn is not None
+
+
+def _redis_hget_item(iname: str):
+    """Fetch a single item JSON from Redis HASH and load into memory cache."""
+    if not _redis_enabled():
+        return None
+    try:
+        data = redis_conn.hget(REDIS_MEGA_KEY, iname)
+        if not data:
+            return None
+        obj = json.loads(data)
+        with DB_LOCK:
+            Database[iname] = obj
+        return obj
+    except Exception as e:
+        logger.warning(f"Redis HGET failed for {iname}: {e}")
+        return None
+
+
+def _redis_hset_item(item: dict):
+    """Write a single item JSON into Redis HASH."""
+    if not _redis_enabled() or not item or "name" not in item:
+        return
+    try:
+        iname = item["name"].lower()
+        redis_conn.hset(REDIS_MEGA_KEY, iname, json.dumps(item))
+    except Exception as e:
+        logger.warning(f"Redis HSET failed for {item.get('name')}: {e}")
+
+
+def get_item_details_by_name(item_name, force=False, agent=None):
     item_name = item_name.lower()
     global Database, Agent
     if not agent:
         agent = Agent
-    if not forced and is_cached(item_name):
+    if not force and is_cached(item_name):
         return Database[item_name]
+
     logger.info(f"Getting item details for {item_name}")
-    item_name = quote(item_name)
-    url = f"https://items.jellyneo.net/search?name={item_name}&name_type=3"
+    qname = quote(item_name)
+    url = f"https://items.jellyneo.net/search?name={qname}&name_type=3"
     response = agent.get(url)
     page = BS(response.content, "html.parser")
     ret = {
@@ -79,6 +121,7 @@ def get_item_details_by_name(item_name, forced=False, agent=None):
         logger.warning(f"Failed to get price for {item_name}, probably cash item or heavily inflated")
         ret["market_price"] = 999999
         ret["price_timestamp"] = datetime.now().timestamp()
+
     res = agent.get(link)
     doc = BS(res.content, "html.parser")
     try:
@@ -93,6 +136,7 @@ def get_item_details_by_name(item_name, forced=False, agent=None):
     except Exception as e:
         logger.exception(e)
         return ret
+
     try:
         rows = doc.select('.special-categories-row')
         effect_row_started = False
@@ -104,56 +148,91 @@ def get_item_details_by_name(item_name, forced=False, agent=None):
                 continue
             try:
                 ret["effects"].append(row.select('.special-categories-title')[0].text.strip().lower())
-            except Exception as e:
+            except Exception:
                 pass
     except Exception as e:
         logger.exception(e)
         return ret
-    save_cache(ret)
+
+    save_cache(ret)  # will HSET single field
     return ret
+
 
 def load_cache(force_local=False):
     global Database
-    if REDIS_CACHE and not force_local:
-        redis_conn = redis.Redis.from_url(REDIS_CACHE)
-        if redis_conn.exists(REDIS_MEGA_KEY):
-            Database = json.loads(redis_conn.get(REDIS_MEGA_KEY))
-            return Database
+    if _redis_enabled() and not force_local:
+        try:
+            if redis_conn.exists(REDIS_MEGA_KEY):
+                # bulk load
+                raw = redis_conn.hgetall(REDIS_MEGA_KEY)
+                with DB_LOCK:
+                    Database = {k: json.loads(v) for k, v in raw.items()}
+                return Database
+        except Exception as e:
+            logger.warning(f"Redis HGETALL failed: {e}")
+
     if os.path.exists(CACHE_FILE):
         try:
             with open(CACHE_FILE, 'r') as f:
-                Database = json.loads(f.read())
-        except Exception as e:
+                with DB_LOCK:
+                    Database = json.loads(f.read())
+        except Exception:
             pass
     return Database
 
+
 def save_cache(item=None, padding=True, save_local=False):
     global Database, DB_LOCK
-    if REDIS_CACHE:
-        if item:
+
+    if item:
+        with DB_LOCK:
             Database[item["name"].lower()] = item
-        redis_conn = redis.Redis.from_url(REDIS_CACHE)
-        redis_conn.set(REDIS_MEGA_KEY, json.dumps(Database))
-        if not save_local:
-            return
+        if _redis_enabled():
+            _redis_hset_item(item)
+            if not save_local:
+                return
+    else:
+        if _redis_enabled():
+            try:
+                mapping = {}
+                with DB_LOCK:
+                    for k, v in Database.items():
+                        mapping[k] = json.dumps(v)
+                if mapping:
+                    redis_conn.hset(REDIS_MEGA_KEY, mapping=mapping)
+                if not save_local:
+                    return
+            except Exception as e:
+                logger.warning(f"Redis bulk HSET failed: {e}")
+
+    # Local file persistence (optional)
     with DB_LOCK:
-        if item:
-            Database[item["name"].lower()] = item
         with open(CACHE_FILE, 'w') as f:
             if padding:
                 json.dump(Database, f, indent=4)
             else:
                 json.dump(Database, f)
 
+
 def is_cached(item_name):
     iname = item_name.lower()
-    if iname not in Database:
+    obj = Database.get(iname)
+    if obj is None and _redis_enabled():
+        obj = _redis_hget_item(iname)
+    if obj is None:
         return False
-    if Database[iname]["rarity"] > 300:
+
+    # rarity > 300 => always accept cached
+    if obj.get("rarity", 0) > 300:
         return True
-    if (datetime.now() - datetime.fromtimestamp(Database[iname]["price_timestamp"])).total_seconds() > CACHE_TTL:
+
+    ts = obj.get("price_timestamp")
+    if not ts:
+        return False
+    if (datetime.now() - datetime.fromtimestamp(ts)).total_seconds() > CACHE_TTL:
         return False
     return True
+
 
 def batch_search_worker(items, ret, worker_id):
     global AgentPool, Database, WorkerFlags
@@ -169,9 +248,11 @@ def batch_search_worker(items, ret, worker_id):
         WorkerFlags[worker_id] = False
         logger.info(f"Worker#{worker_id} finished: {items}")
 
+
 def is_busy():
     global WorkerFlags
     return any(WorkerFlags)
+
 
 def batch_search(items, join=True):
     '''
@@ -196,22 +277,36 @@ def batch_search(items, join=True):
             t.join()
     return ret
 
+
 def update_item_price(item, price):
     global Database
     logger.info(f"Updating price for {item} to {price}")
-    item = item.lower()
-    if item in Database:
-        Database[item]["price"] = price
-        Database[item]["price_timestamp"] = datetime.now().timestamp()
-        save_cache()
+    iname = item.lower()
+    if iname in Database:
+        Database[iname]["price"] = price
+        Database[iname]["price_timestamp"] = datetime.now().timestamp()
+        # Persist only this item to Redis
+        save_cache(Database[iname])
         return True
     else:
-        item = get_item_details_by_name(item)
-        if item:
-            item["price"] = price
-            item["price_timestamp"] = datetime.now().timestamp()
-            save_cache(item)
+        obj = get_item_details_by_name(iname)
+        if obj:
+            obj["price"] = price
+            obj["price_timestamp"] = datetime.now().timestamp()
+            save_cache(obj)
             return True
     return False
+
+def clear_cache():
+    global Database
+    Database = {}
+    if _redis_enabled():
+        try:
+            redis_conn.delete(REDIS_MEGA_KEY)
+        except Exception as e:
+            logger.warning(f"Redis DELETE failed: {e}")
+    if os.path.exists(CACHE_FILE):
+        os.remove(CACHE_FILE)
+    logger.info("Cache cleared")
 
 load_cache()

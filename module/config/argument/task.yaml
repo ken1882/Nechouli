@@ -120,6 +120,8 @@ Utility:
       - Scheduler
     InventoryTool:
       - PlayerStorage
+    SafetyDepositBox:
+      - SafetyDepositBox
 
 # ==================== Tool ====================
 

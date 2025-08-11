@@ -181,6 +181,10 @@
     "InventoryTool": {
       "name": "Inventory",
       "help": ""
+    },
+    "SafetyDepositBox": {
+      "name": "Safety Deposit Box",
+      "help": ""
     }
   },
   "Scheduler": {
@@ -310,12 +314,6 @@
     "JellyNeoExpiry": {
       "name": "JellyNeo cache expiry",
       "help": "Effective hours of JellyNeo item search cache"
-    },
-    "DataStorage": {
-      "name": "Data Storage",
-      "help": "",
-      "local": "local",
-      "redis": "redis"
     },
     "TaskSoftTerminationTime": {
       "name": "Task termination delay",
@@ -507,9 +505,15 @@
     "StockData": {
       "name": "Shop Stock",
       "help": ""
+    }
+  },
+  "SafetyDepositBox": {
+    "_info": {
+      "name": "Safety Deposit Box",
+      "help": ""
     },
     "DepositData": {
-      "name": "Safety Deposit Box",
+      "name": "Content",
       "help": ""
     }
   },
@@ -614,6 +618,18 @@
     "Text": {
       "InvalidFeedBack": "Invalid format. Example: {0}",
       "Clear": "Clear"
+    },
+    "ItemInfo": {
+      "Title": "Item Info",
+      "Name": "Name",
+      "Description": "Description",
+      "Quantity": "Quantity",
+      "Rarity": "Rarity",
+      "Type": "Type",
+      "MarketPrice": "Market Price",
+      "PriceDate": "Price Date",
+      "StockedPrice": "Selling Price In Your Shop",
+      "JellyNeoLink": "JellyNeo Link"
     }
   }
 }

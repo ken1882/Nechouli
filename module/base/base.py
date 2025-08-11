@@ -53,7 +53,7 @@ class ModuleBase:
         self.interval_timer = {}
         self.dm = DataManager(
             self.config.config_name,
-            self.config.ProfileSettings_DataStorage,
+            'local',
             os.path.join(self.device.PROFILE_DIRECTORY, f"{self.config.config_name}.dat")
         )
 

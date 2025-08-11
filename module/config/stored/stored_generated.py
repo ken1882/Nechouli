@@ -18,4 +18,4 @@ class StoredGenerated:
     DailyQuestFeedTimesLeft = StoredDailyQuestFeedCounter("InventoryTool.PlayerStorage.DailyQuestFeedTimesLeft")
     InventoryData = StoredItemContainer("InventoryTool.PlayerStorage.InventoryData")
     StockData = StoredItemContainer("InventoryTool.PlayerStorage.StockData")
-    DepositData = StoredItemContainer("InventoryTool.PlayerStorage.DepositData")
+    DepositData = StoredItemContainer("SafetyDepositBox.SafetyDepositBox.DepositData")

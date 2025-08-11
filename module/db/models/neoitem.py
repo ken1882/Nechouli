@@ -53,11 +53,11 @@ class NeoItem(BaseModel):
         self.effects = []
         super().__init__(**kwargs)
 
-    def update_jn(self):
+    def update_jn(self, force=False):
         '''
         Update item data from jellyneo
         '''
-        data = jn.get_item_details_by_name(self.name)
+        data = jn.get_item_details_by_name(self.name, force=force)
         if not data:
             return self
         self.id = data.get('id', self.id)
@@ -68,6 +68,7 @@ class NeoItem(BaseModel):
         self.rarity = data.get('rarity', self.rarity)
         self.item_type = data.get('category', self.item_type)
         self.effects = data.get('effects', self.effects)
+        self.price_timestamp = data.get('price_timestamp', self.price_timestamp)
         return self
 
     @property

@@ -34,7 +34,6 @@
     "ProfileSettings": {
       "MinNpKeep": 20000,
       "JellyNeoExpiry": 168,
-      "DataStorage": "local",
       "TaskSoftTerminationTime": 5
     }
   },
@@ -381,7 +380,11 @@
       "DailyQuestRestockTimesLeft": {},
       "DailyQuestFeedTimesLeft": {},
       "InventoryData": {},
-      "StockData": {},
+      "StockData": {}
+    }
+  },
+  "SafetyDepositBox": {
+    "SafetyDepositBox": {
       "DepositData": {}
     }
   }

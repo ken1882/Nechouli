@@ -92,6 +92,7 @@ from module.webui.widgets import (
     put_none,
     put_output,
 )
+import module.webui.widget_renderer as widget_renderer
 
 patch_executor()
 task_handler = TaskHandler()
@@ -251,7 +252,10 @@ class AlasGUI(Frame):
         self.alas_config_hidden = self.alas_config.get_hidden_args(config)
         for group, arg_dict in deep_iter(self.ALAS_ARGS[task], depth=1):
             if self.set_group(group, arg_dict, config, task):
-                self.set_navigator(group)
+                if task in widget_renderer.NAVIGATOR_OVERRIDE:
+                    widget_renderer.NAVIGATOR_OVERRIDE[task](group)
+                else:
+                    self.set_navigator(group)
 
     @use_scope("groups")
     def set_group(self, group, arg_dict, config, task):

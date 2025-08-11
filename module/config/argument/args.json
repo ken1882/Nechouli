@@ -128,14 +128,6 @@
         "type": "input",
         "value": 168
       },
-      "DataStorage": {
-        "type": "select",
-        "value": "local",
-        "option": [
-          "local",
-          "redis"
-        ]
-      },
       "TaskSoftTerminationTime": {
         "type": "input",
         "value": 5
@@ -1307,7 +1299,11 @@
         "value": {},
         "display": true,
         "stored": "StoredItemContainer"
-      },
+      }
+    }
+  },
+  "SafetyDepositBox": {
+    "SafetyDepositBox": {
       "DepositData": {
         "type": "stored",
         "value": {},
