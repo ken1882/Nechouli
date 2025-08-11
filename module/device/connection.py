@@ -138,7 +138,7 @@ class Connection:
             **kwargs
         )
         time.sleep(1)  # Give some time for the browser to start
-        self.page = self.context.pages[0] if self.context.pages else self.context.new_page()
+        self.page = self.context.pages[0] if self.context.pages else self.new_page()
         self.page.goto("about:blank")
         if self.config.Playwright_AutoAcceptDialog:
             self.page.on('dialog', lambda dialog: dialog.accept())
@@ -150,7 +150,7 @@ class Connection:
                 continue
             p.close()
         for _ in range(keeps - 1):
-            self.context.new_page()
+            self.new_page()
 
     def goto(self, url, page=None):
         if page is None:
@@ -162,4 +162,10 @@ class Connection:
         logger.info("Respawning page")
         if self.page:
             self.page.close()
-        self.page = self.context.new_page()
+        self.page = self.new_page()
+
+    def new_page(self):
+        page = self.context.new_page()
+        if self.config.Playwright_AutoAcceptDialog:
+            page.on('dialog', lambda dialog: dialog.accept())
+        return page
