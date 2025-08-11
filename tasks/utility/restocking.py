@@ -43,9 +43,9 @@ class RestockingUI(BasePageUI):
                         return False
                     logger.info(f"Inventory free slots left: {self.inventory_free}")
                     self.device.wait(4) # neopets enforce 5 seconds cooldown between purchases
-                if self.config.stored.DailyQuestTimesLeft.value and success:
-                    self.config.stored.DailyQuestTimesLeft.sub()
-                    if self.config.stored.DailyQuestTimesLeft.value <= 0:
+                if self.config.stored.DailyQuestRestockTimesLeft.value and success:
+                    self.config.stored.DailyQuestRestockTimesLeft.sub()
+                    if self.config.stored.DailyQuestRestockTimesLeft.value <= 0:
                         logger.info("Completed daily quest restocking, stopping")
                         return True
         self.config.task_call('QuickStock')

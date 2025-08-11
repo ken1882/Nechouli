@@ -11,14 +11,27 @@
     "order": 0,
     "color": "#777777"
   },
-  "DailyQuestTimesLeft": {
-    "name": "DailyQuestTimesLeft",
-    "path": "InventoryTool.PlayerStorage.DailyQuestTimesLeft",
-    "i18n": "PlayerStorage.DailyQuestTimesLeft.name",
+  "DailyQuestRestockTimesLeft": {
+    "name": "DailyQuestRestockTimesLeft",
+    "path": "InventoryTool.PlayerStorage.DailyQuestRestockTimesLeft",
+    "i18n": "PlayerStorage.DailyQuestRestockTimesLeft.name",
     "stored": "StoredDailyQuestRestockCounter",
     "attrs": {
       "time": "2020-01-01 00:00:00",
       "total": 3,
+      "value": 0
+    },
+    "order": 0,
+    "color": "#777777"
+  },
+  "DailyQuestFeedTimesLeft": {
+    "name": "DailyQuestFeedTimesLeft",
+    "path": "InventoryTool.PlayerStorage.DailyQuestFeedTimesLeft",
+    "i18n": "PlayerStorage.DailyQuestFeedTimesLeft.name",
+    "stored": "StoredDailyQuestFeedCounter",
+    "attrs": {
+      "time": "2020-01-01 00:00:00",
+      "total": 1,
       "value": 0
     },
     "order": 0,

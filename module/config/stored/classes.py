@@ -176,6 +176,9 @@ class StoredCounter(StoredBase):
 class StoredDailyQuestRestockCounter(StoredCounter):
     FIXED_TOTAL = 3
 
+class StoredDailyQuestFeedCounter(StoredCounter):
+    FIXED_TOTAL = 1
+
 class StoredItemContainer(StoredCounter):
     items: list['NeoItem'] = []
     np: int = 0

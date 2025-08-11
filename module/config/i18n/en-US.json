@@ -470,9 +470,13 @@
       "name": "Storage Data",
       "help": ""
     },
-    "DailyQuestTimesLeft": {
-      "name": "Daily Request Required Counter",
+    "DailyQuestRestockTimesLeft": {
+      "name": "Daily Quest Restock Counter",
       "help": "Numbers left to complete 'purchase items from shops' daily quest"
+    },
+    "DailyQuestFeedTimesLeft": {
+      "name": "Daily Quest Feed Counter",
+      "help": "Numbers left to complete 'feed pets' daily quest"
     },
     "InventoryData": {
       "name": "Inventory Content",

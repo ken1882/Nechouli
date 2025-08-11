@@ -17,6 +17,7 @@ class FashionFeverUI(BaseFlash, BasePageUI):
         self.click(assets.end)
         self.click(assets.send)
         self.click(assets.restart, random_y=(-2, 2))
+        self.device.wait(2) # neopets enforce CD between sending scores
 
 if __name__ == '__main__':
     self = FashionFeverUI()

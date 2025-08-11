@@ -8,6 +8,9 @@ class DailyQuestUI(BasePageUI):
 
     def main(self):
         self.goto('https://www.neopets.com/questlog/')
+        loading = self.page.locator('#QuestLogLoader')
+        while loading.is_visible():
+            self.device.wait(0.3)
         self.scan_quests()
         if not self.do_quests():
             self.config.task_delay(minute=5)
@@ -63,6 +66,11 @@ class DailyQuestUI(BasePageUI):
                     'type': 'purchase',
                     'times': times
                 })
+            elif 'feed' in quest_content:
+                self.quests_queue.append({
+                    'type': 'feed',
+                })
+        logger.info(f"Quest queue size: {len(self.quests_queue)}")
 
     def parse_wheel_quest(self, quest:Locator) -> dict:
         wheel_text = quest.text_content().strip().lower()
@@ -92,13 +100,20 @@ class DailyQuestUI(BasePageUI):
                 self.device.wait(10) # wheel spin
                 self.device.click('canvas') # claim reward
             elif quest['type'] == 'purchase':
-                self.config.stored.DailyQuestTimesLeft.set(quest['times'])
+                self.config.stored.DailyQuestRestockTimesLeft.set(quest['times'])
                 self.config.task_call('Restocking')
+                return False
+            elif quest['type'] == 'feed':
+                self.config.task_call('PetCares')
+                self.config.stored.DailyQuestFeedTimesLeft.set(1)
+                self.config.task_delay(minute=60, task='PetCares')
                 return False
         return True
 
     def calc_next_run(self, *args):
-        if self.config.Restocking_DailyQuestTimesLeft:
+        if self.config.stored.DailyQuestFeedTimesLeft.value > 0:
+            return self.config.task_delay(minute=61)
+        elif self.config.stored.DailyQuestRestockTimesLeft.value > 0:
             return self.config.task_delay(minute=10)
         super().calc_next_run(*args)
 

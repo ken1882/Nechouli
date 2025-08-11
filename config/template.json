@@ -7,7 +7,7 @@
       "AutoOpenDevtools": false,
       "AutoAcceptDialog": true,
       "ExtensionDirectory": "$LOCALAPPDATA/Microsoft/Edge/User Data/Default/Extensions",
-      "ExtensionNames": "Ruffle",
+      "ExtensionNames": "Ruffle\nAdGuard\n",
       "ExtraChromiumArgs": "--disable-blink-features=AutomationControlled\n--disable-features=IsolateOrigins,site-per-process\n--disable-infobars\n"
     },
     "Error": {
@@ -358,7 +358,8 @@
   },
   "InventoryTool": {
     "PlayerStorage": {
-      "DailyQuestTimesLeft": {},
+      "DailyQuestRestockTimesLeft": {},
+      "DailyQuestFeedTimesLeft": {},
       "InventoryData": {},
       "StockData": {},
       "DepositData": {}

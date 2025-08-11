@@ -1,6 +1,7 @@
 from module.config.stored.classes import (
     StoredBase,
     StoredCounter,
+    StoredDailyQuestFeedCounter,
     StoredDailyQuestRestockCounter,
     StoredInt,
     StoredItemContainer,
@@ -13,7 +14,8 @@ from module.config.stored.classes import (
 
 class StoredGenerated:
     ShopWizardRequests = StoredShopWizardRequests("ShopWizard.ShopWizard.ShopWizardRequests")
-    DailyQuestTimesLeft = StoredDailyQuestRestockCounter("InventoryTool.PlayerStorage.DailyQuestTimesLeft")
+    DailyQuestRestockTimesLeft = StoredDailyQuestRestockCounter("InventoryTool.PlayerStorage.DailyQuestRestockTimesLeft")
+    DailyQuestFeedTimesLeft = StoredDailyQuestFeedCounter("InventoryTool.PlayerStorage.DailyQuestFeedTimesLeft")
     InventoryData = StoredItemContainer("InventoryTool.PlayerStorage.InventoryData")
     StockData = StoredItemContainer("InventoryTool.PlayerStorage.StockData")
     DepositData = StoredItemContainer("InventoryTool.PlayerStorage.DepositData")

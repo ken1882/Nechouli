@@ -37,7 +37,7 @@
       },
       "ExtensionNames": {
         "type": "textarea",
-        "value": "Ruffle"
+        "value": "Ruffle\nAdGuard\n"
       },
       "ExtraChromiumArgs": {
         "type": "textarea",
@@ -1220,11 +1220,17 @@
   },
   "InventoryTool": {
     "PlayerStorage": {
-      "DailyQuestTimesLeft": {
+      "DailyQuestRestockTimesLeft": {
         "type": "stored",
         "value": {},
         "display": true,
         "stored": "StoredDailyQuestRestockCounter"
+      },
+      "DailyQuestFeedTimesLeft": {
+        "type": "stored",
+        "value": {},
+        "display": true,
+        "stored": "StoredDailyQuestFeedCounter"
       },
       "InventoryData": {
         "type": "stored",

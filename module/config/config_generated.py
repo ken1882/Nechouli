@@ -33,7 +33,7 @@ class GeneratedConfig:
     Playwright_AutoOpenDevtools = False
     Playwright_AutoAcceptDialog = True
     Playwright_ExtensionDirectory = '$LOCALAPPDATA/Microsoft/Edge/User Data/Default/Extensions'
-    Playwright_ExtensionNames = 'Ruffle'
+    Playwright_ExtensionNames = 'Ruffle\nAdGuard\n'
     Playwright_ExtraChromiumArgs = '--disable-blink-features=AutomationControlled\n--disable-features=IsolateOrigins,site-per-process\n--disable-infobars\n'
 
     # Group `ProfileSettings`
@@ -81,7 +81,8 @@ class GeneratedConfig:
     ShopWizard_ShopWizardRequests = {}
 
     # Group `PlayerStorage`
-    PlayerStorage_DailyQuestTimesLeft = {}
+    PlayerStorage_DailyQuestRestockTimesLeft = {}
+    PlayerStorage_DailyQuestFeedTimesLeft = {}
     PlayerStorage_InventoryData = {}
     PlayerStorage_StockData = {}
     PlayerStorage_DepositData = {}

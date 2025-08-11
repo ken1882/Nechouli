@@ -185,8 +185,11 @@ ShopWizard:
       display: true
 
 PlayerStorage:
-  DailyQuestTimesLeft:
+  DailyQuestRestockTimesLeft:
     stored: StoredDailyQuestRestockCounter
+    display: true
+  DailyQuestFeedTimesLeft:
+    stored: StoredDailyQuestFeedCounter
     display: true
   InventoryData:
     stored: StoredItemContainer

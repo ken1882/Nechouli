@@ -83,18 +83,20 @@ class PetCaresUI(BasePageUI):
 
     def feed_all_pets(self):
         for i, pet in enumerate(self.pets):
-            if pet.hunger >= HUNGER_LEVEL['full up']:
-                logger.info(f'Pet {pet.name} is already full, skipping feeding.')
+            if not self.should_feed(i):
+                logger.info(f'Pet {pet.name} does not need feeding, skipping.')
                 continue
             self.unselect()
             self.select_pet(i)
             self.device.wait_for_element('#petCareLinkFeed').click()
-            while pet.hunger < HUNGER_LEVEL[self.config.PetCares_MaxFeedLevel]:
+            while self.should_feed():
                 logger.info(f'Feeding pet {pet.name} with hunger {HUNGER_VALUE[pet.hunger]}')
                 ret = self.feed_pet()
                 if ret < 0:
                     logger.warning('Stopped feeding due to no usable items.')
                     return
+                if pet.hunger != ret and self.config.stored.DailyQuestFeedTimesLeft.value:
+                    self.config.stored.DailyQuestFeedTimesLeft.sub()
                 pet.hunger = ret
                 logger.info(f'Neopet {pet.name} hunger after feeding: {HUNGER_VALUE[pet.hunger]}')
                 back_node = self.page.locator('#petCareResultBack')
@@ -104,6 +106,18 @@ class PetCaresUI(BasePageUI):
                 else:
                     logger.warning("No back button found after feeding, proceeding to next pet.")
                     break
+
+    def should_feed(self, index:int=None) -> bool:
+        if not self.selected_pet and index is None:
+            raise TaskError('No pet selected for feeding check')
+        pet = self.selected_pet if index is None else self.pets[index]
+        if (
+            self.config.stored.DailyQuestFeedTimesLeft.value > 0
+            and pet.hunger < HUNGER_LEVEL['bloated']
+        ):
+            return True
+
+        return pet.hunger < HUNGER_LEVEL[self.config.PetCares_MaxFeedLevel]
 
     def feed_pet(self) -> int:
         items = [i for i in self.scan_usable_items() if i.is_edible(self.config)]
