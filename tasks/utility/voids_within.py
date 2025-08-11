@@ -5,6 +5,7 @@ class VoidsWithinUI(BasePageUI):
 
     def main(self):
         self.goto('https://www.neopets.com/hospital/volunteer.phtml')
+        done = False
         for i in [5, 4, 3, 2, 1]:
             pane = self.page.locator(f'#Act{i}Pane')
             btn = self.page.locator(f'#Act{i}PaneBtn')
@@ -17,6 +18,8 @@ class VoidsWithinUI(BasePageUI):
                 done = self.process_shift(j)
                 if done:
                     break
+            if done:
+                break
         return True
 
     def process_shift(self, shift):
@@ -66,6 +69,7 @@ class VoidsWithinUI(BasePageUI):
         else:
             logger.info(f"All pets joined, exit")
             return True
+        return False
 
     def calc_next_run(self, *args):
         self.config.task_delay(minute=60*6+1)

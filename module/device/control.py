@@ -79,9 +79,15 @@ class Control(Connection):
 
     def scroll_to(self, x:int=0, y:int=0, loc:Locator=None):
         if loc:
-            bb = loc.bounding_box()
+            bb = None
+            depth = 0
+            while not bb and depth < 300:
+                bb = loc.bounding_box()
+                if not bb:
+                    self.sleep(0.1)
+                    depth += 1
             if not bb:
-                raise InvisibleElement
+                raise InvisibleElement(f"Element {loc} is not visible or not found.")
             x += bb['x']
             y += bb['y']
         return self.page.evaluate(f"window.scrollTo({x}, {y})")
