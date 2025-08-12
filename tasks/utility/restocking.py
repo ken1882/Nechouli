@@ -46,7 +46,7 @@ class RestockingUI(BasePageUI):
                     logger.info(f"Inventory free slots left: {self.inventory_free}")
                     self.device.wait(4) # neopets enforce 5 seconds cooldown between purchases
                 elif success == None:
-                    logger.info("No goods found in shop, skipping")
+                    logger.info("Nothing to buy in shop, skipping")
                     continue
                 if self.config.stored.DailyQuestRestockTimesLeft.value and success:
                     self.config.stored.DailyQuestRestockTimesLeft.sub()
@@ -116,7 +116,7 @@ class RestockingUI(BasePageUI):
             break
         if not self.target:
             logger.info(f"No profitable goods found in {shop_name}")
-            return False
+            return None
         return self.buy_item()
 
     def buy_item(self, item:NeoItem=None):

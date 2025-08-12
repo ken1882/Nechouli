@@ -239,7 +239,7 @@ class Control(Connection):
     def calc_numkey_interval(self, current, next):
         keys = '1234567890..........E'
         delta = abs(keys.index(current) - keys.index(next))
-        ret = 0.2
+        ret = 0.1
         for _ in range(delta):
             ret += randint(10, 50) / 500.0
         return ret

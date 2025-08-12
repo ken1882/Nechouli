@@ -161,23 +161,24 @@ def get_item_details_by_name(item_name, force=False, agent=None):
 def load_cache(force_local=False):
     global Database
     if _redis_enabled() and not force_local:
+        logger.info("Loading item cache from Redis")
         try:
             if redis_conn.exists(REDIS_MEGA_KEY):
                 # bulk load
                 raw = redis_conn.hgetall(REDIS_MEGA_KEY)
                 with DB_LOCK:
                     Database = {k: json.loads(v) for k, v in raw.items()}
-                return Database
         except Exception as e:
             logger.warning(f"Redis HGETALL failed: {e}")
-
-    if os.path.exists(CACHE_FILE):
+    elif os.path.exists(CACHE_FILE):
+        logger.info("Loading item cache from local file")
         try:
             with open(CACHE_FILE, 'r') as f:
                 with DB_LOCK:
                     Database = json.loads(f.read())
         except Exception:
             pass
+    logger.info(f"Loaded {len(Database)} items")
     return Database
 
 

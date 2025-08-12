@@ -188,7 +188,10 @@ class Connection:
                 "secure": True,
                 "sameSite": "Lax"
             }])
-            self.page = self.context.pages[0] if self.context.pages else self.context.new_page()
+            if self.config.Playwright_UseDefaultProfile:
+                self.page = self.new_page()
+            else:
+                self.page = self.context.pages[0] if self.context.pages else self.new_page()
             self.page.goto("about:blank")
         logger.info("Browser started.")
 
