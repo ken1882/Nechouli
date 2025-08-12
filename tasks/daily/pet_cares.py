@@ -120,7 +120,11 @@ class PetCaresUI(BasePageUI):
         return pet.hunger < HUNGER_LEVEL[self.config.PetCares_MaxFeedLevel]
 
     def feed_pet(self) -> int:
-        items = [i for i in self.scan_usable_items() if i.is_edible(self.config)]
+        items = []
+        for i in self.scan_usable_items():
+            if not i.is_edible(self.config) or i.market_price >= self.config.PetCares_MaxFeedValue:
+                continue
+            items.append(i)
         if not items:
             logger.warning(f'No usable items found for pet {self.selected_pet.name}')
             return -1
