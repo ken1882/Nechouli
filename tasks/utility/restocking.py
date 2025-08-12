@@ -269,6 +269,7 @@ class RestockingUI(BasePageUI):
         mx, my = pos
         mx += bb['x']
         my += bb['y']
+        my += 5 # offset due seems failed one slighty higher than expected
         logger.info(f"Clicking captcha at {mx}, {my}")
         self.page.mouse.click(mx, my)
 
