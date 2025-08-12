@@ -28,9 +28,7 @@ class SnowagerUI(BasePageUI):
         curt = localt2nst(datetime.now())
         return (curt.month == 12) or (curt.month == 1 and curt.day <= 3)
 
-    def calc_next_run(self, s='daily'):
-        if s == 'daily':
-            return super().calc_next_run()
+    def calc_next_run(self, _):
         future = localt2nst(datetime.now())
         candidates = []
         for r in self.ranges:
