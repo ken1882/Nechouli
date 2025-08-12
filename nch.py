@@ -33,7 +33,7 @@ class Nechouli(AzurLaneAutoScript):
         pass
 
     def goto_main(self):
-        pass
+        self.device.page.goto('https://www.neopets.com/home')
 
     def altador_council(self):
         from tasks.daily.altador_council import AltadorCouncilUI

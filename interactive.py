@@ -5,7 +5,7 @@ from tasks.base import base_page, base_flash
 from module.exception import TaskError
 from module.db.models import neopet, neoitem
 from module.db.data_map import *
-from module.base.utils import str2int
+from module.base.utils import ensure_time, str2int, check_connection
 import module.jelly_neo as jn
 
 from tasks.daily.pet_cares import PetCaresUI

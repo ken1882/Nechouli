@@ -28,7 +28,7 @@ Optimization:
   ScreenshotInterval: 0.3
   CombatScreenshotInterval: 1.0
   WhenTaskQueueEmpty:
-    value: goto_main
+    value: stay_there
     option: [ stay_there, goto_main, close_game ]
 Playwright:
   Browser:
@@ -36,17 +36,14 @@ Playwright:
     value: msedge
     option:
       - msedge
-      - msedge-beta
-      - msedge-dev
-      - msedge-canary
       - chrome
-      - chrome-beta
-      - chrome-dev
-      - chrome-canary
   Headless: false
-  CleanPagesOnStart: true
+  CleanPagesOnStart: false
   AutoOpenDevtools: false
+  RemoteDebuggingAddress: "127.0.0.1:9222"
+  LaunchDedicatedBrowser: false
   AutoAcceptDialog: true
+  UseDefaultProfile: false
   ExtensionDirectory: "$LOCALAPPDATA/Microsoft/Edge/User Data/Default/Extensions"
   ExtensionNames:
     type: textarea
@@ -56,7 +53,6 @@ Playwright:
   ExtraChromiumArgs:
     type: textarea
     value: |
-      --disable-blink-features=AutomationControlled
       --disable-features=IsolateOrigins,site-per-process
       --disable-infobars
 ProfileSettings:

@@ -253,7 +253,7 @@
       "help": "Close AL when there are no pending tasks, can help reduce CPU",
       "stay_there": "Stay There",
       "goto_main": "Goto Main Page",
-      "close_game": "Close Game"
+      "close_game": "close_game"
     }
   },
   "Playwright": {
@@ -265,13 +265,7 @@
       "name": "Browser",
       "help": "",
       "msedge": "msedge",
-      "msedge-beta": "msedge-beta",
-      "msedge-dev": "msedge-dev",
-      "msedge-canary": "msedge-canary",
-      "chrome": "chrome",
-      "chrome-beta": "chrome-beta",
-      "chrome-dev": "chrome-dev",
-      "chrome-canary": "chrome-canary"
+      "chrome": "chrome"
     },
     "Headless": {
       "name": "Headless Mode",
@@ -279,15 +273,27 @@
     },
     "CleanPagesOnStart": {
       "name": "Clean Redundant Tabs",
-      "help": "When start the browser, only left first two tabs and close all others"
+      "help": "When start the browser, only left first 3 tabs and close all others"
     },
     "AutoOpenDevtools": {
       "name": "Auto Open DevTools",
       "help": ""
     },
+    "RemoteDebuggingAddress": {
+      "name": "Remote Debugging Address",
+      "help": "Address for remote debugging, ignored if using dedicated browser"
+    },
+    "LaunchDedicatedBrowser": {
+      "name": "Launch Dedicated Browser",
+      "help": "Launch a dedicated browser every time.\nIf disabled, Nechouli will start from your OS installed browser, good if you want manual interactions."
+    },
     "AutoAcceptDialog": {
       "name": "Auto Accept Dialog",
       "help": "When confirm dialog appears, automatically accept instead dismiss"
+    },
+    "UseDefaultProfile": {
+      "name": "Use Default Profile",
+      "help": "Use your system default profile, such as your login cookies and settings.\nRequire disabled if you want to run multiple Nechouli instances at the same time."
     },
     "ExtensionDirectory": {
       "name": "Extension Directory",

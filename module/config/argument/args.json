@@ -6,13 +6,7 @@
         "value": "msedge",
         "option": [
           "msedge",
-          "msedge-beta",
-          "msedge-dev",
-          "msedge-canary",
-          "chrome",
-          "chrome-beta",
-          "chrome-dev",
-          "chrome-canary"
+          "chrome"
         ]
       },
       "Headless": {
@@ -21,15 +15,27 @@
       },
       "CleanPagesOnStart": {
         "type": "checkbox",
-        "value": true
+        "value": false
       },
       "AutoOpenDevtools": {
+        "type": "checkbox",
+        "value": false
+      },
+      "RemoteDebuggingAddress": {
+        "type": "input",
+        "value": "127.0.0.1:9222"
+      },
+      "LaunchDedicatedBrowser": {
         "type": "checkbox",
         "value": false
       },
       "AutoAcceptDialog": {
         "type": "checkbox",
         "value": true
+      },
+      "UseDefaultProfile": {
+        "type": "checkbox",
+        "value": false
       },
       "ExtensionDirectory": {
         "type": "input",
@@ -41,7 +47,7 @@
       },
       "ExtraChromiumArgs": {
         "type": "textarea",
-        "value": "--disable-blink-features=AutomationControlled\n--disable-features=IsolateOrigins,site-per-process\n--disable-infobars\n"
+        "value": "--disable-features=IsolateOrigins,site-per-process\n--disable-infobars\n"
       }
     },
     "Error": {
@@ -80,7 +86,7 @@
       },
       "WhenTaskQueueEmpty": {
         "type": "select",
-        "value": "goto_main",
+        "value": "stay_there",
         "option": [
           "stay_there",
           "goto_main",

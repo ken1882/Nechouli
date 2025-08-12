@@ -24,17 +24,20 @@ class GeneratedConfig:
     # Group `Optimization`
     Optimization_ScreenshotInterval = 0.3
     Optimization_CombatScreenshotInterval = 1.0
-    Optimization_WhenTaskQueueEmpty = 'goto_main'  # stay_there, goto_main, close_game
+    Optimization_WhenTaskQueueEmpty = 'stay_there'  # stay_there, goto_main, close_game
 
     # Group `Playwright`
-    Playwright_Browser = 'msedge'  # msedge, msedge-beta, msedge-dev, msedge-canary, chrome, chrome-beta, chrome-dev, chrome-canary
+    Playwright_Browser = 'msedge'  # msedge, chrome
     Playwright_Headless = False
-    Playwright_CleanPagesOnStart = True
+    Playwright_CleanPagesOnStart = False
     Playwright_AutoOpenDevtools = False
+    Playwright_RemoteDebuggingAddress = '127.0.0.1:9222'
+    Playwright_LaunchDedicatedBrowser = False
     Playwright_AutoAcceptDialog = True
+    Playwright_UseDefaultProfile = False
     Playwright_ExtensionDirectory = '$LOCALAPPDATA/Microsoft/Edge/User Data/Default/Extensions'
     Playwright_ExtensionNames = 'Ruffle\nAdGuard\n'
-    Playwright_ExtraChromiumArgs = '--disable-blink-features=AutomationControlled\n--disable-features=IsolateOrigins,site-per-process\n--disable-infobars\n'
+    Playwright_ExtraChromiumArgs = '--disable-features=IsolateOrigins,site-per-process\n--disable-infobars\n'
 
     # Group `ProfileSettings`
     ProfileSettings_MinNpKeep = 20000

@@ -1,4 +1,4 @@
-import os
+import os, sys
 import time
 import json
 import re
@@ -8,7 +8,8 @@ from functools import wraps
 from playwright.sync_api import sync_playwright, Page, Browser, Playwright
 from module.config.config import AzurLaneConfig
 from module.logger import logger
-from module.base.utils import ensure_time, str2int
+from module.base.utils import ensure_time, str2int, check_connection, get_start_menu_programs
+import subprocess
 
 def retry(func):
     @wraps(func)
@@ -129,19 +130,66 @@ class Connection:
             'args': self.config.Playwright_ExtraChromiumArgs.split('\n'),
             'locale': 'en-US'
         }
-        kwargs['args'].extend(self.get_extension_paths())
         if self.config.Playwright_AutoOpenDevtools:
             kwargs['args'].append('--auto-open-devtools-for-tabs')
 
-        self.context = self.pw.chromium.launch_persistent_context(
-            os.path.join(self.PROFILE_DIRECTORY, self.config.config_name),
-            **kwargs
-        )
-        time.sleep(1)  # Give some time for the browser to start
-        self.page = self.context.pages[0] if self.context.pages else self.new_page()
-        self.page.goto("about:blank")
-        if self.config.Playwright_AutoAcceptDialog:
-            self.page.on('dialog', lambda dialog: dialog.accept())
+        if not self.config.Playwright_UseDefaultProfile:
+            kwargs['args'].extend(self.get_extension_paths())
+
+        if self.config.Playwright_LaunchDedicatedBrowser:
+            self.context = self.pw.chromium.launch_persistent_context(
+                os.path.join(self.PROFILE_DIRECTORY, self.config.config_name),
+                **kwargs
+            )
+            time.sleep(1)  # Give some time for the browser to start
+            self.page = self.context.pages[0] if self.context.pages else self.new_page()
+            self.page.goto("about:blank")
+        else:
+            address = self.config.Playwright_RemoteDebuggingAddress
+            if not check_connection(address):
+                port = address.split(':')[-1]
+                logger.warning(f"Remote debugging address {address} is not reachable, try start manually")
+
+                channel = self.config.Playwright_Browser
+                profile_dir = os.path.join(self.PROFILE_DIRECTORY, self.config.config_name)
+
+                # args from kwargs
+                extra_args = kwargs.get('args', []).copy()
+                extra_args.append(f"--remote-debugging-port={port}")
+                if not self.config.Playwright_UseDefaultProfile:
+                    extra_args.append(f"--user-data-dir={profile_dir}")
+
+                executable_path = ''
+                if channel == 'msedge':
+                    p = get_start_menu_programs('edge')
+                    if not p:
+                        raise ValueError("Microsoft Edge executable not found in your start menu")
+                    executable_path = p[0]
+                elif channel == 'chrome':
+                    executable_path = self.pw.chromium.executable_path
+
+                if not executable_path:
+                    raise ValueError(f"Executable not found for browser channel: {channel}")
+
+                cmd = [executable_path] + extra_args
+                logger.info(f"Starting browser manually: {' '.join(cmd)}")
+                subprocess.Popen(cmd)
+                logger.info("Waiting 10 seconds for browser to start")
+                time.sleep(10)  # allow browser to start
+
+            self.browser = self.pw.chromium.connect_over_cdp(f"http://{address}")
+            self.context = self.browser.contexts[0]
+            self.context.add_cookies([{
+                "name": "lang",
+                "value": "en",
+                "domain": "www.neopets.com",
+                "path": "/",
+                "httpOnly": False,
+                "secure": True,
+                "sameSite": "Lax"
+            }])
+            self.page = self.context.pages[0] if self.context.pages else self.context.new_page()
+            self.page.goto("about:blank")
         logger.info("Browser started.")
 
     def clean_redundant_pages(self, keeps:int=3):

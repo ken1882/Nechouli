@@ -3,12 +3,15 @@
     "Playwright": {
       "Browser": "msedge",
       "Headless": false,
-      "CleanPagesOnStart": true,
+      "CleanPagesOnStart": false,
       "AutoOpenDevtools": false,
+      "RemoteDebuggingAddress": "127.0.0.1:9222",
+      "LaunchDedicatedBrowser": false,
       "AutoAcceptDialog": true,
+      "UseDefaultProfile": false,
       "ExtensionDirectory": "$LOCALAPPDATA/Microsoft/Edge/User Data/Default/Extensions",
       "ExtensionNames": "Ruffle\nAdGuard\n",
-      "ExtraChromiumArgs": "--disable-blink-features=AutomationControlled\n--disable-features=IsolateOrigins,site-per-process\n--disable-infobars\n"
+      "ExtraChromiumArgs": "--disable-features=IsolateOrigins,site-per-process\n--disable-infobars\n"
     },
     "Error": {
       "Restart": "game",
@@ -19,7 +22,7 @@
     "Optimization": {
       "ScreenshotInterval": 0.2,
       "CombatScreenshotInterval": 1.0,
-      "WhenTaskQueueEmpty": "goto_main"
+      "WhenTaskQueueEmpty": "stay_there"
     }
   },
   "Restart": {

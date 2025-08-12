@@ -1,10 +1,13 @@
 import re
-
+import os
 import cv2
 import numpy as np
+import socket
+import struct
 from PIL import Image
 from datetime import datetime
 import pytz, tzlocal
+from pathlib import Path
 
 REGEX_NODE = re.compile(r'(-?[A-Za-z]+)(-?\d+)')
 
@@ -993,3 +996,52 @@ def str2int(ss):
         return int("".join([n for n in ss if n.isdigit()])) * neg_mul
     except ValueError:
         return None
+
+def check_connection(addr):
+    """
+    Check if a port is available on the given IP address.
+
+    Args:
+        addr (str): The address to check, in the format "ip:port".
+
+    Returns:
+        bool: True if the port is available, False otherwise.
+    """
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.settimeout(3)
+        ip, port = addr.split(':')
+        result = sock.connect_ex((ip, int(port)))
+        return result == 0
+
+def get_lnk_dest(file):
+    try:
+        with open(file, 'rb') as stream:
+            content = stream.read()
+        # skip first 20 bytes (HeaderSize and LinkCLSID)
+        # read the LinkFlags structure (4 bytes)
+        lflags = struct.unpack('I', content[0x14:0x18])[0]
+        position = 0x18
+        # if the HasLinkTargetIDList bit is set then skip the stored IDList 
+        # structure and header
+        if (lflags & 0x01) == 1:
+            position = struct.unpack('H', content[0x4C:0x4E])[0] + 0x4E
+        last_pos = position
+        position += 0x04
+        # get how long the file information is (LinkInfoSize)
+        length = struct.unpack('I', content[last_pos:position])[0]
+        # skip 12 bytes (LinkInfoHeaderSize, LinkInfoFlags, and VolumeIDOffset)
+        position += 0x0C
+        # go to the LocalBasePath position
+        lbpos = struct.unpack('I', content[position:position+0x04])[0]
+        position = last_pos + lbpos
+        # read the string at the given position of the determined length
+        size= (length + last_pos) - position - 0x02
+        temp = struct.unpack('c' * size, content[position:position+size])
+        return ''.join([chr(ord(a)) for a in temp])
+    except Exception as e:
+        print(f"Error reading {file}: {e}")
+        return None
+
+def get_start_menu_programs(filter:str=''):
+    path = Path(os.getenv('PROGRAMDATA')) / 'Microsoft' / 'Windows' / 'Start Menu' / 'Programs'
+    return [get_lnk_dest(p) for p in path.glob('**/*.lnk') if p.is_file() and filter.lower() in p.name.lower()]
