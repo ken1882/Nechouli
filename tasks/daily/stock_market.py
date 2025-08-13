@@ -17,7 +17,8 @@ class StockMarketUI(BasePageUI):
             logger.info("No stocks to sell, skipping")
             return
         for e in expands.all():
-            e.click()
+            if 'disclosure' in e.get_attribute('id'):
+                e.click()
         table = self.page.locator('#postForm')
         companies = table.locator('tr[id]')
         flag_sold = False

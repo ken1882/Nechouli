@@ -7,21 +7,21 @@ from datetime import datetime
 class ShopWizardUI(BasePageUI):
 
     def main(self):
+        if self.config.ShopWizard_EnableActivePriceUpdate:
+            self.add_price_update_items()
         if self.config.stored.ShopWizardRequests.is_empty():
-            if self.config.ShopWizard_EnableActivePriceUpdate:
-                self.add_price_update_items()
             logger.info("No requests to process, skipping Shop Wizard")
             return True
         self.goto('https://www.neopets.com/shops/wizard.phtml')
-        if self.check_blocked():
-            return False
         self.process_requests()
         return True
 
     def add_price_update_items(self):
         added = 0
+        now_ts = datetime.now().timestamp()
         for i in self.config.stored.StockData.items+self.config.stored.InventoryData.items:
-            if jn.is_cached(i.name):
+            item = jn.get_item_details_by_name(i.name)
+            if item.get("price_timestamp", 0) > now_ts - jn.CACHE_TTL/2:
                 continue
             self.config.stored.ShopWizardRequests.add(i.name, 'price_update')
             added += 1
@@ -30,8 +30,8 @@ class ShopWizardUI(BasePageUI):
         if added >= self.config.ShopWizard_PriceUpdateBatchSize:
             return
         # update expiring items in jn cache
+        jn.load_cache()
         cache = sorted(jn.Database.values(), key=lambda x: x.get('price_timestamp', 0))
-        now_ts = datetime.now().timestamp()
         for item in cache:
             if item.get("price_timestamp", 0) > now_ts - jn.CACHE_TTL/2:
                 break
@@ -53,14 +53,17 @@ class ShopWizardUI(BasePageUI):
                 logger.warning(f"Failed to find price for {name}")
                 return
             if src == 'price_update':
-                jn.update_item_price(name, price)
+                jn.update_item_market_price(name, price)
+            self.goto('https://www.neopets.com/shops/wizard.phtml')
 
     def search_item_price(self, name: str):
         logger.info(f"Searching for item: {name}")
         if self.check_blocked():
             return None
         self.page.locator('#shopwizard').fill(name)
-        self.device.click('#submit_wizard')
+        with self.page.expect_response("**/wizard.php") as resp:
+                self.device.click('#submit_wizard')
+                resp.value.finished()
         if self.check_blocked():
             return None
         self.device.wait_for_element('.wizard-results-text')
@@ -71,18 +74,20 @@ class ShopWizardUI(BasePageUI):
             rows = self.page.locator('.wizard-results-price')
             if rows.count():
                 price = str2int(rows.first.text_content())
-                if price < ret:
+                if ret == 0 or price < ret:
                     ret = price
                     depth = 0
             logger.info(f"Found lowest price: {ret} for {name}, depth: {depth}")
             btn = self.page.locator('#resubmitWizard')
             self.device.scroll_to(loc=btn)
-            self.device.click(btn)
+            with self.page.expect_response("**/wizard.php") as resp:
+                self.device.click(btn)
+                resp.value.finished()
             depth += 1
         return ret
 
     def check_blocked(self):
-        content = self.page.content()
+        content = self.page.content().lower()
         if "too many searches" in content:
             logger.warning("Shop Wizard blocked due to too many searches, will retry later")
             return True

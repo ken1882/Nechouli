@@ -21,6 +21,7 @@ class ManualConfig:
     > VoidsWithin
     > QuickStock
     > DailyQuest > Restocking
+    > ShopWizard
     """
 
     """

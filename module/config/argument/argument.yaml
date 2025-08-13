@@ -184,6 +184,9 @@ ShopWizard:
       stored: StoredShopWizardRequests
       display: true
 
+VoidsWithin:
+  DelayForDailyFeed: true
+
 PlayerStorage:
   DailyQuestRestockTimesLeft:
     stored: StoredDailyQuestRestockCounter

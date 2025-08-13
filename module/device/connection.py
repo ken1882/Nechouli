@@ -188,6 +188,15 @@ class Connection:
                 "secure": True,
                 "sameSite": "Lax"
             }])
+            self.context.add_cookies([{
+                "name": "lang",
+                "value": "en",
+                "domain": ".neopets.com",
+                "path": "/",
+                "httpOnly": False,
+                "secure": True,
+                "sameSite": "Lax"
+            }])
             if self.config.Playwright_UseDefaultProfile:
                 self.page = self.new_page()
             else:

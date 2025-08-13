@@ -80,7 +80,6 @@ class BasePageUI(ModuleBase):
     def goto(self, url):
         try:
             self.device.goto(url)
-            self.execute_script('remove_antiadb') # Remove annoying popup showing adblock detected
         except TimeoutError:
             logger.warning("Page load timeout, assume main content loaded.")
         except PlaywrightError as e:
@@ -102,6 +101,10 @@ class BasePageUI(ModuleBase):
                         continue
             self.goto('https://www.neopets.com/questlog/') # quest won't start if not visited
             return self.goto(url)
+        try:
+            self.execute_script('remove_antiadb') # Remove annoying popup showing adblock detected
+        except PlaywrightError:
+            pass
 
     def execute_script(self, script_name):
         path = os.path.join('tasks', 'scripts', f'{script_name}.js')

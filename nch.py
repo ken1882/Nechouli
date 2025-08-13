@@ -179,6 +179,10 @@ class Nechouli(AzurLaneAutoScript):
         from tasks.utility.voids_within import VoidsWithinUI
         VoidsWithinUI(config=self.config, device=self.device).run()
 
+    def shop_wizard(self):
+        from tasks.utility.shop_wizard import ShopWizardUI
+        ShopWizardUI(config=self.config, device=self.device).run()
+
 if __name__ == '__main__':
     nch = Nechouli()
     nch.loop()

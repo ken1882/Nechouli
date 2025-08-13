@@ -47,7 +47,8 @@ class PetCaresUI(BasePageUI):
                 continue
             if any(pet.name == name for pet in self.pets):
                 continue
-            if node.bounding_box()['x'] < 0:
+            logger.info(node.bounding_box())
+            if node.bounding_box()['x'] < -100:
                 continue
             self.pets.append(Neopet(
                 name = name,
@@ -73,8 +74,10 @@ class PetCaresUI(BasePageUI):
             raise TaskError(f'Invalid pet index: {index}')
         self.selected_pet = self.pets[index]
         while True:
-            dx = self.selected_pet.locator.bounding_box()['x']
-            if 0 <= dx and dx <= 1100:
+            bb = self.selected_pet.locator.bounding_box()
+            logger.info(bb)
+            bw = bb['x'] + bb['width']
+            if 0 <= bw and bw <= 800:
                 break
             self.device.click('button[class="slick-next slick-arrow"]')
             self.device.wait(0.5)

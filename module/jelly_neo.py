@@ -88,7 +88,7 @@ def get_item_details_by_name(item_name, force=False, agent=None):
     if not agent:
         agent = Agent
     if not force and is_cached(item_name):
-        return Database[item_name]
+        return _redis_get_item(item_name) or Database.get(item_name)
 
     logger.info(f"Getting item details for {item_name}")
     qname = quote(item_name)
@@ -164,22 +164,21 @@ def get_item_details_by_name(item_name, force=False, agent=None):
 
 def load_cache(force_local=False):
     global Database
-    # --- Redis warm-up (optional) ---
     if _redis_enabled() and not force_local:
-        logger.info("Warming in-memory cache from Redis (SCAN)…")
+        logger.info("Loading cache from Redis...")
         try:
-            for k in redis_conn.scan_iter(f"{REDIS_KEY_PREFIX}*"):
-                iname = k.decode().removeprefix(REDIS_KEY_PREFIX)
+            cnt = 0
+            for k in redis_conn.scan_iter(f"{REDIS_KEY_PREFIX}*", count=1000):
+                iname = k.removeprefix(REDIS_KEY_PREFIX)
                 data = redis_conn.get(k)
                 if data:
                     Database[iname] = json.loads(data)
-            logger.info(f"Loaded {len(Database)} items from Redis")
-            return Database
+                    cnt += 1
+                if cnt % 1000 == 0:
+                    logger.info(f"Loaded {cnt} items from Redis so far...")
         except Exception as e:
             logger.warning(f"Redis SCAN failed: {e}")
-
-    # --- local JSON fallback ---
-    if os.path.exists(CACHE_FILE):
+    elif os.path.exists(CACHE_FILE):
         logger.info("Loading item cache from local file")
         try:
             with open(CACHE_FILE, "r") as f:
@@ -190,23 +189,17 @@ def load_cache(force_local=False):
     return Database
 
 
-def save_cache(item=None, padding=True, save_local=False):
+def save_cache(item=None, to_file=False, padding=True):
     global Database, DB_LOCK
 
     if item:
-        with DB_LOCK:
-            Database[item["name"].lower()] = item
-        _redis_set_item(item)          # per-item SETEX
-        if not save_local:
-            return
-    else:
-        # flush everything to Redis (rarely needed)
-        logger.info("Refreshing all redis items cache")
-        for itm in Database.values():
-            _redis_set_item(itm)
-        if not save_local:
-            return
-
+        if _redis_enabled():
+            _redis_set_item(item)
+        else:
+            with DB_LOCK:
+                Database[item["name"].lower()] = item
+    if not to_file:
+        return
     # local file persistence
     with DB_LOCK:
         with open(CACHE_FILE, "w") as f:
@@ -276,19 +269,19 @@ def batch_search(items, join=True):
     return ret
 
 
-def update_item_price(item_name, price):
+def update_item_market_price(item_name, price):
     global Database
-    logger.info(f"Updating price for {item_name} to {price}")
+    logger.info(f"Updating market price for {item_name} to {price}")
     iname = item_name.lower()
     if iname in Database:
-        Database[iname]["price"] = price
+        Database[iname]["market_price"] = price
         Database[iname]["price_timestamp"] = datetime.now().timestamp()
         save_cache(Database[iname])
         return True
     else:
         obj = get_item_details_by_name(iname)
         if obj:
-            obj["price"] = price
+            obj["market_price"] = price
             obj["price_timestamp"] = datetime.now().timestamp()
             save_cache(obj)
             return True

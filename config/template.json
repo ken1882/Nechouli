@@ -367,10 +367,10 @@
       "ServerUpdate": "00:00"
     },
     "ShopWizard": {
-      "EnableActivePriceUpdate": true,
+      "EnableActivePriceUpdate": false,
       "PriceUpdateInterval": 30,
       "PriceUpdateBatchSize": 10,
-      "PriceUpdateRescans": 3,
+      "PriceUpdateRescans": 5,
       "ShopWizardRequests": {}
     }
   },
@@ -380,6 +380,9 @@
       "NextRun": "2020-01-01 00:00:00",
       "Command": "VoidsWithin",
       "ServerUpdate": "00:00"
+    },
+    "VoidsWithin": {
+      "DelayForDailyFeed": true
     }
   },
   "InventoryTool": {

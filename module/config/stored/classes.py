@@ -245,7 +245,7 @@ class StoredShopWizardRequests(StoredBase):
     requests: list[str] = []
 
     def add(self, item_name: str, source: str):
-        self.requests.append(f'{item_name}@{source}')
+        self.requests = self.requests + [f'{item_name}@{source}']
 
     def clear(self):
         self.requests = []
@@ -257,7 +257,9 @@ class StoredShopWizardRequests(StoredBase):
         """
         if not self.requests:
             return ''
-        return self.requests.pop(0)
+        ret = self.requests[0]
+        self.requests = self.requests[1:]
+        return ret
 
     def is_empty(self) -> bool:
         return not self.requests

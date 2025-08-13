@@ -507,6 +507,16 @@
       "help": "Requests made to Shop Wizard from tasks, will block if you're on fairy quest"
     }
   },
+  "VoidsWithin": {
+    "_info": {
+      "name": "Voids Within",
+      "help": ""
+    },
+    "DelayForDailyFeed": {
+      "name": "Delay For Daily Feed",
+      "help": "Delay the task until feeding pet daily quest is completed (dispatched pets are always bloated)"
+    }
+  },
   "PlayerStorage": {
     "_info": {
       "name": "Storage Data",

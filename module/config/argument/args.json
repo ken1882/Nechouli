@@ -1247,7 +1247,7 @@
     "ShopWizard": {
       "EnableActivePriceUpdate": {
         "type": "checkbox",
-        "value": true
+        "value": false
       },
       "PriceUpdateInterval": {
         "type": "input",
@@ -1259,7 +1259,7 @@
       },
       "PriceUpdateRescans": {
         "type": "input",
-        "value": 3
+        "value": 5
       },
       "ShopWizardRequests": {
         "type": "stored",
@@ -1293,6 +1293,12 @@
         "type": "input",
         "value": "00:00",
         "display": "hide"
+      }
+    },
+    "VoidsWithin": {
+      "DelayForDailyFeed": {
+        "type": "checkbox",
+        "value": true
       }
     }
   },

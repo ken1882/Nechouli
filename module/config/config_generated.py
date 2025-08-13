@@ -84,11 +84,14 @@ class GeneratedConfig:
     StockMarket_SellProfitRatio = 20
 
     # Group `ShopWizard`
-    ShopWizard_EnableActivePriceUpdate = True
+    ShopWizard_EnableActivePriceUpdate = False
     ShopWizard_PriceUpdateInterval = 30
     ShopWizard_PriceUpdateBatchSize = 10
-    ShopWizard_PriceUpdateRescans = 3
+    ShopWizard_PriceUpdateRescans = 5
     ShopWizard_ShopWizardRequests = {}
+
+    # Group `VoidsWithin`
+    VoidsWithin_DelayForDailyFeed = True
 
     # Group `PlayerStorage`
     PlayerStorage_DailyQuestRestockTimesLeft = {}

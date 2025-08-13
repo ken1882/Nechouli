@@ -12,6 +12,9 @@ class QuickStockUI(BasePageUI):
     def main(self):
         self.items = []
         self._stocked = False
+        self.goto("https://www.neopets.com/market.phtml?type=your")
+        used, free = self.get_stock_capacity()
+        self.free_stocks = free
         self.goto('https://www.neopets.com/quickstock.phtml')
         self.scan_all_items()
         self.process_actions()
@@ -95,6 +98,12 @@ class QuickStockUI(BasePageUI):
         cur_y = 100
         for item in self.items:
             acts = item._locator.locator('input').all()
+            if item._act == 'stock':
+                if self.free_stocks <= 0:
+                    logger.warning(f"No free stocks available for item {item.name}, deposit instead")
+                    item._act = 'deposit'
+                    continue
+                self.free_stocks -= 1
             for act in reversed(acts):
                 aname = act.get_attribute('value')
                 if aname == item._act:
@@ -109,12 +118,16 @@ class QuickStockUI(BasePageUI):
         self.device.scroll_to(loc=btn)
         self.device.click(btn)
 
+    def get_stock_capacity(self):
+        stock_text = self.page.locator('center').first.text_content().split(':')
+        used, free = str2int(stock_text[-2]), str2int(stock_text[-1])
+        logger.info(f"Stock capacity: {used+free} ({used}/{free})")
+        return used, free
+
     def update_stock_price(self):
         self.goto("https://www.neopets.com/market.phtml?type=your")
-        stock_text = self.page.locator('center').first.text_content().split(':')
-        cap = str2int(stock_text[-1]) + str2int(stock_text[-2])
-        self.config.stored.StockData.capacity = cap
-        logger.info(f"Stock capacity: {cap} ({stock_text[-1]}/{stock_text[-2]})")
+        used, free = self.get_stock_capacity()
+        self.config.stored.StockData.capacity = used + free
         stocked_data = []
         self.device.scroll_to(0, 100)
         while True:

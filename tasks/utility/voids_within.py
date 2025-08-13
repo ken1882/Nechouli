@@ -6,6 +6,9 @@ class VoidsWithinUI(BasePageUI):
     def main(self):
         self.goto('https://www.neopets.com/hospital/volunteer.phtml')
         done = False
+        do_send = True
+        if self.config.VoidsWithin_DelayForDailyFeed and self.config.stored.DailyQuestFeedTimesLeft.value:
+            do_send = False
         for i in [5, 4, 3, 2, 1]:
             pane = self.page.locator(f'#Act{i}Pane')
             btn = self.page.locator(f'#Act{i}PaneBtn')
@@ -15,14 +18,18 @@ class VoidsWithinUI(BasePageUI):
                 self.device.wait(0.5)
             joins = pane.locator('button[id*="VolunteerButton"]')
             for j in joins.all():
-                done = self.process_shift(j)
+                done = self.process_shift(j, do_send)
                 if done:
                     break
             if done:
                 break
+        if not do_send:
+            logger.info("Delay task for to daily feed delay")
+            self.config.task_delay(minute=60)
+            return None
         return True
 
-    def process_shift(self, shift):
+    def process_shift(self, shift, send=True):
         if shift.text_content() == 'Cancel':
             return False
         if shift.text_content() == 'Complete':
@@ -30,6 +37,8 @@ class VoidsWithinUI(BasePageUI):
             back = self.device.wait_for_element('.popup-exit-icon')
             self.device.click(back)
             self.device.wait(0.5)
+        if not send:
+            return False
         self.device.click(shift)
         confirm = self.page.locator('button').filter(has_text='Ready')
         self.device.click(confirm)
