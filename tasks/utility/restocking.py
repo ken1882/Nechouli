@@ -47,7 +47,7 @@ class RestockingUI(BasePageUI):
                     self.device.wait(4) # neopets enforce 5 seconds cooldown between purchases
                 elif success == None:
                     logger.info("Nothing to buy in shop, skipping")
-                    continue
+                    break
                 if self.config.stored.DailyQuestRestockTimesLeft.value and success:
                     self.config.stored.DailyQuestRestockTimesLeft.sub()
                     if self.config.stored.DailyQuestRestockTimesLeft.value <= 0:
@@ -229,7 +229,7 @@ class RestockingUI(BasePageUI):
         self.last_captcha_url = url
 
     def has_enough_np(self):
-        return self.config.stored.InventoryData.np >= self.config.ProfileSettings_MinNpKeep
+        return self.update_np() >= self.config.ProfileSettings_MinNpKeep
 
     def eval_bargain_script(self, offers:list, purposes:list, depth=0):
         script = self.config.Restocking_BargainStrategyScript

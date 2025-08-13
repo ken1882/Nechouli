@@ -28,12 +28,12 @@ class SnowagerUI(BasePageUI):
         curt = localt2nst(datetime.now())
         return (curt.month == 12) or (curt.month == 1 and curt.day <= 3)
 
-    def calc_next_run(self, _):
+    def calc_next_run(self, *args):
         future = localt2nst(datetime.now())
         candidates = []
         for r in self.ranges:
             candidate = future.replace(hour=r.start, minute=0, second=0)
-            # If we're already past or inside the awake window, push to next day.
+        # If we're already past or inside the awake window, push to next day.
             if candidate <= future:
                 candidate += timedelta(days=1)
             candidates.append(candidate)

@@ -126,9 +126,10 @@ class BasePageUI(ModuleBase):
             return True
         return False
 
-    def update_np(self):
+    def update_np(self) -> int:
         node = self.page.locator('#npanchor')
         if not node.count():
-            return
+            return self.config.stored.InventoryData.np or 0
         np = str2int(node.first.text_content()) or 0
         self.config.stored.InventoryData.np = np
+        return np
