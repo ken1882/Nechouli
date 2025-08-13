@@ -182,6 +182,9 @@ class RestockingUI(BasePageUI):
         elif 'SOLD OUT' in page_content:
             logger.info("Failed to purchase item, reason: sold out")
             return False
+        elif 'Server Error' in page_content:
+            logger.error("Server error occurred")
+            return False
         purpose_node = self.page.locator('#shopkeeper_makes_deal')
         self.device.scroll_to(loc=purpose_node)
         text = purpose_node.text_content().strip()
