@@ -176,6 +176,10 @@ StockMarket:
   SellProfitRatio: 20
 
 ShopWizard:
+  EnableActivePriceUpdate: false
+  PriceUpdateInterval: 30
+  PriceUpdateBatchSize: 10
+  PriceUpdateRescans: 5
   ShopWizardRequests:
       stored: StoredShopWizardRequests
       display: true

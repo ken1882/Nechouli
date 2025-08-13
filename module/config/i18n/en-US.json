@@ -486,6 +486,22 @@
       "name": "Shop Wizard",
       "help": ""
     },
+    "EnableActivePriceUpdate": {
+      "name": "Enable Active Price Update",
+      "help": "Update market price of items in your shop and cache db by searching in Shop Wizard."
+    },
+    "PriceUpdateInterval": {
+      "name": "Price Update Interval",
+      "help": "Interval in minutes running price update task."
+    },
+    "PriceUpdateBatchSize": {
+      "name": "Price Update Batch Size",
+      "help": "Number of items to update in each batch."
+    },
+    "PriceUpdateRescans": {
+      "name": "Price Update Rescans",
+      "help": "Number of times to rescan in shop wizard for same item when not finding lower price."
+    },
     "ShopWizardRequests": {
       "name": "Shop Wizard Requests",
       "help": "Requests made to Shop Wizard from tasks, will block if you're on fairy quest"

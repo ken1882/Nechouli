@@ -31,6 +31,7 @@ for i in range(WORKER_COUNT):
     AgentPool[-1].headers.update(HTTP_HEADERS)
 
 REDIS_MEGA_KEY = "jellyneo_itemdb"  # Redis HASH key; each field is an item name (lowercased)
+REDIS_KEY_PREFIX = "jellyneo_itemdb:"
 REDIS_CACHE = os.getenv("REDIS_CACHE", None)
 
 redis_conn = None
@@ -50,12 +51,15 @@ def _redis_enabled() -> bool:
     return redis_conn is not None
 
 
-def _redis_hget_item(iname: str):
-    """Fetch a single item JSON from Redis HASH and load into memory cache."""
+def _redis_key(iname: str) -> str:
+    return f"{REDIS_KEY_PREFIX}{iname}"
+
+def _redis_get_item(iname: str):
+    """GET the JSON value for one item; add to in-memory DB."""
     if not _redis_enabled():
         return None
     try:
-        data = redis_conn.hget(REDIS_MEGA_KEY, iname)
+        data = redis_conn.get(_redis_key(iname))
         if not data:
             return None
         obj = json.loads(data)
@@ -63,20 +67,20 @@ def _redis_hget_item(iname: str):
             Database[iname] = obj
         return obj
     except Exception as e:
-        logger.warning(f"Redis HGET failed for {iname}: {e}")
+        logger.warning(f"Redis GET failed for {iname}: {e}")
         return None
 
-
-def _redis_hset_item(item: dict):
-    """Write a single item JSON into Redis HASH."""
+def _redis_set_item(item: dict, ttl: int = 0):
+    """SETEX one item with per-key TTL."""
     if not _redis_enabled() or not item or "name" not in item:
         return
+    if not ttl:
+        ttl = CACHE_TTL
     try:
         iname = item["name"].lower()
-        redis_conn.hset(REDIS_MEGA_KEY, iname, json.dumps(item))
+        redis_conn.setex(_redis_key(iname), ttl, json.dumps(item))
     except Exception as e:
-        logger.warning(f"Redis HSET failed for {item.get('name')}: {e}")
-
+        logger.warning(f"Redis SETEX failed for {item.get('name')}: {e}")
 
 def get_item_details_by_name(item_name, force=False, agent=None):
     item_name = item_name.lower()
@@ -154,28 +158,32 @@ def get_item_details_by_name(item_name, force=False, agent=None):
         logger.exception(e)
         return ret
 
-    save_cache(ret)  # will HSET single field
+    save_cache(ret)
     return ret
 
 
 def load_cache(force_local=False):
     global Database
+    # --- Redis warm-up (optional) ---
     if _redis_enabled() and not force_local:
-        logger.info("Loading item cache from Redis")
+        logger.info("Warming in-memory cache from Redis (SCAN)…")
         try:
-            if redis_conn.exists(REDIS_MEGA_KEY):
-                # bulk load
-                raw = redis_conn.hgetall(REDIS_MEGA_KEY)
-                with DB_LOCK:
-                    Database = {k: json.loads(v) for k, v in raw.items()}
+            for k in redis_conn.scan_iter(f"{REDIS_KEY_PREFIX}*"):
+                iname = k.decode().removeprefix(REDIS_KEY_PREFIX)
+                data = redis_conn.get(k)
+                if data:
+                    Database[iname] = json.loads(data)
+            logger.info(f"Loaded {len(Database)} items from Redis")
+            return Database
         except Exception as e:
-            logger.warning(f"Redis HGETALL failed: {e}")
-    elif os.path.exists(CACHE_FILE):
+            logger.warning(f"Redis SCAN failed: {e}")
+
+    # --- local JSON fallback ---
+    if os.path.exists(CACHE_FILE):
         logger.info("Loading item cache from local file")
         try:
-            with open(CACHE_FILE, 'r') as f:
-                with DB_LOCK:
-                    Database = json.loads(f.read())
+            with open(CACHE_FILE, "r") as f:
+                Database = json.load(f)
         except Exception:
             pass
     logger.info(f"Loaded {len(Database)} items")
@@ -188,51 +196,40 @@ def save_cache(item=None, padding=True, save_local=False):
     if item:
         with DB_LOCK:
             Database[item["name"].lower()] = item
-        if _redis_enabled():
-            _redis_hset_item(item)
-            if not save_local:
-                return
+        _redis_set_item(item)          # per-item SETEX
+        if not save_local:
+            return
     else:
-        if _redis_enabled():
-            try:
-                mapping = {}
-                with DB_LOCK:
-                    for k, v in Database.items():
-                        mapping[k] = json.dumps(v)
-                if mapping:
-                    redis_conn.hset(REDIS_MEGA_KEY, mapping=mapping)
-                if not save_local:
-                    return
-            except Exception as e:
-                logger.warning(f"Redis bulk HSET failed: {e}")
+        # flush everything to Redis (rarely needed)
+        logger.info("Refreshing all redis items cache")
+        for itm in Database.values():
+            _redis_set_item(itm)
+        if not save_local:
+            return
 
-    # Local file persistence (optional)
+    # local file persistence
     with DB_LOCK:
-        with open(CACHE_FILE, 'w') as f:
-            if padding:
-                json.dump(Database, f, indent=4)
-            else:
-                json.dump(Database, f)
+        with open(CACHE_FILE, "w") as f:
+            json.dump(Database, f, indent=4 if padding else None)
 
 
 def is_cached(item_name):
     iname = item_name.lower()
     obj = Database.get(iname)
     if obj is None and _redis_enabled():
-        obj = _redis_hget_item(iname)
+        obj = _redis_get_item(iname)   # ← uses GET instead of HGET
     if obj is None:
         return False
 
-    # rarity > 300 => always accept cached
+    # cash item (rarity > 300) never refreshes
     if obj.get("rarity", 0) > 300:
         return True
 
+    # staleness check vs. our TTL window
     ts = obj.get("price_timestamp")
     if not ts:
         return False
-    if (datetime.now() - datetime.fromtimestamp(ts)).total_seconds() > CACHE_TTL:
-        return False
-    return True
+    return (datetime.now() - datetime.fromtimestamp(ts)).total_seconds() <= CACHE_TTL
 
 
 def batch_search_worker(items, ret, worker_id):
@@ -279,14 +276,13 @@ def batch_search(items, join=True):
     return ret
 
 
-def update_item_price(item, price):
+def update_item_price(item_name, price):
     global Database
-    logger.info(f"Updating price for {item} to {price}")
-    iname = item.lower()
+    logger.info(f"Updating price for {item_name} to {price}")
+    iname = item_name.lower()
     if iname in Database:
         Database[iname]["price"] = price
         Database[iname]["price_timestamp"] = datetime.now().timestamp()
-        # Persist only this item to Redis
         save_cache(Database[iname])
         return True
     else:
@@ -303,9 +299,11 @@ def clear_cache():
     Database = {}
     if _redis_enabled():
         try:
-            redis_conn.delete(REDIS_MEGA_KEY)
+            logger.info("Deleting all item keys from Redis …")
+            for k in redis_conn.scan_iter(f"{REDIS_KEY_PREFIX}*"):
+                redis_conn.delete(k)
         except Exception as e:
-            logger.warning(f"Redis DELETE failed: {e}")
+            logger.warning(f"Redis delete scan failed: {e}")
     if os.path.exists(CACHE_FILE):
         os.remove(CACHE_FILE)
     logger.info("Cache cleared")

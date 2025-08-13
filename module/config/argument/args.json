@@ -1245,6 +1245,22 @@
       }
     },
     "ShopWizard": {
+      "EnableActivePriceUpdate": {
+        "type": "checkbox",
+        "value": true
+      },
+      "PriceUpdateInterval": {
+        "type": "input",
+        "value": 30
+      },
+      "PriceUpdateBatchSize": {
+        "type": "input",
+        "value": 10
+      },
+      "PriceUpdateRescans": {
+        "type": "input",
+        "value": 3
+      },
       "ShopWizardRequests": {
         "type": "stored",
         "value": {},

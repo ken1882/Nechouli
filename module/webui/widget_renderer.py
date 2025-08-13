@@ -43,7 +43,7 @@ def handle_inventory(kwargs):
             text += f" (has {item.quantity} stocked selling for {item.stocked_price} NP)"
         content = f'''
         <div class="neoitem" onmouseover="{generate_item_info_script(item)}">
-            <img src="{item.image}" alt="{item.name}">
+            <img src="{item.image}" alt="{item.name}" onclick="selectItem(event)">
         </div>
         '''
         if item.category == 'cash':
@@ -113,6 +113,7 @@ def put_item_info_box(_):
     put_html('''
     <script>
         function changeItemInfo(i,n,d,q,t,r,mp,pd,sp,jl){
+            if(window._selectedItem){ return; }
             document.getElementById("item_info_image").innerHTML = `<img src="${i}" alt="${n}">`;
             document.getElementById("item_info_name").textContent = n;
             document.getElementById("item_info_description").textContent = d;
@@ -133,6 +134,22 @@ def put_item_info_box(_):
             } else {
                 document.getElementById("item_info_stocked_price_container").style.display = "none";
             }
+        }
+
+        function selectItem(e) {
+            p = window._selectedItem;
+            if (p) {
+                p.parentElement.classList.remove('selected');
+                if (p == e.target) {
+                    e.target.parentElement.classList.remove('selected');
+                    window._selectedItem = null;
+                    return;
+                }
+            }
+            e.target.parentElement.classList.add('selected');
+            window._selectedItem = null;
+            e.target.parentElement.onmouseover();
+            window._selectedItem = e.target;
         }
     </script>
     ''')

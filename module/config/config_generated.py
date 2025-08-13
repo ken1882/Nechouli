@@ -84,6 +84,10 @@ class GeneratedConfig:
     StockMarket_SellProfitRatio = 20
 
     # Group `ShopWizard`
+    ShopWizard_EnableActivePriceUpdate = True
+    ShopWizard_PriceUpdateInterval = 30
+    ShopWizard_PriceUpdateBatchSize = 10
+    ShopWizard_PriceUpdateRescans = 3
     ShopWizard_ShopWizardRequests = {}
 
     # Group `PlayerStorage`

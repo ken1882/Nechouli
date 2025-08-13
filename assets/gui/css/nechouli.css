@@ -32,3 +32,8 @@
     font-size: larger;
     padding-bottom: 1rem;
 }
+
+.selected {
+    background-color: #7289da;
+    color: #ffffff;
+}

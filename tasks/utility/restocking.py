@@ -85,7 +85,7 @@ class RestockingUI(BasePageUI):
             if self.config.Restocking_ActiveRestocking:
                 return self.config.task_delay(minute=self.config.Restocking_ActiveRestockInterval)
             else:
-                return self.config.task_cancel('Restocking')
+                return self.config.task_cancel()
         super().calc_next_run(s)
 
     def do_shopping(self, shop_id: int):

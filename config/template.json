@@ -367,6 +367,10 @@
       "ServerUpdate": "00:00"
     },
     "ShopWizard": {
+      "EnableActivePriceUpdate": true,
+      "PriceUpdateInterval": 30,
+      "PriceUpdateBatchSize": 10,
+      "PriceUpdateRescans": 3,
       "ShopWizardRequests": {}
     }
   },
