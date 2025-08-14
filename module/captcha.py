@@ -2,6 +2,7 @@ import os
 from module.logger import logger
 from datetime import datetime
 from PIL import Image, ImageDraw
+from random import random
 
 SAVE_DIR = './.captcha'
 LAST_IMAGE_FILE = ''
@@ -33,7 +34,7 @@ def grab_captcha(page):
         return
     try:
         captcha = page.locator('input[type="image"][src*="/captcha_show.phtml"]')
-        filename = f"{SAVE_DIR}/captcha_{int(datetime.now().timestamp())}.png"
+        filename = f"{SAVE_DIR}/captcha_{int(datetime.now().timestamp())}_{int(random()*10**6)}.png"
         with open(filename, 'wb') as f:
             f.write(captcha.screenshot(path=filename))
         img = Image.open(filename)

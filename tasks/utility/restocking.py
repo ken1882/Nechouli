@@ -200,7 +200,11 @@ class RestockingUI(BasePageUI):
         new_offers.append(bargain_price)
         logger.info(f"Making offer with {bargain_price} NP")
         self.device.input_number('input[name=current_offer]', bargain_price)
-        self.solve_captcha()
+        try:
+            self.solve_captcha()
+        except ScriptError as e:
+            logger.error(f"Captcha solving failed: {e}")
+            return False
         while True:
             try:
                 if 'accept your offer' in self.page.content():
@@ -264,9 +268,19 @@ class RestockingUI(BasePageUI):
             raise ValueError(f"Script execution failed: {e}")
 
     def solve_captcha(self):
-        pos = captcha.solve(self.page, debug=self.config.Restocking_EnableCaptchaDebug)
-        if not pos:
-            raise ScriptError("Failed to solve captcha")
+        depth = 0
+        while depth < 3:
+            pos = captcha.solve(self.page, debug=self.config.Restocking_EnableCaptchaDebug)
+            if not pos:
+                depth += 1
+                logger.warning(f"Captcha solving failed, retrying {depth}/3")
+                self.device.wait(1)
+                if depth >= 3:
+                    logger.error("Failed to solve captcha after 3 attempts, giving up")
+                    raise ScriptError("Captcha solving failed after 3 attempts")
+                continue
+            else:
+                break
         captcha_canvas = self.page.locator('input[type="image"][src*="/captcha_show.phtml"]')
         bb = captcha_canvas.bounding_box()
         mx, my = pos

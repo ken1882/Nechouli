@@ -102,8 +102,8 @@ class QuickStockUI(BasePageUI):
                 if self.free_stocks <= 0:
                     logger.warning(f"No free stocks available for item {item.name}, deposit instead")
                     item._act = 'deposit'
-                    continue
-                self.free_stocks -= 1
+                else:
+                    self.free_stocks -= 1
             for act in reversed(acts):
                 aname = act.get_attribute('value')
                 if aname == item._act:

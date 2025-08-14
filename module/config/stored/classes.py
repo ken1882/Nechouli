@@ -242,7 +242,17 @@ class StoredItemContainer(StoredCounter):
         return bool(self.items)
 
 class StoredShopWizardRequests(StoredBase):
-    requests: list[str] = []
+    value: list[str] = []
+
+    @property
+    def requests(self):
+        return self.value
+
+    @requests.setter
+    def requests(self, value: list[str]):
+        if not isinstance(value, list):
+            raise TypeError(f'ShopWizardRequests must be a list, got {type(value)}')
+        self.value = value
 
     def add(self, item_name: str, source: str):
         self.requests = self.requests + [f'{item_name}@{source}']

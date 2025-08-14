@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from threading import Thread, Lock
 from urllib.parse import quote
 from dotenv import load_dotenv
-import json
+import orjson
 import requests
 
 load_dotenv()
@@ -62,7 +62,7 @@ def _redis_get_item(iname: str):
         data = redis_conn.get(_redis_key(iname))
         if not data:
             return None
-        obj = json.loads(data)
+        obj = orjson.loads(data)
         with DB_LOCK:
             Database[iname] = obj
         return obj
@@ -78,7 +78,7 @@ def _redis_set_item(item: dict, ttl: int = 0):
         ttl = CACHE_TTL
     try:
         iname = item["name"].lower()
-        redis_conn.setex(_redis_key(iname), ttl, json.dumps(item))
+        redis_conn.setex(_redis_key(iname), ttl, orjson.dumps(item))
     except Exception as e:
         logger.warning(f"Redis SETEX failed for {item.get('name')}: {e}")
 
@@ -165,24 +165,42 @@ def get_item_details_by_name(item_name, force=False, agent=None):
 def load_cache(force_local=False):
     global Database
     if _redis_enabled() and not force_local:
-        logger.info("Loading cache from Redis...")
+        logger.info("Loading cache from Redis (batch SCAN/MGET)…")
         try:
-            cnt = 0
-            for k in redis_conn.scan_iter(f"{REDIS_KEY_PREFIX}*", count=1000):
-                iname = k.removeprefix(REDIS_KEY_PREFIX)
-                data = redis_conn.get(k)
-                if data:
-                    Database[iname] = json.loads(data)
-                    cnt += 1
-                if cnt % 1000 == 0:
-                    logger.info(f"Loaded {cnt} items from Redis so far...")
+            prefix   = REDIS_KEY_PREFIX
+            cursor   = 0
+            batch_sz = 20_000          # SCAN hint
+            total    = 0
+            while True:
+                cursor, keys = redis_conn.scan(
+                    cursor=cursor,
+                    match=f"{REDIS_KEY_PREFIX}*",
+                    count=batch_sz
+                )
+                if keys:
+                    # bulk fetch values for this batch
+                    values = redis_conn.mget(keys)
+                    for k, v in zip(keys, values):
+                        if v is None:
+                            continue
+                        iname = k[len(prefix):]
+                        try:
+                            Database[iname] = orjson.loads(v)
+                            total += 1
+                        except orjson.JSONDecodeError:
+                            logger.debug("Bad JSON in key %s", k)
+                    logger.info("Loaded %d items so far...", total)
+                if cursor == 0:
+                    break
+            logger.info("Finished Redis warm-up: %d items loaded", total)
+            return Database
         except Exception as e:
-            logger.warning(f"Redis SCAN failed: {e}")
+            logger.warning("Redis SCAN/MGET failed: %s", e)
     elif os.path.exists(CACHE_FILE):
         logger.info("Loading item cache from local file")
         try:
             with open(CACHE_FILE, "r") as f:
-                Database = json.load(f)
+                Database = orjson.load(f)
         except Exception:
             pass
     logger.info(f"Loaded {len(Database)} items")
@@ -203,7 +221,7 @@ def save_cache(item=None, to_file=False, padding=True):
     # local file persistence
     with DB_LOCK:
         with open(CACHE_FILE, "w") as f:
-            json.dump(Database, f, indent=4 if padding else None)
+            orjson.dump(Database, f, indent=4 if padding else None)
 
 
 def is_cached(item_name):

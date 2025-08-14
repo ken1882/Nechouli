@@ -56,7 +56,7 @@ Playwright:
       --disable-features=IsolateOrigins,site-per-process
       --disable-infobars
 ProfileSettings:
-  MinNpKeep: 20000
+  MinNpKeep: 100000
   JellyNeoExpiry: 168
   TaskSoftTerminationTime: 5
 
@@ -140,7 +140,7 @@ Restocking:
       return ret
 QuickStock:
   KeepInventorySlot: 5
-  DepositValue: 90000
+  DepositValue: 100000
   RestockProfit: 1000
   CategoryKeeps:
     type: textarea

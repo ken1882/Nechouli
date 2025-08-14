@@ -341,7 +341,6 @@ def product_stored_row(key, value):
 
 def put_arg_stored(kwargs: T_Output_Kwargs) -> Output:
     name: str = kwargs["name"]
-    # kwargs["disabled"] = True
     if renderer.can_handle(name):
         return renderer.render(name, kwargs)
 
@@ -351,7 +350,9 @@ def put_arg_stored(kwargs: T_Output_Kwargs) -> Output:
     time_ = values.pop("time", "")
     comment = values.pop("comment", "")
 
-    if value != "" and total != "":
+    if type(value) is list:
+        return renderer.handle_list(kwargs, value)
+    elif value != "" and total != "":
         # 0 / 100
         rows = [put_scope(f"dashboard-value-{name}", [
             put_text(value).style("--dashboard-value--"),

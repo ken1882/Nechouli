@@ -1,3 +1,4 @@
+from turtle import st
 from pywebio.output import *
 from pywebio.session import run_js
 from pywebio.io_ctrl import Output
@@ -172,6 +173,25 @@ def generate_item_info_script(item: 'NeoItem'):
 
 def handle_deposit(kwargs):
     pass
+
+def handle_list(kwargs, value: list):
+    name = kwargs["name"]
+    html = "<ol>"
+    for v in value:
+        html += f'''
+        <li>{v}</li>
+        '''
+    html += "</ol>"
+    return put_scope(
+        f"arg_container-stored-{name}",
+        [
+            get_title_help(kwargs),
+            put_scope(
+                f"arg_stored-stored-value-{name}",
+                [put_html(html)],
+            )
+        ]
+    )
 
 HANDLE_TABLE = {
     "InventoryTool_PlayerStorage_InventoryData": handle_inventory,

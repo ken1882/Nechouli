@@ -76,3 +76,4 @@ uvicorn[standard]==0.17.6  # via -r requirements-in.txt
 watchgod==0.8.2           # via uvicorn
 wcwidth==0.2.6            # via prettytable
 websockets==11.0.3        # via uvicorn
+orjson==3.11.2            # via -r requirements-in.txt
