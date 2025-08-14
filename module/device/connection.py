@@ -223,6 +223,7 @@ class Connection:
         if self.page:
             self.page.close()
         self.page = self.new_page()
+        self.page.goto('https://www.neopets.com/questlog/')
 
     def new_page(self):
         page = self.context.new_page()

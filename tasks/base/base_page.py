@@ -35,6 +35,7 @@ class BasePageUI(ModuleBase):
             logger.error(f"Playwright error:")
             logger.exception(e)
             logger.error("Nechouli will skip this task, if this keeps happening, please report to dev.")
+            self.device.respawn_page()
             return self.calc_next_run('failed')
         except Exception as e:
             raise e

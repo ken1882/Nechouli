@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 from threading import Thread, Lock
 from urllib.parse import quote
 from dotenv import load_dotenv
+from time import sleep
 import orjson
 import requests
 
@@ -93,7 +94,17 @@ def get_item_details_by_name(item_name, force=False, agent=None):
     logger.info(f"Getting item details for {item_name}")
     qname = quote(item_name)
     url = f"https://items.jellyneo.net/search?name={qname}&name_type=3"
-    response = agent.get(url)
+    depth = 0
+    while True:
+        try:
+            response = agent.get(url)
+            break
+        except Exception as e:
+            logger.warning(f"Failed to get item details for {item_name}: {e}")
+            depth += 1
+            sleep(2 ** depth)
+            if depth >= 3:
+                raise e
     page = BS(response.content, "html.parser")
     ret = {
         "id": "",
