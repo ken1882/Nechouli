@@ -19,14 +19,14 @@ class TrudysSurpriseUI(BasePageUI):
             return
         self.dismiss_popup()
         depth = 0
-        while not assets.play.match_template_luma(self.device.screenshot(frame), direct_match=1):
+        while not assets.play.match_template_luma(self.device.screenshot(), 0.6, direct_match=1):
             self.device.wait(1)
             depth += 1
             if depth > 10:
                 logger.warning("Failed to find play button")
                 return False
         mx, my = assets.play.button_offset
-        self.device.click((mx+80, my+25))
+        self.device.click((int(mx+80), int(my+30)))
         logger.info("Clicked, wait for result")
         self.device.wait_for_element('#trudyPrizeTitle', timeout=30)
         return True

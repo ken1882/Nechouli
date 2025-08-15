@@ -11,7 +11,14 @@ class Nechouli(AzurLaneAutoScript):
     def loop(self):
         jn.CACHE_TTL = self.config.ProfileSettings_JellyNeoExpiry * 3600
         self.device.start_browser()
-        self.device.page.goto('https://www.neopets.com/questlog/')
+        while True:
+            try:
+                self.device.page.goto('https://www.neopets.com/questlog/')
+            except Exception as e:
+                logger.error(f"Failed to navigate to quest log: {e}")
+                self.device.respawn_page()
+                continue
+            break
         self.device.wait(3) # quest won't start if not visited
         if self.config.Playwright_CleanPagesOnStart:
             self.device.clean_redundant_pages()
