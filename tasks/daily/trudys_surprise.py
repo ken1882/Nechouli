@@ -1,5 +1,6 @@
 from module.logger import logger
 from tasks.base.base_page import BasePageUI
+from tasks.daily.assets import assets_daily_trudys_surprise as assets
 
 class TrudysSurpriseUI(BasePageUI):
 
@@ -16,8 +17,15 @@ class TrudysSurpriseUI(BasePageUI):
             logger.warning("Slot frame not found")
             return
         self.dismiss_popup()
-        self.device.wait(2)
-        self.device.click(frame, y_mul=0.85)
+        depth = 0
+        while not assets.play.match_template_luma(self.device.screenshot(frame), direct_match=1):
+            self.device.wait(1)
+            depth += 1
+            if depth > 10:
+                logger.warning("Failed to find play button")
+                return False
+        mx, my = assets.play.button_offset
+        self.device.click((mx+80, my+25))
         logger.info("Clicked, wait for result")
         self.device.wait_for_element('#trudyPrizeTitle', timeout=30)
         return True
