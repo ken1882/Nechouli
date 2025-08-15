@@ -11,7 +11,8 @@ class TrudysSurpriseUI(BasePageUI):
             logger.warning("Canvas not found")
             return
         self.dismiss_popup()
-        self.device.scroll_to(0, 200)
+        bb = canvas.bounding_box()
+        self.device.scroll_to(0, bb['y']+100)
         frame = self.page.locator("#frameTest")
         if not frame.count():
             logger.warning("Slot frame not found")
