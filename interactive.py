@@ -1,4 +1,5 @@
 import re
+from PIL import Image
 from nch import Nechouli
 from module.logger import logger
 from tasks.base import base_page, base_flash
@@ -7,7 +8,6 @@ from module.db.models import neopet, neoitem
 from module.db.data_map import *
 from module.base.utils import ensure_time, str2int, check_connection
 import module.jelly_neo as jn
-
 from tasks.daily.pet_cares import PetCaresUI
 from tasks.daily.faerie_crossword import FaerieCrosswordUI
 from tasks.daily.trudys_surprise import TrudysSurpriseUI
@@ -32,6 +32,9 @@ def reload_modules():
     BasePageUI = base_page.BasePageUI
     NeoPet = neopet.Neopet
     NeoItem = neoitem.NeoItem
+
+def sc():
+    Image.fromarray(device.screenshot()).save('test.png')
 
 class TestUI(BaseFlash, BasePageUI):
     pass

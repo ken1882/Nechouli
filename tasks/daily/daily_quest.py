@@ -35,6 +35,7 @@ class DailyQuestUI(BasePageUI):
         if extra.is_visible():
             self.claim_and_close(extra)
         self.device.click(self.page.locator('.ql-label-reward').first)
+        extra = self.page.locator('#QuestLogStreakAlert')
         self.device.wait(1) # wait for animation
         if extra.is_visible():
             self.claim_and_close(extra)

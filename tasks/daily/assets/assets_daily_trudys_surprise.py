@@ -13,3 +13,13 @@ play = ButtonWrapper(
         button=(0, 0, 104, 45),
     ),
 )
+played = ButtonWrapper(
+    name='played',
+    en=Button(
+        file='./assets/en/daily/trudys_surprise/played.png',
+        area=(0, 0, 228, 62),
+        search=(0, 0, 248, 82),
+        color=(195, 150, 8),
+        button=(0, 0, 228, 62),
+    ),
+)
