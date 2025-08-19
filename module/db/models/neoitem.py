@@ -114,3 +114,8 @@ class NeoItem(BaseModel):
         if any(re.search(regex, self.name, re.I) for regex in conf.split("\n") if regex):
             return False
         return True
+
+    def __eq__(self, value) -> bool:
+        if isinstance(value, NeoItem):
+            return self.name == value.name
+        return self.name == value

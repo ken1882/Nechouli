@@ -26,6 +26,9 @@ Chore:
     PetCares:
       - Scheduler
       - PetCares
+    PetTraining:
+      - Scheduler
+      - PetTraining
     DailyQuest:
       - Scheduler
       - DailyQuest
@@ -91,6 +94,8 @@ Chore:
     StockMarket:
       - Scheduler
       - StockMarket
+    EssenceCollection:
+      - Scheduler
 
 
 # ==================== Games ====================

@@ -9,6 +9,7 @@ from ast import literal_eval
 
 if TYPE_CHECKING:
     from module.db.models.neoitem import NeoItem
+    from module.db.models.neopet import Neopet
     from module.config.config import AzurLaneConfig
 
 def now():
@@ -173,6 +174,57 @@ class StoredCounter(StoredBase):
             stored['total'] = self.FIXED_TOTAL
         return stored
 
+class StoredList(StoredBase):
+    values: list = []
+
+    def set(self, values: list):
+        if not isinstance(values, list):
+            raise TypeError(f'StoredList must be a list, got {type(values)}')
+        self.values = values
+
+    def add(self, value):
+        self.values = self.values + [value]
+
+    def clear(self):
+        self.values = []
+
+    def remove(self, value):
+        self.values = [v for v in self.values if v != value]
+
+    def __iter__(self):
+        return iter(self.values)
+
+    def __getitem__(self, item):
+        if isinstance(item, int):
+            return self.values[item]
+        elif isinstance(item, str):
+            for v in self.values:
+                if getattr(v, 'name') == item:
+                    return v
+            raise KeyError(f'Value {item} not found in {self._name}')
+        else:
+            raise TypeError(f'Unsupported item type: {type(item)} for {self._name}')
+
+    def __setitem__(self, key, value):
+        if isinstance(key, int):
+            self.values[key] = value
+        else:
+            raise TypeError(f'Unsupported item type: {type(key)} for {self._name}')
+
+    def __contains__(self, item):
+        if isinstance(item, str):
+            return any(getattr(v, 'name') == item for v in self.values)
+        elif hasattr(item, 'name'):
+            return any(v.name == item.name for v in self.values)
+        else:
+            raise TypeError(f'Unsupported item type: {type(item)} for {self._name}')
+
+    def __len__(self):
+        return len(self.values)
+
+    def __bool__(self):
+        return bool(self.values)
+
 class StoredDailyQuestRestockCounter(StoredCounter):
     FIXED_TOTAL = 3
 
@@ -285,3 +337,13 @@ class StoredShopWizardRequests(StoredBase):
 
     def __bool__(self):
         return bool(self.requests)
+
+class StoredPendingTrainingFee(StoredList):
+    @property
+    def items(self) -> list['NeoItem']:
+        return self.values
+
+class StoredPetsData(StoredList):
+    @property
+    def pets(self) -> list['Neopet']:
+        return self.values

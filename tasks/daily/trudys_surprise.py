@@ -31,7 +31,11 @@ class TrudysSurpriseUI(BasePageUI):
                 logger.warning("Failed to find play button")
                 return False
         mx, my = assets.play.button_offset
-        self.device.click((int(mx+80), int(my+30)))
+        for i in range(5):
+            dx = 50 + 10 * i
+            dy = 20 + 10 * i
+            self.device.click((int(mx+dx), int(my+dy)))
+            self.device.wait(0.2)
         logger.info("Clicked, wait for result")
         self.device.wait_for_element('#trudyPrizeTitle', timeout=30)
         return True

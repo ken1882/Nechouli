@@ -164,6 +164,12 @@ class BaseModel:
                 d.pop(k)
         return deepcopy(d)
 
+    def update(self, data: Mapping[str, Any]) -> None:
+        """Update the model with a dictionary."""
+        if not isinstance(data, Mapping):
+            raise TypeError(f"Expected a mapping, got {type(data).__name__}")
+        self.load_data(data)
+
     # ------------------------------------------------------------------
     # persistence helpers
     # ------------------------------------------------------------------

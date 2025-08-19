@@ -5,6 +5,9 @@ from module.config.stored.classes import (
     StoredDailyQuestRestockCounter,
     StoredInt,
     StoredItemContainer,
+    StoredList,
+    StoredPendingTrainingFee,
+    StoredPetsData,
     StoredShopWizardRequests,
 )
 
@@ -13,9 +16,11 @@ from module.config.stored.classes import (
 # ``` python -m module/config/config_updater.py ```
 
 class StoredGenerated:
+    PendingTrainingFee = StoredPendingTrainingFee("PetTraining.PetTraining.PendingTrainingFee")
     ShopWizardRequests = StoredShopWizardRequests("ShopWizard.ShopWizard.ShopWizardRequests")
     DailyQuestRestockTimesLeft = StoredDailyQuestRestockCounter("InventoryTool.PlayerStorage.DailyQuestRestockTimesLeft")
     DailyQuestFeedTimesLeft = StoredDailyQuestFeedCounter("InventoryTool.PlayerStorage.DailyQuestFeedTimesLeft")
     InventoryData = StoredItemContainer("InventoryTool.PlayerStorage.InventoryData")
     StockData = StoredItemContainer("InventoryTool.PlayerStorage.StockData")
+    PetsData = StoredPetsData("InventoryTool.PlayerStorage.PetsData")
     DepositData = StoredItemContainer("SafetyDepositBox.SafetyDepositBox.DepositData")

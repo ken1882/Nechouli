@@ -1,4 +1,16 @@
 {
+  "PendingTrainingFee": {
+    "name": "PendingTrainingFee",
+    "path": "PetTraining.PetTraining.PendingTrainingFee",
+    "i18n": "PetTraining.PendingTrainingFee.name",
+    "stored": "StoredPendingTrainingFee",
+    "attrs": {
+      "time": "2020-01-01 00:00:00",
+      "values": []
+    },
+    "order": 0,
+    "color": "#777777"
+  },
   "ShopWizardRequests": {
     "name": "ShopWizardRequests",
     "path": "ShopWizard.ShopWizard.ShopWizardRequests",
@@ -6,7 +18,7 @@
     "stored": "StoredShopWizardRequests",
     "attrs": {
       "time": "2020-01-01 00:00:00",
-      "requests": []
+      "value": []
     },
     "order": 0,
     "color": "#777777"
@@ -65,6 +77,18 @@
       "np": 0,
       "total": 0,
       "value": 0
+    },
+    "order": 0,
+    "color": "#777777"
+  },
+  "PetsData": {
+    "name": "PetsData",
+    "path": "InventoryTool.PlayerStorage.PetsData",
+    "i18n": "PlayerStorage.PetsData.name",
+    "stored": "StoredPetsData",
+    "attrs": {
+      "time": "2020-01-01 00:00:00",
+      "values": []
     },
     "order": 0,
     "color": "#777777"

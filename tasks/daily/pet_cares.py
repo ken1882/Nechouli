@@ -50,18 +50,28 @@ class PetCaresUI(BasePageUI):
             logger.info(node.bounding_box())
             if node.bounding_box()['x'] < -100:
                 continue
-            self.pets.append(Neopet(
-                name = name,
-                health=int(node.get_attribute('data-health')),
-                max_health=int(node.get_attribute('data-maxhealth')),
-                hunger=int(HUNGER_LEVEL[node.get_attribute('data-hunger')]),
-                level=int(node.get_attribute('data-level')),
-                species=node.get_attribute('data-species'),
-                color=node.get_attribute('data-color'),
-                mood=node.get_attribute('data-mood'),
-                is_active=node.get_attribute('data-active') == 'true',
-                _locator=node,
-            ))
+            data = {
+                'name': name,
+                'health': int(node.get_attribute('data-health')),
+                'max_health': int(node.get_attribute('data-maxhealth')),
+                'hunger': int(HUNGER_LEVEL[node.get_attribute('data-hunger')]),
+                'level': int(node.get_attribute('data-level')),
+                'species': node.get_attribute('data-species'),
+                'color': node.get_attribute('data-color'),
+                'mood': node.get_attribute('data-mood'),
+                'is_active': node.get_attribute('data-active') == 'true',
+                '_locator': node,
+            }
+            self.pets.append(Neopet(**data))
+            if name in self.config.stored.PetsData:
+                self.config.stored.PetsData[name].update(data)
+            else:
+                self.config.stored.PetsData.add(Neopet(**data))
+        pet_names = [p.name for p in self.pets]
+        for p in self.config.stored.PetsData:
+            if p.name not in pet_names:
+                logger.warning(f'Pet {p.name} not found on page, removing from storage')
+                self.config.stored.PetsData.remove(p)
 
     def unselect(self):
         if not self.selected_pet:

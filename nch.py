@@ -190,6 +190,10 @@ class Nechouli(AzurLaneAutoScript):
         from tasks.utility.shop_wizard import ShopWizardUI
         ShopWizardUI(config=self.config, device=self.device).run()
 
+    def essence_collection(self):
+        from tasks.daily.essence_collection import EssenceCollectionUI
+        EssenceCollectionUI(config=self.config, device=self.device).run()
+
 if __name__ == '__main__':
     nch = Nechouli()
     nch.loop()

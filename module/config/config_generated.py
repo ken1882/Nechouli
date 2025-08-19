@@ -40,7 +40,7 @@ class GeneratedConfig:
     Playwright_ExtraChromiumArgs = '--disable-features=IsolateOrigins,site-per-process\n--disable-infobars\n'
 
     # Group `ProfileSettings`
-    ProfileSettings_MinNpKeep = 20000
+    ProfileSettings_MinNpKeep = 100000
     ProfileSettings_JellyNeoExpiry = 168
     ProfileSettings_TaskSoftTerminationTime = 5
 
@@ -67,13 +67,14 @@ class GeneratedConfig:
     Restocking_MaxShopStock = 5
     Restocking_MaxCost = 1000000
     Restocking_ImmediateProfit = 3500
-    Restocking_ShopList = '1,2,3,5,14,15,16,20,25,34,35,39,40,42,44,46,50,56,57,61,81,95,97,101,103'
+    Restocking_ShopList = '1,2,3,5,10,14,15,16,20,25,34,35,39,40,42,44,46,50,56,57,61,80,81,95,97,101,103'
     Restocking_BargainStrategyScript = "# purposes: list of shopkeeper's purposes\n# offers: list of your offers\n# depth: number of bargains made\npurposed = purposes[-1]\nlast_offer = offers[-1] if offers else 0\nif purposed > 100000 or depth > 5:\n  return purposed\nif len(purposes) > 2 and purposes[-2] == purposes[-3]:\n  return purposed\nif last_offer == 0:\n  return int(purposed * 0.4 // 10 * 10)\ndelta = purposed - last_offer\nstep  = 20\nif delta > 3000:\n  step = 1000\nelif delta > 1500:\n  step = 500\nelif delta > 300:\n  step = 100\nelif delta > 150:\n  step = 50\nret = max(1, min(purposed, last_offer + int(delta * 0.4 // step * step)))\nif ret == last_offer:\n    ret = int(purposed // 10 * 10)\nreturn ret\n"
 
     # Group `QuickStock`
     QuickStock_KeepInventorySlot = 5
-    QuickStock_DepositValue = 90000
+    QuickStock_DepositValue = 100000
     QuickStock_RestockProfit = 1000
+    QuickStock_WithdrawTill = True
     QuickStock_CategoryKeeps = 'food:10\ngrooming: 1\ntoy: 1\n'
     QuickStock_PriceStrategyScript = "mkp = item['market_price']\nif mkp < 10000:\n    return mkp * 0.99\nreturn mkp\n"
     QuickStock_ForceDepositList = 'Basic Gift Box\n'
@@ -90,6 +91,12 @@ class GeneratedConfig:
     ShopWizard_PriceUpdateRescans = 5
     ShopWizard_ShopWizardRequests = {}
 
+    # Group `PetTraining`
+    PetTraining_BuyFeeFromPlayers = False
+    PetTraining_TrainPriority = 'str > def > hp > mov > lv'
+    PetTraining_Config = 'PetName:Academy:TargetLv:TargetStr:TargetDef:TargetMov:TargetHp\n'
+    PetTraining_PendingTrainingFee = {}
+
     # Group `VoidsWithin`
     VoidsWithin_DelayForDailyFeed = True
 
@@ -98,6 +105,7 @@ class GeneratedConfig:
     PlayerStorage_DailyQuestFeedTimesLeft = {}
     PlayerStorage_InventoryData = {}
     PlayerStorage_StockData = {}
+    PlayerStorage_PetsData = {}
 
     # Group `SafetyDepositBox`
     SafetyDepositBox_DepositData = {}

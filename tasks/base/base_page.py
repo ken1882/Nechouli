@@ -82,7 +82,9 @@ class BasePageUI(ModuleBase):
         try:
             self.device.goto(url)
         except TimeoutError:
-            logger.warning("Page load timeout, assume main content loaded.")
+            logger.warning("Page load timeout, retrying...")
+            self.device.respawn_page()
+            return self.device.goto(url)
         except PlaywrightError as e:
             logger.warning(f"Page load error: {e}, likely interrupted by login or maintenance. Retrying")
             self.device.wait(1)

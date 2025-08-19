@@ -128,7 +128,7 @@
     "ProfileSettings": {
       "MinNpKeep": {
         "type": "input",
-        "value": 20000
+        "value": 100000
       },
       "JellyNeoExpiry": {
         "type": "input",
@@ -199,6 +199,53 @@
           "very full",
           "bloated"
         ]
+      }
+    }
+  },
+  "PetTraining": {
+    "Scheduler": {
+      "Enable": {
+        "type": "checkbox",
+        "value": false,
+        "option": [
+          true,
+          false
+        ]
+      },
+      "NextRun": {
+        "type": "datetime",
+        "value": "2020-01-01 00:00:00",
+        "validate": "datetime"
+      },
+      "Command": {
+        "type": "input",
+        "value": "PetTraining",
+        "display": "hide"
+      },
+      "ServerUpdate": {
+        "type": "input",
+        "value": "00:00",
+        "display": "hide"
+      }
+    },
+    "PetTraining": {
+      "BuyFeeFromPlayers": {
+        "type": "checkbox",
+        "value": false
+      },
+      "TrainPriority": {
+        "type": "input",
+        "value": "str > def > hp > mov > lv"
+      },
+      "Config": {
+        "type": "textarea",
+        "value": "PetName:Academy:TargetLv:TargetStr:TargetDef:TargetMov:TargetHp\n"
+      },
+      "PendingTrainingFee": {
+        "type": "stored",
+        "value": {},
+        "display": true,
+        "stored": "StoredPendingTrainingFee"
       }
     }
   },
@@ -1061,6 +1108,33 @@
       }
     }
   },
+  "EssenceCollection": {
+    "Scheduler": {
+      "Enable": {
+        "type": "checkbox",
+        "value": false,
+        "option": [
+          true,
+          false
+        ]
+      },
+      "NextRun": {
+        "type": "datetime",
+        "value": "2020-01-01 00:00:00",
+        "validate": "datetime"
+      },
+      "Command": {
+        "type": "input",
+        "value": "EssenceCollection",
+        "display": "hide"
+      },
+      "ServerUpdate": {
+        "type": "input",
+        "value": "00:00",
+        "display": "hide"
+      }
+    }
+  },
   "FashionFever": {
     "Scheduler": {
       "Enable": {
@@ -1121,11 +1195,15 @@
       },
       "DepositValue": {
         "type": "input",
-        "value": 90000
+        "value": 100000
       },
       "RestockProfit": {
         "type": "input",
         "value": 1000
+      },
+      "WithdrawTill": {
+        "type": "checkbox",
+        "value": true
       },
       "CategoryKeeps": {
         "type": "textarea",
@@ -1210,7 +1288,7 @@
       },
       "ShopList": {
         "type": "textarea",
-        "value": "1,2,3,5,14,15,16,20,25,34,35,39,40,42,44,46,50,56,57,61,81,95,97,101,103"
+        "value": "1,2,3,5,10,14,15,16,20,25,34,35,39,40,42,44,46,50,56,57,61,80,81,95,97,101,103"
       },
       "BargainStrategyScript": {
         "type": "textarea",
@@ -1327,6 +1405,12 @@
         "value": {},
         "display": true,
         "stored": "StoredItemContainer"
+      },
+      "PetsData": {
+        "type": "stored",
+        "value": {},
+        "display": "hide",
+        "stored": "StoredPetsData"
       }
     }
   },

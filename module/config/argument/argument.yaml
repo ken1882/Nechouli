@@ -109,7 +109,7 @@ Restocking:
   ImmediateProfit: 3500
   ShopList:
     type: textarea
-    value: "1,2,3,5,14,15,16,20,25,34,35,39,40,42,44,46,50,56,57,61,81,95,97,101,103"
+    value: "1,2,3,5,10,14,15,16,20,25,34,35,39,40,42,44,46,50,56,57,61,80,81,95,97,101,103"
   BargainStrategyScript:
     type: textarea
     value: |
@@ -142,6 +142,7 @@ QuickStock:
   KeepInventorySlot: 5
   DepositValue: 100000
   RestockProfit: 1000
+  WithdrawTill: true
   CategoryKeeps:
     type: textarea
     value: |
@@ -184,6 +185,17 @@ ShopWizard:
       stored: StoredShopWizardRequests
       display: true
 
+PetTraining:
+  BuyFeeFromPlayers: false
+  TrainPriority: "str > def > hp > mov > lv"
+  Config:
+    type: textarea
+    value: |
+      PetName:Academy:TargetLv:TargetStr:TargetDef:TargetMov:TargetHp
+  PendingTrainingFee:
+    stored: StoredPendingTrainingFee
+    display: true
+
 VoidsWithin:
   DelayForDailyFeed: true
 
@@ -200,6 +212,8 @@ PlayerStorage:
   StockData:
     stored: StoredItemContainer
     display: true
+  PetsData:
+    stored: StoredPetsData
 
 SafetyDepositBox:
   DepositData:

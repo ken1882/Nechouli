@@ -21,6 +21,8 @@ class QuickStockUI(BasePageUI):
         self.update_inventory_data()
         if self._stocked:
             self.update_stock_price()
+        if self.config.QuickStock_WithdrawTill:
+            self.withdraw_all_np()
         return True
 
     def scan_all_items(self):
@@ -202,6 +204,12 @@ class QuickStockUI(BasePageUI):
         self.scan_all_items()
         self.config.stored.InventoryData.set(self.items)
         logger.info(f"Updated inventory with {len(self.items)} items (size={self.config.stored.InventoryData.size}).")
+
+    def withdraw_all_np(self):
+        self.goto('https://www.neopets.com/market.phtml?type=till')
+        money = str2int(self.page.locator('.content >> p > b').text_content())
+        self.page.locator('input[name="amount"]').fill(str(money))
+        self.device.click('input[type="submit"][value="Withdraw"]', nav=True)
 
     # def calc_next_run(self, *args):
     #     future = get_server_next_update('02:00')

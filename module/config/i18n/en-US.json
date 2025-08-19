@@ -34,6 +34,10 @@
       "name": "Pet Cares",
       "help": "Feeding pets and relative daily quests"
     },
+    "PetTraining": {
+      "name": "Training",
+      "help": "https://www.jellyneo.net/?go=training_your_pet"
+    },
     "DailyQuest": {
       "name": "Daily Quest",
       "help": ""
@@ -157,6 +161,10 @@
     "StockMarket": {
       "name": "Stock Market",
       "help": "https://www.jellyneo.net/?go=neopian_stock_market"
+    },
+    "EssenceCollection": {
+      "name": "Essence Collection",
+      "help": "https://www.jellyneo.net/?go=the_void_within&id=essence_collection"
     },
     "FashionFever": {
       "name": "Fashion Fever",
@@ -450,6 +458,10 @@
       "name": "Restock Profit",
       "help": "Minimum profit to restock this item to your shop"
     },
+    "WithdrawTill": {
+      "name": "Withdraw Till",
+      "help": "Withdraw all NP from shop till"
+    },
     "CategoryKeeps": {
       "name": "Category Keeps",
       "help": "Number of items of a category to keep in inventory, separated by line. Format: `category:number` \ne.g. `food:10` will keep 10 food items in inventory.\n For list of categories, see source `module/db/models/neoitem.py#category`"
@@ -507,6 +519,28 @@
       "help": "Requests made to Shop Wizard from tasks, will block if you're on fairy quest"
     }
   },
+  "PetTraining": {
+    "_info": {
+      "name": "Pet Training",
+      "help": ""
+    },
+    "BuyFeeFromPlayers": {
+      "name": "Purchase fee from players",
+      "help": "Purchase item from players (via SW) to pay the training price, if you don't have enough in SDB"
+    },
+    "TrainPriority": {
+      "name": "Stats Priority",
+      "help": "Stats priority for training."
+    },
+    "Config": {
+      "name": "Pet Training Config",
+      "help": "Configuration for pet training, separated by line.\nFormat: `PetName:Academy:TargetLv:TargetStr:TargetDef:TargetMov:TargetHp`\nExample: `Fluffy:pirate:40:80:80:80:80`.\nAcademy can be `pirate`, `island`, or `ninja`."
+    },
+    "PendingTrainingFee": {
+      "name": "Pending Training Fee",
+      "help": "Pets in course but haven't paid the training fee yet."
+    }
+  },
   "VoidsWithin": {
     "_info": {
       "name": "Voids Within",
@@ -536,6 +570,10 @@
     },
     "StockData": {
       "name": "Shop Stock",
+      "help": ""
+    },
+    "PetsData": {
+      "name": "Pets Data",
       "help": ""
     }
   },
