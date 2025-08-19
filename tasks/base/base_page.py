@@ -88,7 +88,7 @@ class BasePageUI(ModuleBase):
             self.device.goto(url)
             while 'Maintenance Tunnels' in self.page.content():
                 logger.warning("Site is under maintenance, waiting for 10 minutes before retrying...")
-                self.device.wait(600)
+                self.device.sleep(600)
                 self.page.reload()
             self.debug_screenshot()
         except TimeoutError:
