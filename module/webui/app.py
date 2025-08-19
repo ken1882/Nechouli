@@ -1021,6 +1021,7 @@ class AlasGUI(Frame):
                 toast("Reload not enabled", color="error")
 
         put_button(label="Force restart", onclick=_force_restart)
+        put_button(label="Kill browser", onclick=lambda: self.kill_remote_browser())
         enable_eval = get_localstorage("DANGER_ENABLE_EVAL") or ''
         if enable_eval != 'DO_NOT_PASTE_ANY_CODE_HERE_UNLESS_YOU_KNOW_WHAT_YOU_ARE_DOING':
             return
@@ -1038,7 +1039,6 @@ class AlasGUI(Frame):
             except Exception as e:
                 logger.exception(e)
         put_button(label="Run Code", onclick=lambda: _eval(self))
-        put_button(label="Kill browser", onclick=lambda: self.kill_remote_browser())
 
     def kill_remote_browser(self):
         port = str2int(self.alas_config.Playwright_RemoteDebuggingAddress.split(":")[-1])
