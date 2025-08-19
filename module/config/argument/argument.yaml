@@ -44,6 +44,7 @@ Playwright:
   LaunchDedicatedBrowser: false
   AutoAcceptDialog: true
   UseDefaultProfile: false
+  CustomUserAgent: ''
   ExtensionDirectory: "$LOCALAPPDATA/Microsoft/Edge/User Data/Default/Extensions"
   ExtensionNames:
     type: textarea
@@ -97,7 +98,7 @@ PetCares:
       - "very full"
       - "bloated"
 DailyQuest:
-  PurchaseUnprofitableItems: false
+  PurchaseCheapItems: false
 Restocking:
   ActiveRestocking: false
   ActiveRestockInterval: 60
@@ -198,6 +199,7 @@ PetTraining:
 
 VoidsWithin:
   DelayForDailyFeed: true
+  AvailablePetsCount: 0
 
 PlayerStorage:
   DailyQuestRestockTimesLeft:

@@ -45,9 +45,12 @@ class VoidsWithinUI(BasePageUI):
         loading = self.page.locator('#VolunteerLoading')
         while loading.count():
             self.device.wait(0.1)
-        self.device.wait(1)
+        p_count = self.config.VoidsWithin_AvailablePetsCount
+        if p_count > 0:
+            p_count = 1
+            self.device.wait(3) # js render lag
         pets = self.page.locator('.vc-pet')
-        while pets.count() < 1: # bug that has no loading popup
+        while pets.count() < p_count: # bug that has no loading popup
             self.device.wait(1)
             pets = self.page.locator('.vc-pet')
         for p in pets.all():

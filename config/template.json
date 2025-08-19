@@ -9,6 +9,7 @@
       "LaunchDedicatedBrowser": false,
       "AutoAcceptDialog": true,
       "UseDefaultProfile": false,
+      "CustomUserAgent": null,
       "ExtensionDirectory": "$LOCALAPPDATA/Microsoft/Edge/User Data/Default/Extensions",
       "ExtensionNames": "Ruffle\nAdGuard\n",
       "ExtraChromiumArgs": "--disable-features=IsolateOrigins,site-per-process\n--disable-infobars\n"
@@ -77,7 +78,7 @@
       "ServerUpdate": "00:00"
     },
     "DailyQuest": {
-      "PurchaseUnprofitableItems": false
+      "PurchaseCheapItems": false
     }
   },
   "AltadorCouncil": {
@@ -405,7 +406,8 @@
       "ServerUpdate": "00:00"
     },
     "VoidsWithin": {
-      "DelayForDailyFeed": true
+      "DelayForDailyFeed": true,
+      "AvailablePetsCount": 6
     }
   },
   "InventoryTool": {

@@ -303,6 +303,10 @@
       "name": "Use Default Profile",
       "help": "Use your system default profile, such as your login cookies and settings.\nRequire disabled if you want to run multiple Nechouli instances at the same time."
     },
+    "CustomUserAgent": {
+      "name": "Custom User Agent",
+      "help": "Custom user agent string for this profile, leave empty to use default browser user agent"
+    },
     "ExtensionDirectory": {
       "name": "Extension Directory",
       "help": "Path to folder contains browser extensions"
@@ -390,9 +394,9 @@
       "name": "Daily Quest",
       "help": ""
     },
-    "PurchaseUnprofitableItems": {
-      "name": "Purchase Unprofitable Items",
-      "help": "Allow purchase unprofitable cheap items (< 1000 NP) when calling restocking task to complete daily quest."
+    "PurchaseCheapItems": {
+      "name": "Purchase Cheap Items",
+      "help": "Allow purchase cheap items (< 1000 NP) when calling restocking task to complete daily quest."
     }
   },
   "Restocking": {
@@ -549,6 +553,10 @@
     "DelayForDailyFeed": {
       "name": "Delay For Daily Feed",
       "help": "Delay the task until feeding pet daily quest is completed (dispatched pets are always bloated)"
+    },
+    "AvailablePetsCount": {
+      "name": "Number of Available Pets",
+      "help": "Number of pets available for dispatching in hospital. Leave 0 for auto-detect but sometimes will bugged due to js render lag."
     }
   },
   "PlayerStorage": {

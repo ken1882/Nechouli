@@ -132,7 +132,8 @@ class Connection:
         }
         if self.config.Playwright_AutoOpenDevtools:
             kwargs['args'].append('--auto-open-devtools-for-tabs')
-
+        if self.config.Playwright_CustomUserAgent:
+            kwargs['user_agent'] = self.config.Playwright_CustomUserAgent
         if not self.config.Playwright_UseDefaultProfile:
             kwargs['args'].extend(self.get_extension_paths())
 

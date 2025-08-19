@@ -97,13 +97,17 @@ class RestockingUI(BasePageUI):
             return None
         targets = self.get_profitable_goods()
         self.target = None
+        if self.config.stored.DailyQuestRestockTimesLeft.value and self.config.DailyQuest_PurchaseCheapItems:
+            targets = sorted(targets, key=lambda x: x.restock_price)
         for t in targets:
             if t.restock_price > self.config.Restocking_MaxCost:
                 logger.info(f"Item {t.name} exceeds max cost, skipping")
                 continue
             elif t.profit < self.config.Restocking_MinProfit:
-                if self.config.DailyQuest_PurchaseUnprofitableItems and t.restock_price < 1000:
-                    logger.info(f"Buying unprofitable cheap item {t.name} for daily quest")
+                if (self.config.stored.DailyQuestRestockTimesLeft.value
+                    and self.config.DailyQuest_PurchaseCheapItems
+                    and t.restock_price < 1000):
+                    logger.info(f"Buying cheap item {t.name} for daily quest")
                 else:
                     logger.info(f"Item {t.name} profit {t.profit} is less than minimum profit {self.config.Restocking_MinProfit}, skipping")
                     continue

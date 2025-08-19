@@ -7,10 +7,7 @@ import re
 class DailyQuestUI(BasePageUI):
 
     def main(self):
-        self.goto('https://www.neopets.com/questlog/')
-        loading = self.page.locator('#QuestLogLoader')
-        while loading.is_visible():
-            self.device.wait(0.3)
+        self.claim_rewards()
         self.scan_quests()
         if not self.do_quests():
             self.config.task_delay(minute=5)
@@ -25,10 +22,14 @@ class DailyQuestUI(BasePageUI):
         while loading.is_visible():
             self.device.wait(0.3)
         quests = self.page.locator('.questlog-quest')
+        idx = 0
         while quests.count():
-            quest = quests.first
+            quest = quests.nth(idx)
             ok_btn = quest.locator('button')
             if ok_btn.is_disabled():
+                idx += 1
+                if idx >= quests.count():
+                    break
                 continue
             self.claim_and_close(ok_btn)
         extra = self.page.locator('#QuestLogBonusAlert')

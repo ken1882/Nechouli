@@ -37,6 +37,10 @@
         "type": "checkbox",
         "value": false
       },
+      "CustomUserAgent": {
+        "type": "input",
+        "value": ""
+      },
       "ExtensionDirectory": {
         "type": "input",
         "value": "$LOCALAPPDATA/Microsoft/Edge/User Data/Default/Extensions"
@@ -276,7 +280,7 @@
       }
     },
     "DailyQuest": {
-      "PurchaseUnprofitableItems": {
+      "PurchaseCheapItems": {
         "type": "checkbox",
         "value": false
       }
@@ -1377,6 +1381,10 @@
       "DelayForDailyFeed": {
         "type": "checkbox",
         "value": true
+      },
+      "AvailablePetsCount": {
+        "type": "input",
+        "value": 6
       }
     }
   },

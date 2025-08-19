@@ -35,6 +35,7 @@ class GeneratedConfig:
     Playwright_LaunchDedicatedBrowser = False
     Playwright_AutoAcceptDialog = True
     Playwright_UseDefaultProfile = False
+    Playwright_CustomUserAgent = None
     Playwright_ExtensionDirectory = '$LOCALAPPDATA/Microsoft/Edge/User Data/Default/Extensions'
     Playwright_ExtensionNames = 'Ruffle\nAdGuard\n'
     Playwright_ExtraChromiumArgs = '--disable-features=IsolateOrigins,site-per-process\n--disable-infobars\n'
@@ -56,7 +57,7 @@ class GeneratedConfig:
     PetCares_MaxFeedLevel = 'full up'  # dying, starving, famished, very hungry, hungry, not hungry, fine, satiated, full up, very full, bloated
 
     # Group `DailyQuest`
-    DailyQuest_PurchaseUnprofitableItems = False
+    DailyQuest_PurchaseCheapItems = False
 
     # Group `Restocking`
     Restocking_ActiveRestocking = False
@@ -99,6 +100,7 @@ class GeneratedConfig:
 
     # Group `VoidsWithin`
     VoidsWithin_DelayForDailyFeed = True
+    VoidsWithin_AvailablePetsCount = 6
 
     # Group `PlayerStorage`
     PlayerStorage_DailyQuestRestockTimesLeft = {}
