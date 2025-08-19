@@ -86,6 +86,10 @@ class BasePageUI(ModuleBase):
     def goto(self, url):
         try:
             self.device.goto(url)
+            while 'Maintenance Tunnels' in self.page.content():
+                logger.warning("Site is under maintenance, waiting for 10 minutes before retrying...")
+                self.device.wait(600)
+                self.page.reload()
             self.debug_screenshot()
         except TimeoutError:
             logger.warning("Page load timeout, retrying...")
@@ -146,6 +150,8 @@ class BasePageUI(ModuleBase):
         self.config.stored.InventoryData.np = np
         return np
 
-    def debug_screenshot(self):
-        path = os.path.join('config', f'{self.config.config_name}_snapshot.png')
+    def debug_screenshot(self, fname=''):
+        if not fname:
+            fname = f"{self.config.config_name}_snapshot.png"
+        path = os.path.join('config', fname)
         self.page.screenshot(path=path)
