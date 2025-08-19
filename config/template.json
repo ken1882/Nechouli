@@ -12,7 +12,7 @@
       "CustomUserAgent": null,
       "ExtensionDirectory": "$LOCALAPPDATA/Microsoft/Edge/User Data/Default/Extensions",
       "ExtensionNames": "Ruffle\nAdGuard\n",
-      "ExtraChromiumArgs": "--disable-features=IsolateOrigins,site-per-process\n--disable-infobars\n"
+      "ExtraChromiumArgs": "--disable-features=IsolateOrigins,site-per-process\n--disable-infobars\n--window-size=1280,800\n"
     },
     "Error": {
       "Restart": "game",
@@ -407,7 +407,7 @@
     },
     "VoidsWithin": {
       "DelayForDailyFeed": true,
-      "AvailablePetsCount": 6
+      "AvailablePetsCount": 0
     }
   },
   "InventoryTool": {

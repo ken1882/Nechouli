@@ -60,16 +60,23 @@ class EssenceCollectionUI(BasePageUI):
                     return False
             self.device.wait(3) # random js lag
             nodes = self.device.page.locator('.tvw-essence')
+            depth = 0
             while nodes.count():
                 node = nodes.nth(0)
-                self.device.scroll_to(loc=node)
+                self.device.scroll_to(0, 100)
                 self.claim_and_close(node)
+                depth += 1
+                if depth > 10:
+                    logger.warning(f"Failed to claim essence at {url}, retry later")
+                    return False
         return True
 
     def claim_and_close(self, btn):
         self.device.click(btn)
         close_btn = self.page.locator('button').filter(has_text='Keep Searching').all()
         close_btn = self.device.wait_for_element(*close_btn)
+        if not close_btn:
+            return
         self.device.click(close_btn)
 
 if __name__ == '__main__':

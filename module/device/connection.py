@@ -154,11 +154,13 @@ class Connection:
                 channel = self.config.Playwright_Browser
                 profile_dir = os.path.join(self.PROFILE_DIRECTORY, self.config.config_name)
 
-                # args from kwargs
                 extra_args = kwargs.get('args', []).copy()
                 extra_args.append(f"--remote-debugging-port={port}")
+
                 if not self.config.Playwright_UseDefaultProfile:
                     extra_args.append(f"--user-data-dir={profile_dir}")
+                if self.config.Playwright_Headless:
+                    extra_args.append('--headless=new')
 
                 executable_path = ''
                 if channel == 'msedge':
@@ -176,10 +178,22 @@ class Connection:
                 logger.info(f"Starting browser manually: {' '.join(cmd)}")
                 subprocess.Popen(cmd)
                 logger.info("Waiting 10 seconds for browser to start")
-                time.sleep(10)  # allow browser to start
+                time.sleep(10)
 
             self.browser = self.pw.chromium.connect_over_cdp(f"http://{address}")
-            self.context = self.browser.contexts[0]
+
+            if self.config.Playwright_Headless:
+                old_context = self.browser.contexts[0]
+                self.context = self.browser.new_context(
+                    user_agent=kwargs.get('user_agent', ''),
+                    locale=kwargs.get('locale', 'en-US'),
+                    viewport={'width': 1280, 'height': 800},
+                    ignore_https_errors=True,
+                    storage_state=old_context.storage_state()
+                )
+            else:
+                self.context = self.browser.contexts[0]
+
             self.context.add_cookies([{
                 "name": "lang",
                 "value": "en",
@@ -188,8 +202,7 @@ class Connection:
                 "httpOnly": False,
                 "secure": True,
                 "sameSite": "Lax"
-            }])
-            self.context.add_cookies([{
+            }, {
                 "name": "lang",
                 "value": "en",
                 "domain": ".neopets.com",
@@ -198,6 +211,7 @@ class Connection:
                 "secure": True,
                 "sameSite": "Lax"
             }])
+
             if self.config.Playwright_UseDefaultProfile:
                 self.page = self.new_page()
             else:

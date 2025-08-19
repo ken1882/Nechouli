@@ -20,7 +20,7 @@ class Nechouli(AzurLaneAutoScript):
                 continue
             break
         self.device.wait(3) # quest won't start if not visited
-        if self.config.Playwright_CleanPagesOnStart:
+        if self.config.Playwright_CleanPagesOnStart or self.config.Playwright_Headless:
             self.device.clean_redundant_pages()
         try:
             super().loop()

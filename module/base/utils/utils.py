@@ -1045,3 +1045,93 @@ def get_lnk_dest(file):
 def get_start_menu_programs(filter:str=''):
     path = Path(os.getenv('PROGRAMDATA')) / 'Microsoft' / 'Windows' / 'Start Menu' / 'Programs'
     return [get_lnk_dest(p) for p in path.glob('**/*.lnk') if p.is_file() and filter.lower() in p.name.lower()]
+
+import psutil, time, subprocess, platform
+
+def pids_listening_on(port: int, proto: str = "tcp") -> set[int]:
+    """
+    Return PIDs that have a LISTEN socket on the given port.
+    Requires sufficient privileges to see other users' sockets.
+    """
+    proto = proto.lower()
+    kinds = {
+        "tcp": ("tcp", "tcp4", "tcp6"),
+        "udp": ("udp", "udp4", "udp6"),
+    }[proto]
+
+    pids = set()
+    for kind in kinds:
+        try:
+            for c in psutil.net_connections(kind=kind):
+                if c.laddr and c.laddr.port == port:
+                    # tcp: only kill listeners by default
+                    if proto == "tcp":
+                        if getattr(c, "status", None) in ("LISTEN", "LISTENING", None):
+                            if c.pid:
+                                pids.add(c.pid)
+                    else:
+                        # udp has no LISTEN state
+                        if c.pid:
+                            pids.add(c.pid)
+        except (psutil.AccessDenied, psutil.NoSuchProcess):
+            continue
+    return pids
+
+def kill_process_tree(pid: int, grace: float = 5.0) -> None:
+    """Terminate a process and its children; escalate to kill after a grace period."""
+    try:
+        proc = psutil.Process(pid)
+    except psutil.NoSuchProcess:
+        return
+    children = proc.children(recursive=True)
+    for p in children:
+        try:
+            p.terminate()
+        except psutil.NoSuchProcess:
+            pass
+    try:
+        proc.terminate()
+    except psutil.NoSuchProcess:
+        pass
+
+    gone, alive = psutil.wait_procs(children + [proc], timeout=grace)
+    for p in alive:
+        try:
+            p.kill()
+        except psutil.NoSuchProcess:
+            pass
+
+def kill_by_port(port: int, proto: str = "tcp", grace: float = 5.0) -> list[int]:
+    """
+    Find processes listening on `port` and kill their trees.
+    Returns list of PIDs targeted. Falls back to OS tools if psutil can’t see them.
+    """
+    pids = pids_listening_on(port, proto=proto)
+
+    # Fallbacks if nothing found (limited privileges):
+    if not pids:
+        system = platform.system()
+        try:
+            if system == "Windows":
+                # netstat -ano | findstr :<port>
+                out = subprocess.check_output(
+                    ["netstat", "-ano"], text=True, errors="ignore"
+                )
+                for line in out.splitlines():
+                    if f":{port} " in line and "LISTEN" in line.upper():
+                        parts = line.split()
+                        pid = int(parts[-1])
+                        pids.add(pid)
+            else:
+                # lsof -iTCP:<port> -sTCP:LISTEN -t
+                out = subprocess.check_output(
+                    ["lsof", f"-iTCP:{port}", "-sTCP:LISTEN", "-t"],
+                    text=True, errors="ignore"
+                )
+                for line in out.split():
+                    pids.add(int(line.strip()))
+        except Exception:
+            pass
+    for pid in list(pids):
+        kill_process_tree(pid, grace=grace)
+    return sorted(pids)

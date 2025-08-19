@@ -645,7 +645,8 @@
       "Running": "Running",
       "Pending": "Pending",
       "Waiting": "Waiting",
-      "NoTask": "No Task"
+      "NoTask": "No Task",
+      "Snapshot": "Snapshot"
     },
     "Dashboard": {
       "NoData": "no data",

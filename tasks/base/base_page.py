@@ -39,6 +39,12 @@ class BasePageUI(ModuleBase):
             return self.calc_next_run('failed')
         except Exception as e:
             raise e
+        finally:
+            # sync cookies back to manual context
+            if self.config.Playwright_Headless:
+                path = os.path.join('config', f'{self.config.config_name}_snapshot.png')
+                self.page.screenshot(path=path)
+                self.device.browser.contexts[0].add_cookies(self.device.context.cookies())
 
     def main(self):
         pass
@@ -81,6 +87,8 @@ class BasePageUI(ModuleBase):
     def goto(self, url):
         try:
             self.device.goto(url)
+            path = os.path.join('config', f'{self.config.config_name}_snapshot.png')
+            self.page.screenshot(path=path)
         except TimeoutError:
             logger.warning("Page load timeout, retrying...")
             self.device.respawn_page()

@@ -38,7 +38,7 @@ class GeneratedConfig:
     Playwright_CustomUserAgent = None
     Playwright_ExtensionDirectory = '$LOCALAPPDATA/Microsoft/Edge/User Data/Default/Extensions'
     Playwright_ExtensionNames = 'Ruffle\nAdGuard\n'
-    Playwright_ExtraChromiumArgs = '--disable-features=IsolateOrigins,site-per-process\n--disable-infobars\n'
+    Playwright_ExtraChromiumArgs = '--disable-features=IsolateOrigins,site-per-process\n--disable-infobars\n--window-size=1280,800\n'
 
     # Group `ProfileSettings`
     ProfileSettings_MinNpKeep = 100000
@@ -100,7 +100,7 @@ class GeneratedConfig:
 
     # Group `VoidsWithin`
     VoidsWithin_DelayForDailyFeed = True
-    VoidsWithin_AvailablePetsCount = 6
+    VoidsWithin_AvailablePetsCount = 0
 
     # Group `PlayerStorage`
     PlayerStorage_DailyQuestRestockTimesLeft = {}

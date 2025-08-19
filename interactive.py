@@ -40,15 +40,15 @@ class TestUI(BaseFlash, BasePageUI):
     pass
 
 
-alas = Nechouli('nechouli2')
+alas = Nechouli('nechouli11')
 config, device = alas.config, alas.device
 self = DailyQuestUI(config, device)
-
 
 device.start_browser()
 device.disable_stuck_detection()
 device.screenshot_interval_set(0.1)
 
+self.goto('https://intoli.com/blog/not-possible-to-block-chrome-headless/chrome-headless-test.html')
 
 self.goto('https://www.neopets.com/pirates/academy.phtml?type=status')
 current_pets = []

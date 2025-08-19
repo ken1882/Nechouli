@@ -5,6 +5,8 @@ import time
 from datetime import datetime
 from functools import partial
 from typing import Dict, List, Optional
+from playwright.sync_api import sync_playwright
+from PIL import Image
 
 from pywebio import config as webconfig
 from pywebio.output import (
@@ -26,6 +28,7 @@ from pywebio.output import (
     put_table,
     put_text,
     put_warning,
+    put_image,
     toast,
     use_scope,
 )
@@ -93,6 +96,8 @@ from module.webui.widgets import (
     put_output,
 )
 import module.webui.widget_renderer as widget_renderer
+
+from module.base.utils import str2int, kill_by_port
 
 patch_executor()
 task_handler = TaskHandler()
@@ -416,6 +421,14 @@ class AlasGUI(Frame):
                     put_scope("waiting_tasks"),
                 ],
             )
+            # put_scope(
+            #     "snapshot",
+            #     [
+            #         put_text(t("Gui.Overview.Snapshot")),
+            #         put_html('<hr class="hr-group">'),
+            #         put_scope("snapshot_image"),
+            #     ],
+            # )
 
         switch_scheduler = BinarySwitchButton(
             label_on=t("Gui.Button.Stop"),
@@ -464,7 +477,7 @@ class AlasGUI(Frame):
 
         self.task_handler.add(switch_scheduler.g(), 1, True)
         self.task_handler.add(switch_log_scroll.g(), 1, True)
-        self.task_handler.add(self.alas_update_overview_task, 10, True)
+        self.task_handler.add(self.alas_update_overview_task, 3, True)
         self.task_handler.add(log.put_log(self.alas), 0.25, True)
 
     def _init_alas_config_watcher(self) -> None:
@@ -552,6 +565,30 @@ class AlasGUI(Frame):
         except Exception as e:
             logger.exception(e)
 
+    def get_snapshot(self) -> bytes:
+        address = self.alas_config.Playwright_RemoteDebuggingAddress
+        cdp_url = address if address.startswith(("http://", "https://")) else f"http://{address}"
+        try:
+            logger.info("Accessing browser")
+            browser = getattr(self, "browser", None)
+            if browser is None:
+                self._pw = getattr(self, "_pw", None) or sync_playwright().start()
+                browser = self._pw.chromium.connect_over_cdp(cdp_url)
+                self.browser = browser
+            logger.info("Accessing context")
+            context = browser.contexts[-1]
+            if not context:
+                return None
+            logger.info("Accessing page")
+            webpage = context.pages[0]
+            if not webpage:
+                return
+            logger.info(f"Accessing page content: {webpage.url}")
+            return webpage.screenshot(type="png", full_page=False)
+        except Exception as e:
+            logger.warning(f"Failed to take device snapshot: {e}")
+            return
+
     def alas_update_overview_task(self) -> None:
         if not self.visible:
             return
@@ -587,6 +624,21 @@ class AlasGUI(Frame):
                     color="off",
                 )
 
+        def put_snapshot():
+            png_bytes = self.get_snapshot()
+            if png_bytes:
+                put_column(
+                    [put_image(png_bytes, format="png")],
+                    size="auto auto",
+                )
+            else:
+                put_column(
+                    [
+                        put_image('https://live.staticflickr.com/7321/9662443323_f144e10bb1_b.jpg')
+                    ],
+                    size="auto auto",
+                )
+
         if self.scope_expired_then_add("pending_task", [
             alive,
             self.alas_config.pending_task
@@ -613,6 +665,11 @@ class AlasGUI(Frame):
                 else:
                     put_text(t("Gui.Overview.NoTask")).style("--overview-notask-text--")
 
+        # clear("snapshot_image")
+        # with use_scope("snapshot_image"):
+        #     put_snapshot()
+
+        # pywebio-scope-snapshot_image
         for arg, arg_dict in self.ALAS_STORED.items():
             # Skip order=0
             if not arg_dict.get("order", 0):
@@ -981,8 +1038,11 @@ class AlasGUI(Frame):
             except Exception as e:
                 logger.exception(e)
         put_button(label="Run Code", onclick=lambda: _eval(self))
+        put_button(label="Kill browser", onclick=lambda: self.kill_remote_browser())
 
-
+    def kill_remote_browser(self):
+        port = str2int(self.alas_config.Playwright_RemoteDebuggingAddress.split(":")[-1])
+        popup("Result", str(kill_by_port(port)))
 
     @use_scope("content", clear=True)
     def dev_remote(self) -> None:

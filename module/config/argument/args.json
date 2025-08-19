@@ -51,7 +51,7 @@
       },
       "ExtraChromiumArgs": {
         "type": "textarea",
-        "value": "--disable-features=IsolateOrigins,site-per-process\n--disable-infobars\n"
+        "value": "--disable-features=IsolateOrigins,site-per-process\n--disable-infobars\n--window-size=1280,800\n"
       }
     },
     "Error": {
@@ -1384,7 +1384,7 @@
       },
       "AvailablePetsCount": {
         "type": "input",
-        "value": 6
+        "value": 0
       }
     }
   },
