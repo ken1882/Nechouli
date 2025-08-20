@@ -204,6 +204,11 @@ VoidsWithin:
   AvailablePetsCount: 0
 
 PlayerStorage:
+  NeoPoints:
+    stored: StoredBase
+    display: true
+    order: 1
+    color: "#FFD700"
   DailyQuestRestockTimesLeft:
     stored: StoredDailyQuestRestockCounter
     display: true
@@ -213,9 +218,13 @@ PlayerStorage:
   InventoryData:
     stored: StoredItemContainer
     display: true
+    order: 2
+    color: "#6DA9E4"
   StockData:
     stored: StoredItemContainer
     display: true
+    order: 3
+    color: "#E4B86D"
   PetsData:
     stored: StoredPetsData
 

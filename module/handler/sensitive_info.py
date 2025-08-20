@@ -7,7 +7,10 @@ def handle_sensitive_image(image):
         np.ndarray:
     """
     # Paint UID to black
-    image[680:720, 0:180, :] = 0
+    try:
+        image[680:720, 0:180, :] = 0
+    except Exception as e:
+        print(f"Error handling sensitive image: {e}")
     return image
 
 

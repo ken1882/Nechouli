@@ -1,4 +1,47 @@
 {
+  "NeoPoints": {
+    "name": "NeoPoints",
+    "path": "InventoryTool.PlayerStorage.NeoPoints",
+    "i18n": "PlayerStorage.NeoPoints.name",
+    "stored": "StoredBase",
+    "attrs": {
+      "time": "2020-01-01 00:00:00"
+    },
+    "order": 1,
+    "color": "#FFD700"
+  },
+  "InventoryData": {
+    "name": "InventoryData",
+    "path": "InventoryTool.PlayerStorage.InventoryData",
+    "i18n": "PlayerStorage.InventoryData.name",
+    "stored": "StoredItemContainer",
+    "attrs": {
+      "time": "2020-01-01 00:00:00",
+      "capacity": 50,
+      "items": [],
+      "np": 0,
+      "total": 0,
+      "value": 0
+    },
+    "order": 2,
+    "color": "#6DA9E4"
+  },
+  "StockData": {
+    "name": "StockData",
+    "path": "InventoryTool.PlayerStorage.StockData",
+    "i18n": "PlayerStorage.StockData.name",
+    "stored": "StoredItemContainer",
+    "attrs": {
+      "time": "2020-01-01 00:00:00",
+      "capacity": 50,
+      "items": [],
+      "np": 0,
+      "total": 0,
+      "value": 0
+    },
+    "order": 3,
+    "color": "#E4B86D"
+  },
   "PendingTrainingFee": {
     "name": "PendingTrainingFee",
     "path": "PetTraining.PetTraining.PendingTrainingFee",
@@ -44,38 +87,6 @@
     "attrs": {
       "time": "2020-01-01 00:00:00",
       "total": 1,
-      "value": 0
-    },
-    "order": 0,
-    "color": "#777777"
-  },
-  "InventoryData": {
-    "name": "InventoryData",
-    "path": "InventoryTool.PlayerStorage.InventoryData",
-    "i18n": "PlayerStorage.InventoryData.name",
-    "stored": "StoredItemContainer",
-    "attrs": {
-      "time": "2020-01-01 00:00:00",
-      "capacity": 50,
-      "items": [],
-      "np": 0,
-      "total": 0,
-      "value": 0
-    },
-    "order": 0,
-    "color": "#777777"
-  },
-  "StockData": {
-    "name": "StockData",
-    "path": "InventoryTool.PlayerStorage.StockData",
-    "i18n": "PlayerStorage.StockData.name",
-    "stored": "StoredItemContainer",
-    "attrs": {
-      "time": "2020-01-01 00:00:00",
-      "capacity": 50,
-      "items": [],
-      "np": 0,
-      "total": 0,
       "value": 0
     },
     "order": 0,

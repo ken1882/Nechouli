@@ -413,6 +413,7 @@
   },
   "InventoryTool": {
     "PlayerStorage": {
+      "NeoPoints": {},
       "DailyQuestRestockTimesLeft": {},
       "DailyQuestFeedTimesLeft": {},
       "InventoryData": {},

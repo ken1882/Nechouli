@@ -568,6 +568,10 @@
       "name": "Storage Data",
       "help": ""
     },
+    "NeoPoints": {
+      "name": "NP",
+      "help": ""
+    },
     "DailyQuestRestockTimesLeft": {
       "name": "Daily Quest Restock Counter",
       "help": "Numbers left to complete 'purchase items from shops' daily quest"
@@ -577,7 +581,7 @@
       "help": "Numbers left to complete 'feed pets' daily quest"
     },
     "InventoryData": {
-      "name": "Inventory Content",
+      "name": "Inventory",
       "help": ""
     },
     "StockData": {

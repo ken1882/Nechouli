@@ -1394,6 +1394,14 @@
   },
   "InventoryTool": {
     "PlayerStorage": {
+      "NeoPoints": {
+        "type": "stored",
+        "value": {},
+        "display": true,
+        "stored": "StoredBase",
+        "order": 1,
+        "color": "#FFD700"
+      },
       "DailyQuestRestockTimesLeft": {
         "type": "stored",
         "value": {},
@@ -1410,13 +1418,17 @@
         "type": "stored",
         "value": {},
         "display": true,
-        "stored": "StoredItemContainer"
+        "stored": "StoredItemContainer",
+        "order": 2,
+        "color": "#6DA9E4"
       },
       "StockData": {
         "type": "stored",
         "value": {},
         "display": true,
-        "stored": "StoredItemContainer"
+        "stored": "StoredItemContainer",
+        "order": 3,
+        "color": "#E4B86D"
       },
       "PetsData": {
         "type": "stored",

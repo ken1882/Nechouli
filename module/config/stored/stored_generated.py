@@ -18,6 +18,7 @@ from module.config.stored.classes import (
 class StoredGenerated:
     PendingTrainingFee = StoredPendingTrainingFee("PetTraining.PetTraining.PendingTrainingFee")
     ShopWizardRequests = StoredShopWizardRequests("ShopWizard.ShopWizard.ShopWizardRequests")
+    NeoPoints = StoredBase("InventoryTool.PlayerStorage.NeoPoints")
     DailyQuestRestockTimesLeft = StoredDailyQuestRestockCounter("InventoryTool.PlayerStorage.DailyQuestRestockTimesLeft")
     DailyQuestFeedTimesLeft = StoredDailyQuestFeedCounter("InventoryTool.PlayerStorage.DailyQuestFeedTimesLeft")
     InventoryData = StoredItemContainer("InventoryTool.PlayerStorage.InventoryData")

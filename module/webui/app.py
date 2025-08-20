@@ -96,6 +96,7 @@ from module.webui.widgets import (
     put_output,
 )
 import module.webui.widget_renderer as widget_renderer
+import module.webui.dashboard_renderer as dashboard_renderer
 
 from module.base.utils import str2int, kill_by_port
 
@@ -355,7 +356,9 @@ class AlasGUI(Frame):
         color = arg_dict.get("color", "#777777")
         nodata = t("Gui.Dashboard.NoData")
 
-        def set_value(dic):
+        def set_value(dic, stored):
+            if dashboard_renderer.can_handle(dic.get('name', '')):
+                return dashboard_renderer.render(dic, stored)
             if "total" in dic.get("attrs", []) and config.get("total") is not None:
                 return [
                     put_text(config.get("value", nodata)).style("--dashboard-value--"),
@@ -374,7 +377,7 @@ class AlasGUI(Frame):
         with use_scope(f"dashboard-row-{arg}", clear=True):
             put_html(f'<div><div class="dashboard-icon" style="background-color:{color}"></div>'),
             put_scope(f"dashboard-content-{arg}", [
-                put_scope(f"dashboard-value-{arg}", set_value(arg_dict)),
+                put_scope(f"dashboard-value-{arg}", set_value(arg_dict, config)),
                 put_scope(f"dashboard-time-{arg}", [
                     put_text(f"{name} - {lang.readable_time(config.get('time', ''))}").style("--dashboard-time--"),
                 ])
@@ -464,10 +467,9 @@ class AlasGUI(Frame):
                     put_scope(f"dashboard-row-{arg}", [])
                     for arg in self.ALAS_STORED.keys() if deep_get(self.ALAS_STORED, keys=[arg, "order"], default=0)
                     # Empty content to left-align last row
-                ])
+                ] + [put_html("<i></i>")] * min(len(self.ALAS_STORED), 4))
             ])
             put_scope("log", [put_html("")])
-            # print(len(self.ALAS_STORED))
 
         log.console.width = log.get_width()
 

@@ -104,6 +104,7 @@ class GeneratedConfig:
     VoidsWithin_AvailablePetsCount = 0
 
     # Group `PlayerStorage`
+    PlayerStorage_NeoPoints = {}
     PlayerStorage_DailyQuestRestockTimesLeft = {}
     PlayerStorage_DailyQuestFeedTimesLeft = {}
     PlayerStorage_InventoryData = {}
