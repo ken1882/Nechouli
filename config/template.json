@@ -409,6 +409,7 @@
     "VoidsWithin": {
       "DelayForDailyFeed": true,
       "AvailablePetsCount": 0,
+      "DispatchBlacklist": null,
       "EarnedPlotPoints": {}
     }
   },

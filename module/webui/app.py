@@ -98,7 +98,7 @@ from module.webui.widgets import (
 import module.webui.widget_renderer as widget_renderer
 import module.webui.dashboard_renderer as dashboard_renderer
 
-from module.base.utils import str2int, kill_by_port
+from module.base.utils import str2int, kill_by_port, check_connection
 
 patch_executor()
 task_handler = TaskHandler()
@@ -397,13 +397,7 @@ class AlasGUI(Frame):
                     put_text(t("Gui.Overview.Scheduler")).style(
                         "font-size: 1.25rem; margin: auto .5rem auto;"
                     ),
-                    put_button(
-                        label="Kill",
-                        onclick=lambda: self.kill_remote_browser(),
-                        scope="killer_btn",
-                        color="danger",
-                        outline=True,
-                    ).style('--scheduler-killer-btn--'),
+                    put_scope("killer_btn"),
                     put_scope("scheduler_btn"),
                 ],
             )
@@ -451,6 +445,17 @@ class AlasGUI(Frame):
             scope="scheduler_btn",
         )
 
+        switch_killer = BinarySwitchButton(
+            label_on=t("Gui.Button.Kill"),
+            label_off=t("Gui.Button.NotRunning"),
+            onclick_on=lambda: self.kill_remote_browser(),
+            onclick_off=lambda: logger.info("Browser not started yet"),
+            get_state=lambda: check_connection(self.alas_config.Playwright_RemoteDebuggingAddress, timeout=0.3),
+            color_on="danger",
+            color_off="off",
+            scope="killer_btn",
+        )
+
         log = RichLog("log")
 
         with use_scope("logs"):
@@ -485,6 +490,7 @@ class AlasGUI(Frame):
         )
 
         self.task_handler.add(switch_scheduler.g(), 1, True)
+        self.task_handler.add(switch_killer.g(), 1, True)
         self.task_handler.add(switch_log_scroll.g(), 1, True)
         self.task_handler.add(self.alas_update_overview_task, 3, True)
         self.task_handler.add(log.put_log(self.alas), 0.25, True)

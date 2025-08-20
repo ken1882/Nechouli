@@ -74,7 +74,7 @@ def _redis_set_item(item: dict, ttl: int = 0) -> None:
 # ────────────────────────────────────────────────────────────────────────────────
 # Public API
 # ────────────────────────────────────────────────────────────────────────────────
-def load_cache(force_local: bool = False) -> dict:
+def load_item_cache(force_local: bool = False) -> dict:
     """
     Hydrate the in-memory `Database` dict from Redis (preferred) or local JSON.
     """

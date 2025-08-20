@@ -10,6 +10,7 @@ class VoidsWithinUI(BasePageUI):
         do_send = True
         if self.config.VoidsWithin_DelayForDailyFeed and self.config.stored.DailyQuestFeedTimesLeft.value:
             do_send = False
+            logger.info("Delay dispatch for daily feed")
         for i in [5, 4, 3, 2, 1]:
             pane = self.page.locator(f'#Act{i}Pane')
             btn = self.page.locator(f'#Act{i}PaneBtn')
@@ -57,6 +58,7 @@ class VoidsWithinUI(BasePageUI):
             self.device.wait(1)
             pets = self.page.locator('.vc-pet')
         self.device.wait(3) # js render lag
+        bans = [n.strip() for n in (self.config.VoidsWithin_DispatchBlacklist or '').splitlines() if n.strip()]
         for p in pets.all():
             flag_sent = False
             if p.locator('.volunteering').is_visible():
@@ -75,6 +77,10 @@ class VoidsWithinUI(BasePageUI):
                     flag_sent = True
                     logger.warning(f"Pet {p.text_content()} is not selectable, skipping")
                     break
+            pname = p.locator('.vc-name').text_content()
+            if pname in bans:
+                logger.info(f"Pet {pname} is in dispatch blacklist, skipping")
+                continue
             if flag_sent:
                 continue
             send = self.page.locator('button').filter(has_text='Join Volunteer Team')

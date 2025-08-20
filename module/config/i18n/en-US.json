@@ -562,6 +562,10 @@
       "name": "Number of Available Pets",
       "help": "Number of pets available for dispatching in hospital. Leave 0 for auto-detect but sometimes will bugged due to js render lag."
     },
+    "DispatchBlacklist": {
+      "name": "Dispatch Blacklist",
+      "help": "Pets that should not be dispatched to the hospital, enter the name and separated by line."
+    },
     "EarnedPlotPoints": {
       "name": "VW Points",
       "help": ""
@@ -626,7 +630,9 @@
       "CheckUpdate": "Check update",
       "ClickToUpdate": "Click to update",
       "RetryUpdate": "Retry update",
-      "CancelUpdate": "Cancel update"
+      "CancelUpdate": "Cancel update",
+      "Kill": "Kill",
+      "NotRunning": "---"
     },
     "Toast": {
       "DisableTranslateMode": "Click here to disable translate mode",

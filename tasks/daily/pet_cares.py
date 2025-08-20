@@ -47,8 +47,9 @@ class PetCaresUI(BasePageUI):
                 continue
             if any(pet.name == name for pet in self.pets):
                 continue
-            logger.info(node.bounding_box())
-            if node.bounding_box()['x'] < -100:
+            bb = node.bounding_box()
+            logger.info("Visibility check: %s", bb)
+            if bb['x'] + bb['width'] < 100:
                 continue
             data = {
                 'name': name,

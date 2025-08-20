@@ -202,6 +202,9 @@ PetTraining:
 VoidsWithin:
   DelayForDailyFeed: true
   AvailablePetsCount: 0
+  DispatchBlacklist:
+    type: textarea
+    value: ""
   EarnedPlotPoints:
     stored: StoredInt
     display: true

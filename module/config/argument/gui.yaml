@@ -20,6 +20,8 @@ Button:
   ClickToUpdate:
   RetryUpdate:
   CancelUpdate:
+  Kill:
+  NotRunning:
 
 Toast:
   DisableTranslateMode:

@@ -1390,6 +1390,10 @@
         "type": "input",
         "value": 0
       },
+      "DispatchBlacklist": {
+        "type": "textarea",
+        "value": ""
+      },
       "EarnedPlotPoints": {
         "type": "stored",
         "value": {},

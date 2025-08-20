@@ -197,5 +197,8 @@ def update_item_market_price(item_name: str, price: int) -> bool:
     return dm.update_item_market_price(item_name, price)
 
 
+def load_cache() -> None:
+    dm.load_item_cache()
+
 # ───────────────────────────  Bootstrap hot cache  ────────────────────────────
-dm.load_cache()
+load_cache()
