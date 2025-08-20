@@ -12,10 +12,9 @@ Alas:
       - Playwright
       - Error
       - Optimization
+      - ProfileSettings
     Restart:
       - Scheduler
-    GeneralSettings:
-      - ProfileSettings
 
 # ==================== Chore ====================
 

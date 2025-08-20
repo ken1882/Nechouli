@@ -32,7 +32,7 @@ class ShopWizardUI(BasePageUI):
             return
         # update expiring items in jn cache
         jn.load_cache()
-        cache = sorted(jn.Database.values(), key=lambda x: x.get('price_timestamp', 0))
+        cache = sorted(dm.ItemDatabase.values(), key=lambda x: x.get('price_timestamp', 0))
         for item in cache:
             if item.get("price_timestamp", 0) > now_ts - dm.JN_CACHE_TTL/2:
                 break

@@ -25,6 +25,11 @@
       "CombatScreenshotInterval": 1.0,
       "WhenTaskQueueEmpty": "stay_there",
       "MaxConcurrentInstance": 3
+    },
+    "ProfileSettings": {
+      "MinNpKeep": 100000,
+      "JellyNeoExpiry": 168,
+      "TaskSoftTerminationTime": 5
     }
   },
   "Restart": {
@@ -33,13 +38,6 @@
       "NextRun": "2020-01-01 00:00:00",
       "Command": "Restart",
       "ServerUpdate": "00:00"
-    }
-  },
-  "GeneralSettings": {
-    "ProfileSettings": {
-      "MinNpKeep": 100000,
-      "JellyNeoExpiry": 168,
-      "TaskSoftTerminationTime": 5
     }
   },
   "PetCares": {

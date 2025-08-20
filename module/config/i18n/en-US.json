@@ -26,10 +26,6 @@
       "name": "Error Handling",
       "help": ""
     },
-    "GeneralSettings": {
-      "name": "General Settings",
-      "help": ""
-    },
     "PetCares": {
       "name": "Pet Cares",
       "help": "Feeding pets and relative daily quests"

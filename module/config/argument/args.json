@@ -101,6 +101,20 @@
         "type": "input",
         "value": 3
       }
+    },
+    "ProfileSettings": {
+      "MinNpKeep": {
+        "type": "input",
+        "value": 100000
+      },
+      "JellyNeoExpiry": {
+        "type": "input",
+        "value": 168
+      },
+      "TaskSoftTerminationTime": {
+        "type": "input",
+        "value": 5
+      }
     }
   },
   "Restart": {
@@ -129,22 +143,6 @@
         "type": "input",
         "value": "00:00",
         "display": "hide"
-      }
-    }
-  },
-  "GeneralSettings": {
-    "ProfileSettings": {
-      "MinNpKeep": {
-        "type": "input",
-        "value": 100000
-      },
-      "JellyNeoExpiry": {
-        "type": "input",
-        "value": 168
-      },
-      "TaskSoftTerminationTime": {
-        "type": "input",
-        "value": 5
       }
     }
   },
