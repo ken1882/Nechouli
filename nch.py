@@ -62,7 +62,8 @@ class Nechouli(AzurLaneAutoScript):
 
     def stop(self):
         logger.info("Stopping Nechouli")
-        kill_by_port(int(self.config.Playwright_RemoteDebuggingAddress.split(':')[-1]))
+        killed = kill_by_port(int(self.config.Playwright_RemoteDebuggingAddress.split(':')[-1]))
+        logger.info(f"Killed browser process: {killed}")
 
     def is_concurrent_limit_reached(self):
         if self.config.Optimization_MaxConcurrentInstance <= 0:
