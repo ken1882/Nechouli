@@ -4,9 +4,11 @@ import cv2
 import numpy as np
 import socket
 import struct
+import json
 from PIL import Image
 from datetime import datetime
 import pytz, tzlocal
+from glob import glob
 from pathlib import Path
 
 REGEX_NODE = re.compile(r'(-?[A-Za-z]+)(-?\d+)')
@@ -997,7 +999,7 @@ def str2int(ss):
     except ValueError:
         return None
 
-def check_connection(addr):
+def check_connection(addr, timeout:float=3):
     """
     Check if a port is available on the given IP address.
 
@@ -1008,7 +1010,7 @@ def check_connection(addr):
         bool: True if the port is available, False otherwise.
     """
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-        sock.settimeout(3)
+        sock.settimeout(timeout)
         ip, port = addr.split(':')
         result = sock.connect_ex((ip, int(port)))
         return result == 0
@@ -1135,3 +1137,18 @@ def kill_by_port(port: int, proto: str = "tcp", grace: float = 5.0) -> list[int]
     for pid in list(pids):
         kill_process_tree(pid, grace=grace)
     return sorted(pids)
+
+def get_all_instance_addresses() -> dict[str, str]:
+    files = glob('./config/*.json')
+    ret = {}
+    for file in files:
+        if 'template' in file:
+            continue
+        with open(file, 'r') as f:
+            data = json.load(f)
+            try:
+                addr = data['Alas']['Playwright']['RemoteDebuggingAddress']
+            except KeyError:
+                continue
+            ret[Path(file).stem] = addr
+    return ret

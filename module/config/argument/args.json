@@ -96,6 +96,10 @@
           "goto_main",
           "close_game"
         ]
+      },
+      "MaxConcurrentInstance": {
+        "type": "input",
+        "value": 3
       }
     }
   },

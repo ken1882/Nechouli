@@ -3,7 +3,7 @@ from typing import Callable
 from random import randint
 from module.exception import *
 from module.base import utils
-from cached_property import cached_property
+from functools import cached_property
 from module.logger import logger
 from module.device.connection import Connection
 from playwright.sync_api import Locator

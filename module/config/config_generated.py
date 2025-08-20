@@ -25,6 +25,7 @@ class GeneratedConfig:
     Optimization_ScreenshotInterval = 0.3
     Optimization_CombatScreenshotInterval = 1.0
     Optimization_WhenTaskQueueEmpty = 'stay_there'  # stay_there, goto_main, close_game
+    Optimization_MaxConcurrentInstance = 3
 
     # Group `Playwright`
     Playwright_Browser = 'msedge'  # msedge, chrome

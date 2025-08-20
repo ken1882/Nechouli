@@ -394,6 +394,13 @@ class AlasGUI(Frame):
                     put_text(t("Gui.Overview.Scheduler")).style(
                         "font-size: 1.25rem; margin: auto .5rem auto;"
                     ),
+                    put_button(
+                        label="Kill",
+                        onclick=lambda: self.kill_remote_browser(),
+                        scope="killer_btn",
+                        color="danger",
+                        outline=True,
+                    ).style('--scheduler-killer-btn--'),
                     put_scope("scheduler_btn"),
                 ],
             )
@@ -1021,7 +1028,6 @@ class AlasGUI(Frame):
                 toast("Reload not enabled", color="error")
 
         put_button(label="Force restart", onclick=_force_restart)
-        put_button(label="Kill browser", onclick=lambda: self.kill_remote_browser())
         enable_eval = get_localstorage("DANGER_ENABLE_EVAL") or ''
         if enable_eval != 'DO_NOT_PASTE_ANY_CODE_HERE_UNLESS_YOU_KNOW_WHAT_YOU_ARE_DOING':
             return

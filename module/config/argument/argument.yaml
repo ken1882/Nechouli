@@ -30,6 +30,7 @@ Optimization:
   WhenTaskQueueEmpty:
     value: stay_there
     option: [ stay_there, goto_main, close_game ]
+  MaxConcurrentInstance: 3
 Playwright:
   Browser:
     type: select

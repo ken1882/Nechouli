@@ -8,7 +8,7 @@ from PIL import Image
 from datetime import datetime
 from collections import deque
 from playwright.sync_api import Page, Locator
-from cached_property import cached_property
+from functools import cached_property
 from module.base.utils import get_color, image_size, limit_in, save_image
 from module.device.connection import Connection
 from module.exception import RequestHumanTakeover, ScriptError

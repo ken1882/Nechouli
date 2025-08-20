@@ -41,3 +41,7 @@
     background-color: #7289da;
     color: #ffffff;
 }
+
+*[style*="--scheduler-killer-btn--"] button {
+    margin: auto;
+}

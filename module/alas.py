@@ -3,8 +3,9 @@ import time
 from datetime import datetime, timedelta
 
 import inflection
-from cached_property import cached_property
+from functools import cached_property
 
+from module.base.utils import kill_by_port
 from module.base.decorator import del_cached_property
 from module.config.config import AzurLaneConfig, TaskEnd
 from module.config.utils import deep_get, deep_set
@@ -29,7 +30,7 @@ class AzurLaneAutoScript:
         self.failure_record = {}
 
     @cached_property
-    def config(self):
+    def config(self) -> AzurLaneConfig:
         try:
             config = AzurLaneConfig(config_name=self.config_name)
             return config
@@ -41,7 +42,7 @@ class AzurLaneAutoScript:
             exit(1)
 
     @cached_property
-    def device(self):
+    def device(self) -> Device:
         try:
             from module.device.device import Device
             device = Device(config=self.config)
@@ -318,7 +319,6 @@ class AzurLaneAutoScript:
                 del_cached_property(self, 'config')
                 self.checker.check_now()
                 continue
-
 
 if __name__ == '__main__':
     alas = AzurLaneAutoScript()

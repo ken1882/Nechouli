@@ -2,6 +2,7 @@ from module.logger import logger
 from tasks.base.base_page import BasePageUI
 from module.base.utils import str2int
 from module import jelly_neo as jn
+from module.db import data_manager as dm
 from datetime import datetime
 
 class ShopWizardUI(BasePageUI):
@@ -21,7 +22,7 @@ class ShopWizardUI(BasePageUI):
         now_ts = datetime.now().timestamp()
         for i in self.config.stored.StockData.items+self.config.stored.InventoryData.items:
             item = jn.get_item_details_by_name(i.name)
-            if item.get("price_timestamp", 0) > now_ts - jn.CACHE_TTL/2:
+            if item.get("price_timestamp", 0) > now_ts - dm.JN_CACHE_TTL/2:
                 continue
             self.config.stored.ShopWizardRequests.add(i.name, 'price_update')
             added += 1
@@ -33,7 +34,7 @@ class ShopWizardUI(BasePageUI):
         jn.load_cache()
         cache = sorted(jn.Database.values(), key=lambda x: x.get('price_timestamp', 0))
         for item in cache:
-            if item.get("price_timestamp", 0) > now_ts - jn.CACHE_TTL/2:
+            if item.get("price_timestamp", 0) > now_ts - dm.JN_CACHE_TTL/2:
                 break
             self.config.stored.ShopWizardRequests.add(item["name"], 'price_update')
             added += 1

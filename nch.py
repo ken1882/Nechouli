@@ -1,7 +1,16 @@
 from module.alas import AzurLaneAutoScript
 from module.logger import logger
-import module.jelly_neo as jn
-
+from module.base.utils import (
+    str2int,
+    kill_by_port,
+    get_all_instance_addresses,
+    check_connection
+)
+from module.db import data_manager as dm
+from pathlib import Path
+import random
+import os
+import time
 
 class Nechouli(AzurLaneAutoScript):
 
@@ -9,19 +18,7 @@ class Nechouli(AzurLaneAutoScript):
         super().__init__(config_name)
 
     def loop(self):
-        jn.CACHE_TTL = self.config.ProfileSettings_JellyNeoExpiry * 3600
-        self.device.start_browser()
-        while True:
-            try:
-                self.device.page.goto('https://www.neopets.com/questlog/')
-            except Exception as e:
-                logger.error(f"Failed to navigate to quest log: {e}")
-                self.device.respawn_page()
-                continue
-            break
-        self.device.wait(3) # quest won't start if not visited
-        if self.config.Playwright_CleanPagesOnStart or self.config.Playwright_Headless:
-            self.device.clean_redundant_pages()
+        self.start()
         try:
             super().loop()
         except Exception as e:
@@ -33,11 +30,58 @@ class Nechouli(AzurLaneAutoScript):
         t.goto('https://www.neopets.com/questlog/')
         t.calc_next_run()
 
+    @property
+    def lock_file(self):
+        p = Path('.nch-lock')
+        p.touch(exist_ok=True)
+        return p
+
     def start(self):
-        pass
+        logger.info("Starting Nechouli")
+        wt = 3 + ((os.getpid() % 97) / 800.0)
+        while self.is_concurrent_limit_reached():
+            wt = min(300+random.randint(0, 100), random.uniform(wt * 0.8, wt * 1.5))
+            logger.warning(f"Concurrent limit reached, waiting for {round(wt, 3)} seconds")
+            time.sleep(wt)
+        dm.JN_CACHE_TTL = self.config.ProfileSettings_JellyNeoExpiry * 3600
+        self.device.start_browser()
+        while True:
+            try:
+                self.device.page.goto('https://www.neopets.com/questlog/')
+            except Exception as e:
+                logger.error(f"Failed to navigate to quest log: {e}")
+                self.device.respawn_page()
+                continue
+            break
+        loading = self.device.page.locator('#QuestLogLoader')
+        while loading.is_visible():
+            self.device.wait(0.3)
+        self.device.wait(1) # quest won't start if not visited
+        if self.config.Playwright_CleanPagesOnStart or self.config.Playwright_Headless:
+            self.device.clean_redundant_pages()
 
     def stop(self):
-        pass
+        logger.info("Stopping Nechouli")
+        kill_by_port(int(self.config.Playwright_RemoteDebuggingAddress.split(':')[-1]))
+
+    def is_concurrent_limit_reached(self):
+        if self.config.Optimization_MaxConcurrentInstance <= 0:
+            return False
+        logger.info("Checking running instances")
+        msg = ''
+        addresses = []
+        with open(self.lock_file, 'r+') as fp, dm.file_lock(fp):
+            for profile_name, addr in get_all_instance_addresses().items():
+                msg += f"{profile_name} ({addr})"
+                if check_connection(addr, timeout=0.1):
+                    addresses.append(addr)
+                    msg += ': O\n'
+                else:
+                    msg += ': X\n'
+            logger.info(f"Running count: {len(addresses)}\n{msg}")
+            if len(addresses) >= self.config.Optimization_MaxConcurrentInstance:
+                return True
+        return False
 
     def goto_main(self):
         self.device.page.goto('https://www.neopets.com/home')

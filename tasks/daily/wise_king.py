@@ -5,6 +5,8 @@ class WiseKingUI(BasePageUI):
 
     def main(self):
         self.goto('https://www.neopets.com/medieval/wiseking.phtml')
+        if self.is_new_account():
+            return True
         if 'wiseking_gone.gif' in self.page.content():
             logger.info("Wise King is unavailable, return after 1 hour")
             return False

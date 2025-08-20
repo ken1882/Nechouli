@@ -4,6 +4,228 @@ from module.base import utils
 import module.db.models as models
 import struct
 import importlib
+import os
+from contextlib import contextmanager
+from pathlib import Path
+from datetime import datetime
+from threading import Lock
+from typing import Dict, Optional
+import orjson
+import sys
+import portalocker
+from portalocker.exceptions import AlreadyLocked
+
+from dotenv import load_dotenv
+load_dotenv()
+
+REDIS_JN_MEGA_KEY = "jellyneo_itemdb"
+REDIS_JN_KEY_PREFIX = "jellyneo_itemdb:"
+REDIS_GLOBAL_KEY_PREFIX = "nechouli_globals:"
+REDIS_CACHE_URL = os.getenv("REDIS_CACHE", None)
+
+CACHE_FILE = "cache/items.json"
+JN_CACHE_TTL = 60 * 60 * 24 * 7  # default 7 days
+
+DB_LOCK = Lock()
+_GLOBAL_FILE = Path('.nch_globals.json')
+ItemDatabase: Dict[str, dict] = {}
+
+redis_conn = None
+if REDIS_CACHE_URL:
+    import redis
+
+    redis_conn = redis.Redis.from_url(REDIS_CACHE_URL, decode_responses=True)
+
+
+def _redis_enabled() -> bool:
+    return redis_conn is not None
+
+
+def _redis_key(iname: str) -> str:
+    return f"{REDIS_JN_KEY_PREFIX}{iname}"
+
+# ────────────────────────────────────────────────────────────────────────────────
+# Single-item helpers
+# ────────────────────────────────────────────────────────────────────────────────
+def _redis_get_item(iname: str) -> Optional[dict]:
+    if not _redis_enabled():
+        return None
+    try:
+        data = redis_conn.get(_redis_key(iname))
+        if data:
+            obj = orjson.loads(data)
+            with DB_LOCK:
+                ItemDatabase[iname] = obj
+            return obj
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Redis GET failed (%s): %s", iname, exc)
+    return None
+
+
+def _redis_set_item(item: dict, ttl: int = 0) -> None:
+    if not _redis_enabled() or not item or "name" not in item:
+        return
+    ttl = ttl or JN_CACHE_TTL
+    try:
+        redis_conn.setex(_redis_key(item["name"].lower()), ttl, orjson.dumps(item))
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Redis SETEX failed (%s): %s", item.get("name"), exc)
+
+# ────────────────────────────────────────────────────────────────────────────────
+# Public API
+# ────────────────────────────────────────────────────────────────────────────────
+def load_cache(force_local: bool = False) -> dict:
+    """
+    Hydrate the in-memory `Database` dict from Redis (preferred) or local JSON.
+    """
+    global ItemDatabase  # noqa: PLW0603
+
+    if _redis_enabled() and not force_local:
+        logger.info("Loading cache from Redis...")
+        try:
+            prefix, total, cursor = REDIS_JN_KEY_PREFIX, 0, 0
+            while True:
+                cursor, keys = redis_conn.scan(cursor=cursor, match=f"{prefix}*", count=20_000)
+                if keys:
+                    values = redis_conn.mget(keys)
+                    for k, v in zip(keys, values):
+                        if v:
+                            ItemDatabase[k[len(prefix):]] = orjson.loads(v)
+                            total += 1
+                if cursor == 0:
+                    break
+            logger.info("Redis warm-up complete (%d items)", total)
+            return ItemDatabase
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Redis scan failed: %s", exc)
+
+    # Fallback – local JSON
+    if os.path.exists(CACHE_FILE):
+        logger.info("Loading item cache from %s", CACHE_FILE)
+        with open(CACHE_FILE, "rb") as fh:
+            ItemDatabase = orjson.loads(fh.read())
+    logger.info("Loaded %d cached items", len(ItemDatabase))
+    return ItemDatabase
+
+def save_cache(item: Optional[dict] = None, *, to_file: bool = False) -> None:
+    """
+    Persist a single `item` to Redis/in-mem, or dump the whole DB to disk.
+    """
+    if item:
+        _redis_set_item(item)
+        with DB_LOCK:
+            ItemDatabase[item["name"].lower()] = item
+
+    if to_file:
+        with DB_LOCK, open(CACHE_FILE, "wb") as fh:
+            fh.write(orjson.dumps(ItemDatabase, option=orjson.OPT_INDENT_2))
+
+
+def is_cached(iname: str) -> bool:
+    """
+    True if item exists *and* its market-price timestamp is still within TTL.
+    """
+    iname = iname.lower()
+    obj = ItemDatabase.get(iname) or _redis_get_item(iname)
+    if not obj:
+        return False
+
+    if obj.get("rarity", 0) > 300:  # NC item, never refresh
+        return True
+
+    ts = obj.get("price_timestamp")
+    if not ts:
+        return False
+    age = (datetime.now() - datetime.fromtimestamp(ts)).total_seconds()
+    return age <= JN_CACHE_TTL
+
+
+def update_item_market_price(iname: str, price: int) -> bool:
+    """
+    Patch `market_price` + timestamp for a single item, wherever it lives.
+    """
+    iname = iname.lower()
+    if iname not in ItemDatabase:
+        return False
+    item = ItemDatabase[iname]
+    item["market_price"] = price
+    item["price_timestamp"] = datetime.now().timestamp()
+    save_cache(item)
+    return True
+
+
+def clear_cache() -> None:
+    """Delete everything from memory, Redis and local JSON file."""
+    global ItemDatabase  # noqa: PLW0603
+    ItemDatabase = {}
+
+    if _redis_enabled():
+        logger.info("Wiping Redis keys %s*", REDIS_JN_KEY_PREFIX)
+        for key in redis_conn.scan_iter(f"{REDIS_JN_KEY_PREFIX}*"):
+            redis_conn.delete(key)
+
+    if os.path.exists(CACHE_FILE):
+        os.remove(CACHE_FILE)
+
+    logger.info("Cache cleared")
+
+@contextmanager
+def file_lock(fp, exclusive: bool = True, timeout: int = 60):
+    """Context manager wrapping `fcntl.flock`."""
+    st = datetime.now()
+    while True:
+        try:
+            mode = portalocker.LOCK_EX if exclusive else portalocker.LOCK_SH
+            portalocker.lock(fp, mode)
+            break
+        except AlreadyLocked:
+            if (datetime.now() - st).total_seconds() > timeout:
+                raise
+            continue
+    try:
+        yield
+    finally:
+        portalocker.unlock(fp)
+
+
+def global_set(key: str, value: str) -> None:
+    """
+    Write a key-value pair, cross-process safe.
+    Redis if available, else file+flock.
+    """
+    if _redis_enabled():
+        redis_conn.set(REDIS_GLOBAL_KEY_PREFIX + key, value)
+        return
+
+    _GLOBAL_FILE.touch(exist_ok=True)
+    with open(_GLOBAL_FILE, "rb+") as fp, file_lock(fp):
+        try:
+            data = orjson.loads(fp.read()) or {}
+        except orjson.JSONDecodeError:
+            data = {}
+        data[key] = value
+        fp.seek(0)
+        fp.truncate()
+        fp.write(orjson.dumps(data))
+
+def global_get(key: str) -> Optional[str]:
+    """
+    Read back a value previously saved by `global_set`.
+    Returns `None` if key not found.
+    """
+    if _redis_enabled():
+        val = redis_conn.get(REDIS_GLOBAL_KEY_PREFIX + key)
+        return val if val is not None else None
+
+    if not _GLOBAL_FILE.exists():
+        return None
+
+    with open(_GLOBAL_FILE, "rb") as fp, file_lock(fp, False):
+        try:
+            data = orjson.loads(fp.read()) or {}
+        except orjson.JSONDecodeError:
+            return None
+    return data.get(key)
 
 class DataManager:
 

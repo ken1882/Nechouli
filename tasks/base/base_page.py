@@ -83,6 +83,11 @@ class BasePageUI(ModuleBase):
             return False
         return True
 
+    def is_new_account(self):
+        if 'your account must' in self.device.page.content().lower():
+            return True
+        return False
+
     def goto(self, url):
         try:
             self.device.goto(url)
