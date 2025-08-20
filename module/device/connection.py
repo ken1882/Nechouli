@@ -177,8 +177,13 @@ class Connection:
                 cmd = [executable_path] + extra_args
                 logger.info(f"Starting browser manually: {' '.join(cmd)}")
                 subprocess.Popen(cmd)
-                logger.info("Waiting 10 seconds for browser to start")
-                time.sleep(10)
+                logger.info("Waiting for browser to start")
+                depth = 0
+                while not check_connection(address, timeout=1):
+                    time.sleep(1)
+                    depth += 1
+                    if depth > 300:
+                        raise TimeoutError(f"Browser seems not start within 5 minutes, address: {address}")
 
             self.browser = self.pw.chromium.connect_over_cdp(f"http://{address}")
 
