@@ -19,7 +19,7 @@ class QuickStockUI(BasePageUI):
         self.scan_all_items()
         self.process_actions()
         self.update_inventory_data()
-        if self._stocked:
+        if self._stocked and free:
             self.update_stock_price()
         if self.config.QuickStock_WithdrawTill:
             self.withdraw_all_np()
@@ -122,6 +122,9 @@ class QuickStockUI(BasePageUI):
 
     def get_stock_capacity(self):
         stock_text = self.page.locator('center').first.text_content().split(':')
+        if len(stock_text) < 3:
+            logger.warning("Failed to parse stock capacity")
+            return 0, 0
         used, free = str2int(stock_text[-2]), str2int(stock_text[-1])
         logger.info(f"Stock capacity: {used+free} ({used}/{free})")
         return used, free
