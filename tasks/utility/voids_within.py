@@ -1,5 +1,6 @@
 from module.logger import logger
 from tasks.base.base_page import BasePageUI
+from module.base.utils import str2int
 
 class VoidsWithinUI(BasePageUI):
 
@@ -27,6 +28,9 @@ class VoidsWithinUI(BasePageUI):
             logger.info("Delay task for to daily feed delay")
             self.config.task_delay(minute=60)
             return None
+        self.goto('https://www.neopets.com/tvw/rewards/')
+        node = self.device.wait_for_element('#PlotPointsEarned')
+        self.config.stored.EarnedPlotPoints.set(str2int(node.text_content()))
         return True
 
     def process_shift(self, shift, send=True):
@@ -48,11 +52,11 @@ class VoidsWithinUI(BasePageUI):
         p_count = self.config.VoidsWithin_AvailablePetsCount
         if p_count > 0:
             p_count = 1
-            self.device.wait(3) # js render lag
         pets = self.page.locator('.vc-pet')
         while pets.count() < p_count: # bug that has no loading popup
             self.device.wait(1)
             pets = self.page.locator('.vc-pet')
+        self.device.wait(3) # js render lag
         for p in pets.all():
             flag_sent = False
             if p.locator('.volunteering').is_visible():

@@ -102,6 +102,7 @@ class GeneratedConfig:
     # Group `VoidsWithin`
     VoidsWithin_DelayForDailyFeed = True
     VoidsWithin_AvailablePetsCount = 0
+    VoidsWithin_EarnedPlotPoints = {}
 
     # Group `PlayerStorage`
     PlayerStorage_NeoPoints = {}

@@ -408,7 +408,8 @@
     },
     "VoidsWithin": {
       "DelayForDailyFeed": true,
-      "AvailablePetsCount": 0
+      "AvailablePetsCount": 0,
+      "EarnedPlotPoints": {}
     }
   },
   "InventoryTool": {

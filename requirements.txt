@@ -76,4 +76,4 @@ uvicorn[standard]==0.17.6  # via -r requirements-in.txt
 watchgod==0.8.2           # via uvicorn
 wcwidth==0.2.6            # via prettytable
 websockets==11.0.3        # via uvicorn
-winfcntl==1.1.9 ; sys_platform == "win32"  # via -r requirements-in.txt
+portalocker==3.2.0        # via -r requirements-in.txt

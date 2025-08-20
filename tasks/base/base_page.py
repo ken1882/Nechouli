@@ -150,9 +150,9 @@ class BasePageUI(ModuleBase):
     def update_np(self) -> int:
         node = self.page.locator('#npanchor')
         if not node.count():
-            return self.config.stored.InventoryData.np or 0
+            return self.config.stored.NeoPoints.value or 0
         np = str2int(node.first.text_content()) or 0
-        self.config.stored.InventoryData.np = np
+        self.config.stored.NeoPoints.set(np)
         return np
 
     def debug_screenshot(self, fname=''):

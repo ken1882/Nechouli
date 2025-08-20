@@ -3,9 +3,10 @@
     "name": "NeoPoints",
     "path": "InventoryTool.PlayerStorage.NeoPoints",
     "i18n": "PlayerStorage.NeoPoints.name",
-    "stored": "StoredBase",
+    "stored": "StoredInt",
     "attrs": {
-      "time": "2020-01-01 00:00:00"
+      "time": "2020-01-01 00:00:00",
+      "value": 0
     },
     "order": 1,
     "color": "#FFD700"
@@ -41,6 +42,18 @@
     },
     "order": 3,
     "color": "#E4B86D"
+  },
+  "EarnedPlotPoints": {
+    "name": "EarnedPlotPoints",
+    "path": "VoidsWithin.VoidsWithin.EarnedPlotPoints",
+    "i18n": "VoidsWithin.EarnedPlotPoints.name",
+    "stored": "StoredInt",
+    "attrs": {
+      "time": "2020-01-01 00:00:00",
+      "value": 0
+    },
+    "order": 4,
+    "color": "#777777"
   },
   "PendingTrainingFee": {
     "name": "PendingTrainingFee",

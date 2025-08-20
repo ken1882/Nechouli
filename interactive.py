@@ -40,7 +40,7 @@ class TestUI(BaseFlash, BasePageUI):
     pass
 
 
-alas = Nechouli('nechouli11')
+alas = Nechouli('nechouli2')
 config, device = alas.config, alas.device
 self = DailyQuestUI(config, device)
 

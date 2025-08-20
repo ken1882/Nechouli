@@ -1389,6 +1389,13 @@
       "AvailablePetsCount": {
         "type": "input",
         "value": 0
+      },
+      "EarnedPlotPoints": {
+        "type": "stored",
+        "value": {},
+        "display": true,
+        "stored": "StoredInt",
+        "order": 4
       }
     }
   },
@@ -1398,7 +1405,7 @@
         "type": "stored",
         "value": {},
         "display": true,
-        "stored": "StoredBase",
+        "stored": "StoredInt",
         "order": 1,
         "color": "#FFD700"
       },

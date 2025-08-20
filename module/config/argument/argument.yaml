@@ -202,10 +202,14 @@ PetTraining:
 VoidsWithin:
   DelayForDailyFeed: true
   AvailablePetsCount: 0
+  EarnedPlotPoints:
+    stored: StoredInt
+    display: true
+    order: 4
 
 PlayerStorage:
   NeoPoints:
-    stored: StoredBase
+    stored: StoredInt
     display: true
     order: 1
     color: "#FFD700"

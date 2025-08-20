@@ -126,6 +126,9 @@ class StoredInt(StoredBase):
     def clear(self):
         self.value = 0
 
+    def set(self, value: int):
+        self.value = value
+
 
 class StoredCounter(StoredBase):
     value = 0
