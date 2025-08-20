@@ -176,6 +176,9 @@ QuickStock:
       Old Rotten Right Shoe
       Old Rotten Left Shoe
 
+HealingSpring:
+  Interval: 30
+
 StockMarket:
   SellProfitRatio: 20
 

@@ -11,7 +11,8 @@ class HealingSpringUI(BasePageUI):
         return True
 
     def calc_next_run(self, *args):
-        future = datetime.now() + timedelta(minutes=30, seconds=randint(0, 59))
+        wt = self.config.HealingSpring_Interval
+        future = datetime.now() + timedelta(minutes=wt, seconds=randint(0, 59))
         self.config.task_delay(target=future)
 
 if __name__ == '__main__':

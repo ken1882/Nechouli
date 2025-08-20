@@ -83,6 +83,9 @@ class GeneratedConfig:
     QuickStock_DepositBlacklist = None
     QuickStock_DonateNameList = 'Old Rotten Right Sandal\nOld Rotten Left Sandal\nOld Rotten Right Boot\nOld Rotten Left Boot\nOld Rotten Right Shoe\nOld Rotten Left Shoe\n'
 
+    # Group `HealingSpring`
+    HealingSpring_Interval = 30
+
     # Group `StockMarket`
     StockMarket_SellProfitRatio = 20
 

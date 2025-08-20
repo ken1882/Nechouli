@@ -487,6 +487,16 @@
       "help": "Exact name of items to donate, separated by line."
     }
   },
+  "HealingSpring": {
+    "_info": {
+      "name": "Healing Spring",
+      "help": ""
+    },
+    "Interval": {
+      "name": "Interval",
+      "help": "Minutes wait before next run, should be at least 20 minutes."
+    }
+  },
   "StockMarket": {
     "_info": {
       "name": "Stock Market",

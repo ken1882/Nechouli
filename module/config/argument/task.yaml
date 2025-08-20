@@ -88,6 +88,7 @@ Chore:
       - Scheduler
     HealingSpring:
       - Scheduler
+      - HealingSpring
     MonthlyFreebies:
       - Scheduler
     StockMarket:

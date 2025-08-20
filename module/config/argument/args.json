@@ -1052,6 +1052,12 @@
         "value": "00:00",
         "display": "hide"
       }
+    },
+    "HealingSpring": {
+      "Interval": {
+        "type": "input",
+        "value": 30
+      }
     }
   },
   "MonthlyFreebies": {
