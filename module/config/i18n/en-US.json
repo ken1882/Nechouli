@@ -563,8 +563,8 @@
       "help": "Number of pets available for dispatching in hospital. Leave 0 for auto-detect but sometimes will bugged due to js render lag."
     },
     "EarnedPlotPoints": {
-      "name": "VoidsWithin.EarnedPlotPoints.name",
-      "help": "VoidsWithin.EarnedPlotPoints.help"
+      "name": "VW Points",
+      "help": ""
     }
   },
   "PlayerStorage": {
