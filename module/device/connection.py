@@ -113,14 +113,16 @@ class Connection:
             f"--disable-extensions-except={','.join(ext_paths)}",
         ]
 
+    def stop(self):
+        if self.pw:
+            self.pw.stop()
+        self.context = None
+        self.pw = None
+        self.page = None
+
     def start_browser(self):
-        if self.pw is None:
-            self.pw = sync_playwright().start()
-        else:
-            try:
-                self.pw.stop()
-            except Exception:
-                pass
+        self.stop()
+        self.pw = sync_playwright().start()
 
         kwargs = {
             'handle_sigint': False,

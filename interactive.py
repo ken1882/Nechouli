@@ -6,7 +6,7 @@ from tasks.base import base_page, base_flash
 from module.exception import TaskError
 from module.db.models import neopet, neoitem
 from module.db.data_map import *
-from module.base.utils import ensure_time, str2int, check_connection
+from module.base.utils import ensure_time, str2int, check_connection, kill_by_port
 import module.jelly_neo as jn
 from tasks.daily.pet_cares import PetCaresUI
 from tasks.daily.faerie_crossword import FaerieCrosswordUI
@@ -40,7 +40,7 @@ class TestUI(BaseFlash, BasePageUI):
     pass
 
 
-alas = Nechouli('nechouli2')
+alas = Nechouli('nechouli')
 config, device = alas.config, alas.device
 self = DailyQuestUI(config, device)
 
