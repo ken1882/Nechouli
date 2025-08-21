@@ -10,6 +10,7 @@ from datetime import datetime
 import pytz, tzlocal
 from glob import glob
 from pathlib import Path
+from itertools import combinations
 
 REGEX_NODE = re.compile(r'(-?[A-Za-z]+)(-?\d+)')
 
@@ -1177,3 +1178,186 @@ def kill_remote_browser(config_name) -> list[int]:
     if not addr:
         return []
     return kill_by_port(int(addr.split(':')[-1]))
+
+def _lcs2(a: str, b: str) -> str:
+    """Longest common substring (contiguous) between two strings."""
+    if not a or not b:
+        return ""
+    n, m = len(a), len(b)
+    dp = [0] * (m + 1)
+    best_len = 0
+    best_end = 0  # end index in 'a' (exclusive)
+    for i in range(1, n + 1):
+        prev = 0
+        for j in range(1, m + 1):
+            tmp = dp[j]
+            if a[i - 1] == b[j - 1]:
+                dp[j] = prev + 1
+                if dp[j] > best_len:
+                    best_len = dp[j]
+                    best_end = i
+            else:
+                dp[j] = 0
+            prev = tmp
+    return a[best_end - best_len:best_end]
+
+def lcs(strings) -> str:
+    """LCS across many strings via pairwise reduction"""
+    it = iter(strings)
+    try:
+        acc = next(it)
+    except StopIteration:
+        return ""
+    for s in it:
+        acc = _lcs2(acc, s)
+        if not acc:
+            break
+    return acc
+
+def lcs_enum(items, min_len=3):
+    # collect candidate words from all pairwise LCS substrings
+    candidate_words = set()
+    word_pat = re.compile(rf'\b[0-9A-Za-z]{{{min_len},}}\b')
+    for a, b in combinations(items, 2):
+        s = _lcs2(a, b)
+        for w in word_pat.findall(s):
+            candidate_words.add(w)
+    # keep words that appear as whole words in at least two items
+    scored = []
+    for w in candidate_words:
+        pat = re.compile(rf'\b{re.escape(w)}\b')
+        count = sum(1 for name in items if pat.search(name))
+        if count >= 2:
+            scored.append((count, len(w), w))
+    scored.sort(key=lambda x: (-x[0], -x[1], x[2]))
+    return [w for _, _, w in scored]
+
+def _shingles(s: str, k: int = 3) -> set:
+    s = s.lower()
+    return {s[i:i+k] for i in range(max(0, len(s)-k+1))} if s else set()
+
+def jaccard_sim(a: str, b: str, k: int = 3) -> float:
+    A, B = _shingles(a, k), _shingles(b, k)
+    if not A and not B:
+        return 1.0
+    if not A or not B:
+        return 0.0
+    inter = len(A & B)
+    union = len(A | B)
+    return inter / union if union else 0.0
+
+def group_by_similarity(items, sim_threshold: float = 0.55, k: int = 3):
+    """
+    Greedy single-linkage clustering:
+    put an item into the group where it has the highest max-sim to any member,
+    if that similarity >= threshold; otherwise start a new group.
+    """
+    groups: list[list[str]] = []
+    for name in items:
+        best_idx, best_sim = -1, 0.0
+        for idx, grp in enumerate(groups):
+            # single-linkage: compare against the *closest* member in the group
+            s = max(jaccard_sim(name, g, k) for g in grp)
+            if s > best_sim:
+                best_sim, best_idx = s, idx
+        if best_sim >= sim_threshold:
+            groups[best_idx].append(name)
+        else:
+            groups.append([name])
+    return groups
+
+_word_pat = re.compile(r"\b[0-9A-Za-z]{3,}\b")
+
+def _best_word_in(s: str, min_len: int = 3) -> str:
+    """
+    From a substring (which may include spaces), pick the longest single word
+    of length >= min_len. Returns '' if none.
+    """
+    cands = _word_pat.findall(s)
+    if not cands:
+        return ""
+    cands.sort(key=lambda w: (-len(w), w))
+    return cands[0] if len(cands[0]) >= min_len else ""
+
+def cluster_lcs(items: list[str],
+                sim_threshold: float = 0.2,
+                k: int = 3,
+                min_len: int = 3) -> list[str]:
+    """
+    1) Cluster names by Jaccard similarity on 3-grams.
+    2) For each cluster (size>=2), compute LCS across members.
+    3) Snap LCS to a single 'word' token and keep those that appear in >=2 items.
+    4) Deduplicate results and sort by (cluster size desc, token length desc, lex).
+    """
+    groups = group_by_similarity(items, sim_threshold=sim_threshold, k=k)
+
+    results = []
+    for grp in groups:
+        if len(grp) >= 2:
+            raw = lcs(grp)
+            token = _best_word_in(raw, min_len=min_len)
+            if not token:
+                continue
+            pat = re.compile(rf"\b{re.escape(token)}\b")
+            count = sum(1 for name in grp if pat.search(name))
+            if count >= 2:
+                results.append((len(grp), len(token), token))
+        else:
+            name = grp[0]
+            token = _best_word_in(name, min_len=min_len)
+            if not token:
+                token = name.strip()  # fallback if no >=min_len word token
+            if token:
+                results.append((1, len(token), token))
+
+    # Dedupe by token (keep the best-scoring tuple)
+    best = {}
+    for size, tlen, tok in results:
+        if tok not in best or (size, tlen) > (best[tok][0], best[tok][1]):
+            best[tok] = (size, tlen, tok)
+
+    ordered = sorted(best.values(), key=lambda x: (-x[0], -x[1], x[2]))
+    return [tok for _, _, tok in ordered]
+
+def lcs_multi(
+    items, min_len=3, sim_threshold=0.2,
+    k=3, include_singletons=True
+    ) -> list[str]:
+    '''
+    Find the longest common substrings (LCS) across multiple strings.
+    Has 2 modes and some args will only apply to one of them. (see code for details)
+    Used to optimize searches for similar names in a list of items.
+
+    Args:
+        items (list[str]): List of strings to find LCS in.
+        min_len (int): Minimum length of the substring to consider.
+        sim_threshold (float): Jaccard similarity threshold for clustering.
+        k (int): Size of the n-grams for Jaccard similarity.
+        include_singletons (bool): If True, include single items as results.
+
+    Returns:
+        list[str]: List of longest common substrings found in the items.
+    '''
+    n = len(items)
+    if n == 0:
+        return []
+
+    avg_len = max(1, sum(len(s) for s in items) // n)
+
+    N_star = 12
+    if avg_len >= 20:   # long names
+        N_star = 4
+    if avg_len >= 12:   # medium
+        N_star = 6
+    if avg_len >= 6:    # short-ish
+        N_star = 8
+
+    if n <= N_star:
+        # Small n -> Pairwise-LCS (simpler; lower constant cost)
+        return lcs_enum(items, min_len=min_len)
+    else:
+        # Larger n -> Cluster->LCS (better asymptotics)
+        return cluster_lcs(
+            items, sim_threshold=sim_threshold, k=k,
+            min_len=min_len, include_singletons=include_singletons
+        )

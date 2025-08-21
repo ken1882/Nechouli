@@ -1,9 +1,10 @@
 from module.logger import logger
 from tasks.base.base_page import BasePageUI
 from tasks.utility.quick_stock import QuickStockUI
+from tasks.utility.safety_deposit_box import SafetyDepositBoxUI
 from module.db.models.neopet import Neopet
 from module.db.models.neoitem import NeoItem
-from module.base.utils import str2int
+from module.base.utils import str2int, lcs_multi
 
 ACADEMY = {
     'pirate': {
@@ -168,6 +169,9 @@ class PetTrainingUI(BasePageUI):
             logger.info("All required items are available for training.")
         else:
             logger.info("Some required items are missing for training, scanning SDB")
+        sdb = SafetyDepositBoxUI(self.config, self.device)
+        names = [item for item, val in required_items.items() if val > 0]
+        search_queue = lcs_multi(names, include_singletons=False)
 
 if __name__ == '__main__':
     self = PetTrainingUI()
