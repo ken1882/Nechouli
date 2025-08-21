@@ -124,6 +124,7 @@ class QuickStockUI(BasePageUI):
         stock_text = self.page.locator('center').first.text_content().split(':')
         if len(stock_text) < 3:
             logger.warning("Failed to parse stock capacity")
+            self.config.stored.StockData.capacity = 0
             return 0, 0
         used, free = str2int(stock_text[-2]), str2int(stock_text[-1])
         logger.info(f"Stock capacity: {used+free} ({used}/{free})")
@@ -132,7 +133,6 @@ class QuickStockUI(BasePageUI):
 
     def update_stock_price(self):
         self.goto("https://www.neopets.com/market.phtml?type=your")
-        used, free = self.get_stock_capacity()
         stocked_data = []
         self.device.scroll_to(0, 100)
         while True:

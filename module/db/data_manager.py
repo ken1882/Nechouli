@@ -7,10 +7,14 @@ import importlib
 import os
 from contextlib import contextmanager
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timedelta
 from threading import Lock
 from typing import Dict, Optional
+from collections import defaultdict
+from time import sleep
+import random
 import orjson
+import threading
 import sys
 import portalocker
 
@@ -168,25 +172,28 @@ def clear_cache() -> None:
 
     logger.info("Cache cleared")
 
+
+_path_lock = defaultdict(threading.RLock)
+
 @contextmanager
-def file_lock(fp, exclusive: bool = True, timeout: int = 60):
-    """Context manager wrapping `fcntl.flock`."""
+def file_lock(path, open_mode="r+b", exclusive=True, timeout=60):
     st = datetime.now()
     while True:
-        try:
-            mode = portalocker.LOCK_EX if exclusive else portalocker.LOCK_SH
-            portalocker.lock(fp, mode)
-            break
-        except Exception as e:
-            logger.warning(f"Error while locking file {e}")
-            if (datetime.now() - st).total_seconds() > timeout:
-                raise e
-            continue
-    try:
-        yield
-    finally:
-        portalocker.unlock(fp)
-
+        with _path_lock[path]:
+            flags = portalocker.LOCK_EX if exclusive else portalocker.LOCK_SH
+            try:
+                with open(path, open_mode) as fp:
+                    portalocker.lock(fp, flags)
+                    try:
+                        yield fp
+                    finally:
+                        portalocker.unlock(fp)
+                    break
+            except portalocker.exceptions.AlreadyLocked as e:
+                logger.error(f"Error locking {path}: {e}")
+                sleep(random.uniform(0.5, 3))
+                if datetime.now() >= st+timedelta(seconds=timeout):
+                    raise e
 
 def global_set(key: str, value: str) -> None:
     """
@@ -198,7 +205,7 @@ def global_set(key: str, value: str) -> None:
         return
 
     _GLOBAL_FILE.touch(exist_ok=True)
-    with open(_GLOBAL_FILE, "rb+") as fp, file_lock(fp):
+    with file_lock(_GLOBAL_FILE, "rb+") as fp:
         try:
             data = orjson.loads(fp.read()) or {}
         except orjson.JSONDecodeError:
@@ -220,7 +227,7 @@ def global_get(key: str) -> Optional[str]:
     if not _GLOBAL_FILE.exists():
         return None
 
-    with open(_GLOBAL_FILE, "rb") as fp, file_lock(fp, False):
+    with file_lock(_GLOBAL_FILE, "rb") as fp:
         try:
             data = orjson.loads(fp.read()) or {}
         except orjson.JSONDecodeError:
