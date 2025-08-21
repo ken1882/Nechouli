@@ -13,7 +13,6 @@ from typing import Dict, Optional
 import orjson
 import sys
 import portalocker
-from portalocker.exceptions import AlreadyLocked
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -178,9 +177,10 @@ def file_lock(fp, exclusive: bool = True, timeout: int = 60):
             mode = portalocker.LOCK_EX if exclusive else portalocker.LOCK_SH
             portalocker.lock(fp, mode)
             break
-        except AlreadyLocked:
+        except Exception as e:
+            logger.warning(f"Error while locking file {e}")
             if (datetime.now() - st).total_seconds() > timeout:
-                raise
+                raise e
             continue
     try:
         yield

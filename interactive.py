@@ -41,7 +41,7 @@ class TestUI(BaseFlash, BasePageUI):
     pass
 
 
-alas = Nechouli('nechouli')
+alas = Nechouli('rongyaoxuehua')
 config, device = alas.config, alas.device
 self = SafetyDepositBoxUI(config, device)
 

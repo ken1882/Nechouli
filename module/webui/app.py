@@ -97,6 +97,7 @@ from module.webui.widgets import (
 )
 import module.webui.widget_renderer as widget_renderer
 import module.webui.dashboard_renderer as dashboard_renderer
+from module.webui.app_utils import *
 
 from module.base.utils import (
     str2int,
@@ -1029,7 +1030,6 @@ class AlasGUI(Frame):
     def dev_utils(self) -> None:
         self.init_menu(name="Utils")
         self.set_title(t("Gui.MenuDevelop.Utils"))
-        put_button(label="Raise exception", onclick=raise_exception)
 
         def _force_restart():
             if State.restart_event is not None:
@@ -1039,31 +1039,11 @@ class AlasGUI(Frame):
             else:
                 toast("Reload not enabled", color="error")
 
-        def _run_all_instances():
-            ins = get_all_instance_addresses()
-            msg = ''
-            for name, addr in ins.items():
-                alas = ProcessManager.get_manager(name)
-                if alas.alive:
-                    continue
-                alas.start(None, updater.event)
-                msg += f'{name} {addr}\n'
-            popup('Started', msg)
-        
-        def _stop_all_instances():
-            ins = get_all_instance_addresses()
-            msg = ''
-            for name, addr in ins.items():
-                alas = ProcessManager.get_manager(name)
-                if not alas.alive:
-                    continue
-                alas.stop()
-                msg += f'{name} {addr}\n'
-            popup('Stopped', msg)
-
+        put_button(label="Raise exception", onclick=raise_exception)
         put_button(label="Force restart", onclick=_force_restart)
-        put_button(label="Run all instances", onclick=_run_all_instances)
-        put_button(label="Stop all instances", onclick=_stop_all_instances)
+        put_button(label="Run all instances", onclick=run_all_instances)
+        put_button(label="Stop all instances", onclick=stop_all_instances)
+        put_button(label="Instances status", onclick=show_instances_status)
 
         enable_eval = get_localstorage("DANGER_ENABLE_EVAL") or ''
         if enable_eval != 'DO_NOT_PASTE_ANY_CODE_HERE_UNLESS_YOU_KNOW_WHAT_YOU_ARE_DOING':
@@ -1417,7 +1397,6 @@ def startup():
     ):
         task_handler.add(RemoteAccess.keep_ssh_alive(), 60)
 
-
 def clearup():
     """
     Notice: Ensure run it before uvicorn reload app,
@@ -1432,7 +1411,6 @@ def clearup():
     State.clearup()
     task_handler.stop()
     logger.info("Alas closed.")
-
 
 def app():
     parser = argparse.ArgumentParser(description="Alas web service")

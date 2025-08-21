@@ -10,6 +10,9 @@ from module.config.utils import get_server_next_update
 from module.exception import *
 from playwright._impl._errors import Error as PlaywrightError
 
+from dotenv import load_dotenv
+load_dotenv()
+
 class BasePageUI(ModuleBase):
 
     @property
@@ -75,11 +78,14 @@ class BasePageUI(ModuleBase):
         return future
 
     def is_logged_in(self):
+        content = self.device.page.content().lower()
         if '/login/index.phtml' in self.device.page.url:
             return False
-        if 'you are not logged in' in self.device.page.content():
+        if 'you are not logged in' in content:
             return False
-        if 'id="loginButton"' in self.device.page.content():
+        if 'id="loginButton"' in content:
+            return False
+        if 'forgot password?' in content:
             return False
         return True
 
@@ -106,6 +112,9 @@ class BasePageUI(ModuleBase):
             self.page.reload()
             return self.goto(url)
         if not self.is_logged_in():
+            logger.info("Attempting neopass login")
+            if self.login_neopass():
+                return self.goto(url)
             logger.critical("You have to login first, launch with gui then navigate to https://www.neopets.com/home after you logged in.")
             while True:
                 try:
@@ -160,3 +169,44 @@ class BasePageUI(ModuleBase):
             fname = f"{self.config.config_name}_snapshot.png"
         path = os.path.join('config', fname)
         self.page.screenshot(path=path)
+    
+    def login_neopass(self):
+        btn = self.device.wait_for_element('#neopass-method-login')
+        self.device.click(btn)
+        self.device.wait(1)
+        self.device.click('.signin-btn', nav=True)
+        if not self.is_logged_in():
+            cred = os.getenv(f'NEOPASS_CRED_{self.config.config_name}')
+            if not cred:
+                raise RequestHumanTakeover("Neopass login failed: Missing credentials")
+            email, *pwd = cred.split(':')
+            pwd = ':'.join(pwd)
+            e = self.page.locator('input[name="email"]')
+            self.device.click(e)
+            e.fill(email)
+            print('filling email with', email)
+            p = self.page.locator('input[name="password"]')
+            self.device.click(p)
+            p.fill(pwd)
+            print('filling pwd with', pwd)
+            btn = self.page.locator('button[type="submit"]', has_text='Sign In')
+            self.device.click(btn, nav=True)
+            self.device.wait(3)
+        
+        def _is_loaded():
+            return self.page.locator('p', has_text='Main Account').count() > 0
+        
+        depth = 0
+        while depth < 10:
+            try:
+                if _is_loaded():
+                    break
+            except Exception as e:
+                pass
+            depth += 1
+            self.device.wait(1)
+        else:
+            return False
+        self.device.click(ma)
+        self.device.click(self.page.locator('button', has_text='Continue'), nav=True)
+        return self.page.url.startswith('https://www.neopets.com')
