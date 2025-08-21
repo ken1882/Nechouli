@@ -95,7 +95,9 @@ class VoidsWithinUI(BasePageUI):
             return True
         return False
 
-    def calc_next_run(self, *args):
+    def calc_next_run(self, s=''):
+        if s == 'failed':
+            return self.config.task_delay(minute=1)
         self.config.task_delay(minute=60*6+1)
 
 
