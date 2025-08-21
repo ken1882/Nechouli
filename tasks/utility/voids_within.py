@@ -14,10 +14,11 @@ class VoidsWithinUI(BasePageUI):
         for i in [5, 4, 3, 2, 1]:
             pane = self.page.locator(f'#Act{i}Pane')
             btn = self.page.locator(f'#Act{i}PaneBtn')
-            self.device.scroll_to(loc=btn)
-            if i != 1:
-                self.device.click(btn)
-                self.device.wait(0.5)
+            if 'minimize' in pane.get_attribute('class'):
+                self.device.scroll_to(loc=btn)
+                if i != 1:
+                    self.device.click(btn)
+                    self.device.wait(0.5)
             joins = pane.locator('button[id*="VolunteerButton"]')
             for j in joins.all():
                 done = self.process_shift(j, do_send)
