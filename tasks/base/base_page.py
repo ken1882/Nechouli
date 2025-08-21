@@ -207,6 +207,6 @@ class BasePageUI(ModuleBase):
             self.device.wait(1)
         else:
             return False
-        self.device.click(ma)
+        self.device.click(self.page.locator('p', has_text='Main Account'))
         self.device.click(self.page.locator('button', has_text='Continue'), nav=True)
         return self.page.url.startswith('https://www.neopets.com')
