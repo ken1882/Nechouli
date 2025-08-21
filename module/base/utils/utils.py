@@ -1144,13 +1144,29 @@ def get_all_instance_addresses() -> dict[str, str]:
     for file in files:
         if 'template' in file:
             continue
-        with open(file, 'r') as f:
-            data = json.load(f)
+        fp = None
+        depth = 0
+        while not fp:
             try:
-                addr = data['Alas']['Playwright']['RemoteDebuggingAddress']
-            except KeyError:
-                continue
-            ret[Path(file).stem] = addr
+                fp = open(file, 'r')
+            except Exception as e:
+                print(f'Error opening {file}: e')
+                depth += 1
+                if depth > 30:
+                    print('Wait limit excessed, given up')
+                    break
+                time.sleep(1)
+        if not fp:
+            continue
+        try:
+            data = json.load(fp)
+        finally:
+            fp.close()
+        try:
+            addr = data['Alas']['Playwright']['RemoteDebuggingAddress']
+        except KeyError:
+            continue
+        ret[Path(file).stem] = addr
     return ret
 
 def kill_remote_browser(config_name) -> list[int]:

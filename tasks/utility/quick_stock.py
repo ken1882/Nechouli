@@ -209,6 +209,9 @@ class QuickStockUI(BasePageUI):
         logger.info(f"Updated inventory with {len(self.items)} items (size={self.config.stored.InventoryData.size}).")
 
     def withdraw_all_np(self):
+        if not self.config.stored.StockData.capacity:
+            logger.info("Shop not opened, cannot withdraw from till")
+            return
         self.goto('https://www.neopets.com/market.phtml?type=till')
         money = str2int(self.page.locator('.content >> p > b').text_content())
         self.page.locator('input[name="amount"]').fill(str(money))
