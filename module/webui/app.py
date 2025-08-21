@@ -98,7 +98,7 @@ from module.webui.widgets import (
 import module.webui.widget_renderer as widget_renderer
 import module.webui.dashboard_renderer as dashboard_renderer
 
-from module.base.utils import str2int, kill_by_port, check_connection
+from module.base.utils import str2int, kill_remote_browser, check_connection
 
 patch_executor()
 task_handler = TaskHandler()
@@ -1055,8 +1055,8 @@ class AlasGUI(Frame):
         put_button(label="Run Code", onclick=lambda: _eval(self))
 
     def kill_remote_browser(self):
-        port = str2int(self.alas_config.Playwright_RemoteDebuggingAddress.split(":")[-1])
-        popup("Result", str(kill_by_port(port)))
+        killed = kill_remote_browser(self.alas_config.config_name)
+        popup("Result", str(killed))
 
     @use_scope("content", clear=True)
     def dev_remote(self) -> None:

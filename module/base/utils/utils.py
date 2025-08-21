@@ -1152,3 +1152,12 @@ def get_all_instance_addresses() -> dict[str, str]:
                 continue
             ret[Path(file).stem] = addr
     return ret
+
+def kill_remote_browser(config_name) -> list[int]:
+    config = {}
+    with open(f'config/{config_name}.json', 'r') as fp:
+        config = json.load(fp)
+    addr = config.get('Alas', {}).get('Playwright', {}).get('RemoteDebuggingAddress', '')
+    if not addr:
+        return []
+    return kill_by_port(int(addr.split(':')[-1]))

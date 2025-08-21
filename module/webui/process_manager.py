@@ -9,13 +9,12 @@ import inflection
 from filelock import FileLock
 from rich.console import Console, ConsoleRenderable
 
-from module.base.utils import kill_by_port
 from module.config.utils import filepath_config
 from module.logger import logger, set_file_logger, set_func_logger
 from module.webui.fake import get_config_mod, mod_instance
 from module.webui.setting import State
 from module.webui.submodule.utils import get_available_func
-
+from module.base.utils import kill_remote_browser
 
 class ProcessManager:
     _processes: Dict[str, "ProcessManager"] = {}
@@ -161,6 +160,7 @@ class ProcessManager:
             logger.info(f"[{config_name}] exited. Reason: Finish\n")
         except Exception as e:
             logger.exception(e)
+        kill_remote_browser(config_name)
 
     @classmethod
     def running_instances(cls) -> List["ProcessManager"]:

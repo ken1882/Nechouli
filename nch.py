@@ -2,7 +2,7 @@ from module.alas import AzurLaneAutoScript
 from module.logger import logger
 from module.base.utils import (
     str2int,
-    kill_by_port,
+    kill_remote_browser,
     get_all_instance_addresses,
     check_connection
 )
@@ -20,7 +20,7 @@ class Nechouli(AzurLaneAutoScript):
     def loop(self):
         self.start()
         try:
-            super().loop()
+            raise RuntimeError('test')
         except Exception as e:
             logger.exception(e)
 
@@ -62,7 +62,7 @@ class Nechouli(AzurLaneAutoScript):
 
     def stop(self):
         logger.info("Stopping Nechouli")
-        killed = kill_by_port(int(self.config.Playwright_RemoteDebuggingAddress.split(':')[-1]))
+        killed = kill_remote_browser(self.config.config_name)
         logger.info(f"Killed browser process: {killed}")
 
     def is_concurrent_limit_reached(self):
