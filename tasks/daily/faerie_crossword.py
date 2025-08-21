@@ -47,11 +47,16 @@ class FaerieCrosswordUI(BasePageUI):
                     return False
             else:
                 logger.warning(f"No answer found for question: {question}")
+                self.record_missing_crossword(question)
                 index += 1
         return True
 
     def on_failed_delay(self):
         self.config.task_delay(minute=1)
+
+    def record_missing_crossword(self, question):
+        with open('missing_crossword.txt', 'a') as f:
+            f.write(f"{question}\n")
 
 if __name__ == '__main__':
     self = FaerieCrosswordUI()
