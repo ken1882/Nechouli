@@ -3,12 +3,12 @@ from turtle import rt
 from module.logger import logger
 from tasks.base.base_page import BasePageUI
 from module.db.models.neoitem import NeoItem
-from module.base.utils import str2int
-from module.config.utils import get_server_next_update
+from module.base.utils import str2int, lcs_multi
 import module.jelly_neo as jn
 
 class SafetyDepositBoxUI(BasePageUI):
     items: list[NeoItem]
+    PAGE_LIMIT: int = 30
 
     def main(self):
         try:
@@ -75,6 +75,7 @@ class SafetyDepositBoxUI(BasePageUI):
         if not box.count():
             logger.warning("Search box not found, cannot search for items.")
             return []
+        logger.info("Searching for item: %s", name)
         box.first.fill(name)
         submit = self.page.locator('input[type="submit"][value="Find"]')
         if not submit.count():
@@ -82,6 +83,43 @@ class SafetyDepositBoxUI(BasePageUI):
             return []
         self.device.click(submit, nav=True)
         return self.scan_page_items()
+
+    def retrieve_items(self, required_items: dict[str,int]) -> tuple[dict, dict]:
+        '''
+        Retrieve items from the safety deposit box.
+
+        Args:
+            required_items (dict[str, int]): A dictionary where keys are item names and values are the quantities needed.
+
+        Returns:
+            tuple[dict, dict]: A tuple containing two dictionaries:
+                - The first dictionary contains items that were successfully retrieved.
+                - The second dictionary contains items that were not found or could not be retrieved.
+        '''
+        names = [item for item, val in required_items.items() if val > 0]
+        search_queue = lcs_multi(names, include_singletons=False)
+        retrieved = {}
+        unscanned = set()
+        for kw in search_queue:
+            results = self.search(kw)
+            for r in results:
+                if r.name not in required_items:
+                    continue
+                amount = min(required_items[r.name], r.quantity)
+                required_items[r.name] -= amount
+                retrieved[r.name] = amount
+            if len(results) >= self.PAGE_LIMIT:
+                unscanned.update([n for n in names if kw in n])
+        for kw in unscanned:
+            results = self.search(kw)
+            for r in results:
+                if r.name not in required_items:
+                    continue
+                amount = min(required_items[r.name], r.quantity)
+                required_items[r.name] -= amount
+                retrieved[r.name] = amount
+        missings = {k: v for k, v in required_items.items() if v > 0}
+        return retrieved, missings
 
 if __name__ == '__main__':
     self = SafetyDepositBoxUI()

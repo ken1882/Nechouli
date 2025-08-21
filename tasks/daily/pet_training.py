@@ -4,7 +4,7 @@ from tasks.utility.quick_stock import QuickStockUI
 from tasks.utility.safety_deposit_box import SafetyDepositBoxUI
 from module.db.models.neopet import Neopet
 from module.db.models.neoitem import NeoItem
-from module.base.utils import str2int, lcs_multi
+from module.base.utils import str2int
 
 ACADEMY = {
     'pirate': {
@@ -169,9 +169,15 @@ class PetTrainingUI(BasePageUI):
             logger.info("All required items are available for training.")
         else:
             logger.info("Some required items are missing for training, scanning SDB")
+        # Scan Safety Deposit Box for missing items
         sdb = SafetyDepositBoxUI(self.config, self.device)
-        names = [item for item, val in required_items.items() if val > 0]
-        search_queue = lcs_multi(names, include_singletons=False)
+        _, missings = sdb.retrieve_items(required_items)
+        if missings and not self.config.PetTraining_BuyFeeFromPlayers:
+            msg = "Missing items for training:\n" + '\n'.join(
+                f"{item}: {count}" for item, count in missings.items()
+            )
+            logger.warning(msg)
+            return True
 
 if __name__ == '__main__':
     self = PetTrainingUI()
