@@ -127,12 +127,12 @@ class QuickStockUI(BasePageUI):
             return 0, 0
         used, free = str2int(stock_text[-2]), str2int(stock_text[-1])
         logger.info(f"Stock capacity: {used+free} ({used}/{free})")
+        self.config.stored.StockData.capacity = used + free
         return used, free
 
     def update_stock_price(self):
         self.goto("https://www.neopets.com/market.phtml?type=your")
         used, free = self.get_stock_capacity()
-        self.config.stored.StockData.capacity = used + free
         stocked_data = []
         self.device.scroll_to(0, 100)
         while True:
