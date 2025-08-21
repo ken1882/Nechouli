@@ -69,7 +69,7 @@ def handle_inventory(kwargs):
 @use_scope("navigator")
 def put_item_info_box(_):
     put_html(f'''
-    <div class="infobox">
+    <div class="infobox" id="item-info-box" style="display: none;">
         <div id="item_info_title">{t("Gui.ItemInfo.Title")}</div>
         <div id="item_info_image" style="width: 80px; height: 80px; text-align: center;">
         </div>
@@ -115,6 +115,7 @@ def put_item_info_box(_):
     <script>
         function changeItemInfo(i,n,d,q,t,r,mp,pd,sp,jl){
             if(window._selectedItem){ return; }
+            document.getElementById("item-info-box").style.display = "block";
             document.getElementById("item_info_image").innerHTML = `<img src="${i}" alt="${n}">`;
             document.getElementById("item_info_name").textContent = n;
             document.getElementById("item_info_description").textContent = d;
@@ -172,7 +173,11 @@ def generate_item_info_script(item: 'NeoItem'):
     '''
 
 def handle_deposit(kwargs):
-    pass
+    try:
+        kwargs['value']['items'] = sorted(kwargs['value']['items'], key=lambda x: x.market_price, reverse=True)
+    except KeyError:
+        pass
+    return handle_inventory(kwargs)
 
 def handle_list(kwargs, value: list):
     name = kwargs["name"]

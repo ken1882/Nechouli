@@ -15,6 +15,7 @@ from tasks.daily.grave_danger import GraveDangerUI
 from tasks.utility.quick_stock import QuickStockUI
 from tasks.utility.restocking import RestockingUI
 from tasks.daily.daily_quest import DailyQuestUI
+from tasks.utility.safety_deposit_box import SafetyDepositBoxUI
 
 BaseFlash = base_flash.BaseFlash
 BasePageUI = base_page.BasePageUI
@@ -42,7 +43,7 @@ class TestUI(BaseFlash, BasePageUI):
 
 alas = Nechouli('nechouli')
 config, device = alas.config, alas.device
-self = DailyQuestUI(config, device)
+self = SafetyDepositBoxUI(config, device)
 
 device.start_browser()
 device.disable_stuck_detection()

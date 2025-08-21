@@ -19,6 +19,7 @@ class NeoItem(BaseModel):
     image: str
     restock_shop_link: str
     parent_container: str
+    quantity: int = 0
     effects: List[str]
 
     @classmethod

@@ -54,8 +54,14 @@ class Nechouli(AzurLaneAutoScript):
                 continue
             break
         loading = self.device.page.locator('#QuestLogLoader')
+        logger.info("Waiting for quest log to load")
+        depth = 0
         while loading.is_visible():
             self.device.wait(0.3)
+            depth += 1
+            if depth > 30:
+                logger.warning("Quest log loading timeout, assume loaded")
+                break
         self.device.wait(1) # quest won't start if not visited
         if self.config.Playwright_CleanPagesOnStart or self.config.Playwright_Headless:
             self.device.clean_redundant_pages()
@@ -238,6 +244,10 @@ class Nechouli(AzurLaneAutoScript):
     def essence_collection(self):
         from tasks.daily.essence_collection import EssenceCollectionUI
         EssenceCollectionUI(config=self.config, device=self.device).run()
+
+    def safety_deposit_box(self):
+        from tasks.utility.safety_deposit_box import SafetyDepositBoxUI
+        SafetyDepositBoxUI(config=self.config, device=self.device).run()
 
 if __name__ == '__main__':
     nch = Nechouli()

@@ -21,7 +21,7 @@ class ManualConfig:
     > VoidsWithin > EssenceCollection
     > QuickStock
     > DailyQuest > Restocking
-    > ShopWizard
+    > ShopWizard > SafetyDepositBox
     """
 
     """

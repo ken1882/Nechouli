@@ -19,6 +19,7 @@ class ShopWizardUI(BasePageUI):
 
     def add_price_update_items(self):
         added = 0
+        added_names = set()
         now_ts = datetime.now().timestamp()
         for i in self.config.stored.StockData.items+self.config.stored.InventoryData.items:
             item = jn.get_item_details_by_name(i.name)
@@ -26,6 +27,7 @@ class ShopWizardUI(BasePageUI):
                 continue
             self.config.stored.ShopWizardRequests.add(i.name, 'price_update')
             added += 1
+            added_names.add(i.name)
             if added >= self.config.ShopWizard_PriceUpdateBatchSize:
                 break
         if added >= self.config.ShopWizard_PriceUpdateBatchSize:
@@ -36,8 +38,11 @@ class ShopWizardUI(BasePageUI):
         for item in cache:
             if item.get("price_timestamp", 0) > now_ts - dm.JN_CACHE_TTL/2:
                 break
+            if item["name"] in added_names:
+                continue
             self.config.stored.ShopWizardRequests.add(item["name"], 'price_update')
             added += 1
+            added_names.add(item["name"])
             if added >= self.config.ShopWizard_PriceUpdateBatchSize:
                 break
 

@@ -61,6 +61,8 @@ class VoidsWithinUI(BasePageUI):
         bans = [n.strip() for n in (self.config.VoidsWithin_DispatchBlacklist or '').splitlines() if n.strip()]
         for p in pets.all():
             flag_sent = False
+            while not p.locator('.vc-image').count():
+                self.device.wait(1)
             if p.locator('.volunteering').is_visible():
                 continue
             if not p.locator('img').first.get_attribute('src'):
