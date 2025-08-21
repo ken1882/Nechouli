@@ -30,17 +30,78 @@ from module.base.utils import (
     get_all_instance_addresses
 )
 
-def run_all_instances():
+import time
+import random
+import hashlib
+import threading
+
+def _deterministic_jitter(name: str, window: float, epoch_bucket: int = 30) -> float:
+    """
+    Deterministic per-(name, time-bucket) jitter in [0, window].
+    Using a stable seed means multiple processes pick the *same* offset,
+    keeping starts uniformly spread instead of bunching by chance.
+    """
+    bucket = int(time.time() // epoch_bucket)
+    seed = f"{name}:{bucket}".encode()
+    h = hashlib.blake2b(seed, digest_size=8).digest()
+    rnd = random.Random(h)         # independent RNG with deterministic seed
+    return rnd.uniform(0.0, max(0.0, window))
+
+def run_all_instances(
+        spread_base: float = 0.75,
+        spread_cap: float = 20.0,
+        epoch_bucket: int = 30
+    ):
+    """
+    Fire-and-forget: start any not-alive instances in a background thread,
+    jittered to avoid a thundering herd. Returns immediately.
+
+    spread_base  : seconds per instance to size the start window.
+    spread_cap   : max window size in seconds.
+    epoch_bucket : jitter seed changes every N seconds (keeps spread stable briefly).
+    """
     popup('Please wait')
+
     ins = get_all_instance_addresses()
-    msg = ''
-    for name, addr in ins.items():
-        alas = ProcessManager.get_manager(name)
-        if alas.alive:
-            continue
-        alas.start(None, updater.event)
-        msg += f'{name} {addr}\n'
-    popup('Started', msg)
+    to_start = [(name, addr) for name, addr in ins.items()
+                if not ProcessManager.get_manager(name).alive]
+
+    if not to_start:
+        popup('Started', 'All instances already running')
+        return None
+
+    # Precompute schedule in main thread (still non-blocking)
+    n = len(to_start)
+    window = min(spread_cap, max(spread_base, spread_base * n))
+    schedule = []
+    for name, addr in to_start:
+        offset = _deterministic_jitter(name, window, epoch_bucket)
+        schedule.append((offset, name, addr))
+    schedule.sort(key=lambda x: x[0])  # earliest first
+
+    def _worker():
+        t0 = time.monotonic()
+        for offset, name, addr in schedule:
+            # Sleep only inside the worker thread
+            delta = offset - (time.monotonic() - t0)
+            if delta > 0:
+                time.sleep(delta)
+
+            # Re-check liveness just before starting
+            alas = ProcessManager.get_manager(name)
+            if alas.alive:
+                continue
+
+            try:
+                alas.start(None, updater.event)
+            except Exception as e:
+                print("Failed to start %s (%s): %s", name, addr, e)
+    
+    th = threading.Thread(target=_worker, name="InstanceStarter", daemon=True)
+    th.start()
+    popup('Statred', '\n'.join([f'{n} {a}' for n,a in to_start]))
+    return th
+
 
 def stop_all_instances():
     popup('Please wait')

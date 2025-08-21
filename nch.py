@@ -77,7 +77,7 @@ class Nechouli(AzurLaneAutoScript):
         logger.info("Checking running instances")
         msg = ''
         addresses = []
-        with open(self.lock_file, 'r+') as fp, dm.file_lock(fp):
+        with dm.file_lock(self.lock_file) as _:
             for profile_name, addr in get_all_instance_addresses().items():
                 msg += f"{profile_name} ({addr})"
                 if check_connection(addr, timeout=0.1):
