@@ -83,7 +83,7 @@ class BasePageUI(ModuleBase):
             return False
         if 'you are not logged in' in content:
             return False
-        if 'id="loginButton"' in content:
+        if 'id="loginbutton"' in content:
             return False
         if 'forgot password?' in content:
             return False
