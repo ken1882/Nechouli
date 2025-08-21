@@ -98,8 +98,12 @@ from module.webui.widgets import (
 import module.webui.widget_renderer as widget_renderer
 import module.webui.dashboard_renderer as dashboard_renderer
 
-from module.base.utils import str2int, kill_remote_browser, check_connection
-
+from module.base.utils import (
+    str2int,
+    kill_remote_browser,
+    check_connection,
+    get_all_instance_addresses
+)
 patch_executor()
 task_handler = TaskHandler()
 
@@ -1035,7 +1039,32 @@ class AlasGUI(Frame):
             else:
                 toast("Reload not enabled", color="error")
 
+        def _run_all_instances():
+            ins = get_all_instance_addresses()
+            msg = ''
+            for name, addr in ins.items():
+                alas = ProcessManager.get_manager(name)
+                if alas.alive:
+                    continue
+                alas.start(None, updater.event)
+                msg += f'{name} {addr}\n'
+            popup('Started', msg)
+        
+        def _stop_all_instances():
+            ins = get_all_instance_addresses()
+            msg = ''
+            for name, addr in ins.items():
+                alas = ProcessManager.get_manager(name)
+                if not alas.alive:
+                    continue
+                alas.stop()
+                msg += f'{name} {addr}\n'
+            popup('Stopped', msg)
+
         put_button(label="Force restart", onclick=_force_restart)
+        put_button(label="Run all instances", onclick=_run_all_instances)
+        put_button(label="Stop all instances", onclick=_stop_all_instances)
+
         enable_eval = get_localstorage("DANGER_ENABLE_EVAL") or ''
         if enable_eval != 'DO_NOT_PASTE_ANY_CODE_HERE_UNLESS_YOU_KNOW_WHAT_YOU_ARE_DOING':
             return

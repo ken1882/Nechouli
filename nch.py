@@ -20,7 +20,7 @@ class Nechouli(AzurLaneAutoScript):
     def loop(self):
         self.start()
         try:
-            raise RuntimeError('test')
+            super().loop()
         except Exception as e:
             logger.exception(e)
 
