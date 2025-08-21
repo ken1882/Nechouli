@@ -1214,23 +1214,45 @@ def lcs(strings) -> str:
             break
     return acc
 
-def lcs_enum(items, min_len=3):
-    # collect candidate words from all pairwise LCS substrings
-    candidate_words = set()
+def lcs_enum(items, min_len=3, include_singletons=True):
+    """
+    Enumerate common tokens by pairwise LCS.
+    - Always returns tokens that occur in >=2 items.
+    - If include_singletons=True, also includes each item's best word (count may be 1).
+    Sorted by: frequency desc, length desc, lexicographic.
+    """
     word_pat = re.compile(rf'\b[0-9A-Za-z]{{{min_len},}}\b')
+    candidate_words = set()
     for a, b in combinations(items, 2):
         s = _lcs2(a, b)
         for w in word_pat.findall(s):
             candidate_words.add(w)
-    # keep words that appear as whole words in at least two items
-    scored = []
-    for w in candidate_words:
-        pat = re.compile(rf'\b{re.escape(w)}\b')
-        count = sum(1 for name in items if pat.search(name))
-        if count >= 2:
-            scored.append((count, len(w), w))
-    scored.sort(key=lambda x: (-x[0], -x[1], x[2]))
-    return [w for _, _, w in scored]
+
+    def count_occurrences(token: str) -> int:
+        pat = re.compile(rf'\b{re.escape(token)}\b')
+        return sum(1 for name in items if pat.search(name))
+
+    counts = {w: count_occurrences(w) for w in candidate_words}
+    scored = [(c, len(w), w) for w, c in counts.items() if c >= 2]
+    if include_singletons:
+        def best_word(name: str) -> str:
+            cands = word_pat.findall(name)
+            if not cands:
+                return ""
+            cands.sort(key=lambda x: (-len(x), x))
+            return cands[0]
+        for name in items:
+            tok = best_word(name)
+            if not tok:
+                continue
+            c = count_occurrences(tok)  # may be 1
+            scored.append((c, len(tok), tok))
+    best = {}
+    for c, L, w in scored:
+        if w not in best or (c, L) > (best[w][0], best[w][1]):
+            best[w] = (c, L, w)
+    ordered = sorted(best.values(), key=lambda t: (-t[0], -t[1], t[2]))
+    return [w for _, _, w in ordered]
 
 def _shingles(s: str, k: int = 3) -> set:
     s = s.lower()
@@ -1279,10 +1301,13 @@ def _best_word_in(s: str, min_len: int = 3) -> str:
     cands.sort(key=lambda w: (-len(w), w))
     return cands[0] if len(cands[0]) >= min_len else ""
 
-def cluster_lcs(items: list[str],
-                sim_threshold: float = 0.2,
-                k: int = 3,
-                min_len: int = 3) -> list[str]:
+def cluster_lcs(
+        items: list[str],
+        sim_threshold: float = 0.2,
+        k: int = 3,
+        min_len: int = 3,
+        include_singletons: bool = True
+    ) -> list[str]:
     """
     1) Cluster names by Jaccard similarity on 3-grams.
     2) For each cluster (size>=2), compute LCS across members.
@@ -1302,7 +1327,7 @@ def cluster_lcs(items: list[str],
             count = sum(1 for name in grp if pat.search(name))
             if count >= 2:
                 results.append((len(grp), len(token), token))
-        else:
+        elif include_singletons and len(grp) == 1:
             name = grp[0]
             token = _best_word_in(name, min_len=min_len)
             if not token:
@@ -1354,7 +1379,7 @@ def lcs_multi(
 
     if n <= N_star:
         # Small n -> Pairwise-LCS (simpler; lower constant cost)
-        return lcs_enum(items, min_len=min_len)
+        return lcs_enum(items, min_len=min_len, include_singletons=include_singletons)
     else:
         # Larger n -> Cluster->LCS (better asymptotics)
         return cluster_lcs(

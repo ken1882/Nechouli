@@ -15,24 +15,28 @@ from tasks.daily.grave_danger import GraveDangerUI
 from tasks.utility.quick_stock import QuickStockUI
 from tasks.utility.restocking import RestockingUI
 from tasks.daily.daily_quest import DailyQuestUI
+from tasks.daily import pet_training
 from tasks.utility.safety_deposit_box import SafetyDepositBoxUI
 
 BaseFlash = base_flash.BaseFlash
 BasePageUI = base_page.BasePageUI
 Neopet = neopet.Neopet
 NeoItem = neoitem.NeoItem
+PetTrainingUI = pet_training.PetTrainingUI
 
 def reload_modules():
-    global BaseFlash, BasePageUI, Neopet, NeoItem
+    global BaseFlash, BasePageUI, Neopet, NeoItem, PetTrainingUI
     from importlib import reload
     reload(base_page)
     reload(base_flash)
     reload(neopet)
     reload(neoitem)
+    reload(pet_training)
     BaseFlash = base_flash.BaseFlash
     BasePageUI = base_page.BasePageUI
     Neopet = neopet.Neopet
     NeoItem = neoitem.NeoItem
+    PetTrainingUI = pet_training.PetTrainingUI
 
 def sc():
     Image.fromarray(device.screenshot()).save('test.png')
@@ -41,51 +45,57 @@ class TestUI(BaseFlash, BasePageUI):
     pass
 
 
-alas = Nechouli('rongyaoxuehua')
+alas = Nechouli('nechouli2')
 config, device = alas.config, alas.device
-self = SafetyDepositBoxUI(config, device)
+self = PetTrainingUI(config, device)
 
 device.start_browser()
 device.disable_stuck_detection()
 device.screenshot_interval_set(0.1)
-
-self.goto('https://intoli.com/blog/not-possible-to-block-chrome-headless/chrome-headless-test.html')
-
 self.goto('https://www.neopets.com/pirates/academy.phtml?type=status')
-current_pets = []
-rows = self.page.locator('.content >> table > tbody > tr > td')
-rows = rows.all()
-i = -1
-while True:
-    i += 1
-    if i >= len(rows):
-        break
-    print(i)
-    print(rows[i].text_content())
-    pet_name = next((p.name for p in pets if p.name in rows[i].text_content()), None)
-    if not pet_name:
-        continue
-    infos = rows[i+1].locator('b').all()
-    if len(infos) < 5:
-        logger.warning(f"Parse pet info failed for {pet_name} in {academy} academy")
-        continue
-    current_pets.append(Neopet(
-        name=pet_name,
-        level=str2int(infos[0].text_content()),
-        strength=str2int(infos[1].text_content()),
-        defense=str2int(infos[2].text_content()),
-        movement=str2int(infos[3].text_content()),
-        max_health=str2int(infos[4].text_content().split('/')[-1]),
-    ))
-msg = 'Current pet info:\n' + '\n'.join(
-    f"{p.name} (Lv={p.level}, Str={p.strength}, Def={p.defense}, Mov={p.movement}, Hp={p.max_health})"
-    for p in current_pets
-)
-logger.info(msg)
 
-fees = []
-images = self.page.locator('.content >> img[src*="images.neopets.com/items/"]')
-for img in images.all():
-    fees.append(NeoItem(
-        name=img.locator('../..').text_content().strip(),
+self.config.bind('PetTraining')
+ACADEMY = pet_training.ACADEMY
+ATTR_CONF_TABLE = pet_training.ATTR_CONF_TABLE
+ATTR_COURSE_TABLE = pet_training.ATTR_COURSE_TABLE
+configs = self.config.PetTraining_Config.splitlines()
+self.current_pets = []
+aca_pets = {
+    'pirate': [],
+    'island': [],
+    'ninja': []
+}
+for conf in configs:
+    pet_name, academy, target_lv, target_str, target_def, target_mov, target_hp = conf.split(':')
+    if academy not in ACADEMY:
+        logger.error(f'Unknown academy: {academy}')
+        continue
+    aca_pets[academy].append(Neopet(
+        name=pet_name,
+        level=int(target_lv),
+        max_health=int(target_hp),
+        strength=int(target_str),
+        defense=int(target_def),
+        movement=int(target_mov),
     ))
+
+
+for academy, pets in aca_pets.items():
+    if not pets:
+        continue
+    self.goto(ACADEMY[academy]['url'])
+    completed = self.page.locator('input[type=submit][value="Complete Course!"]')
+    while completed.count():
+        self.device.click(completed.first, nav=True)
+        self.goto(ACADEMY[academy]['url'])
+    self.scan_pets(pets, academy=academy)
+    trained = False
+    for pet in pets:
+        trained = self.train_pet(pet, academy)
+    if trained:
+        for item in self.scan_fee():
+            self.config.stored.PendingTrainingFee.add(item)
+    if not trained:
+        continue
+    self.fetch_training_fee()
+    self.goto(ACADEMY[academy]['url'])

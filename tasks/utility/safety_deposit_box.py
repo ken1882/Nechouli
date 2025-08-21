@@ -97,7 +97,7 @@ class SafetyDepositBoxUI(BasePageUI):
                 - The second dictionary contains items that were not found or could not be retrieved.
         '''
         names = [item for item, val in required_items.items() if val > 0]
-        search_queue = lcs_multi(names, include_singletons=False)
+        search_queue = lcs_multi(names)
         retrieved = {}
         unscanned = set()
         for kw in search_queue:

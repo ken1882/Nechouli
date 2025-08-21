@@ -41,7 +41,6 @@ class PetTrainingUI(BasePageUI):
 
     def main(self):
         configs = self.config.PetTraining_Config.splitlines()
-        self.current_pets = []
         aca_pets = {
             'pirate': [],
             'island': [],
@@ -49,6 +48,9 @@ class PetTrainingUI(BasePageUI):
         }
         for conf in configs:
             pet_name, academy, target_lv, target_str, target_def, target_mov, target_hp = conf.split(':')
+            if academy not in ACADEMY:
+                logger.error(f'Unknown academy: {academy}')
+                continue
             aca_pets[academy].append(Neopet(
                 name=pet_name,
                 level=int(target_lv),
@@ -102,10 +104,12 @@ class PetTrainingUI(BasePageUI):
         return True
 
     def scan_pets(self, pets: list[Neopet], academy: str) -> list[Neopet]:
+        self.current_pets = []
         rows = self.page.locator('.content >> table > tbody > tr > td')
         rows = rows.all()
         i = -1
-        while i < len(rows):
+        msg = 'Current pet info:\n'
+        while i < len(rows)-1:
             i += 1
             pet_name = next((p.name for p in pets if p.name in rows[i].text_content()), None)
             if not pet_name:
@@ -114,19 +118,20 @@ class PetTrainingUI(BasePageUI):
             if len(infos) < 5:
                 logger.warning(f"Parse pet info failed for {pet_name} in {academy} academy")
                 continue
-        self.current_pets.append(Neopet(
-            name=pet_name,
-            level=str2int(infos[0].text_content()),
-            strength=str2int(infos[1].text_content()),
-            defense=str2int(infos[2].text_content()),
-            movement=str2int(infos[3].text_content()),
-            max_health=str2int(infos[4].text_content().split('/')[-1]),
-        ))
-        msg = 'Current pet info:\n' + '\n'.join(
-            f"{p.name} (Lv={p.level}, Str={p.strength}, Def={p.defense}, Mov={p.movement}, Hp={p.max_health})"
-            for p in self.current_pets
-        )
-        logger.info(msg)
+            self.current_pets.append(Neopet(
+                name=pet_name,
+                level=str2int(infos[0].text_content()),
+                strength=str2int(infos[1].text_content()),
+                defense=str2int(infos[2].text_content()),
+                movement=str2int(infos[3].text_content()),
+                max_health=str2int(infos[4].text_content().split('/')[-1]),
+            ))
+            msg += '\n'.join(
+                f"{p.name} (Lv={p.level}, Str={p.strength}, Def={p.defense}, Mov={p.movement}, Hp={p.max_health})"
+                for p in self.current_pets
+            )
+        if self.current_pets:
+            logger.info(msg)
 
     def scan_fee(self):
         fees = []
