@@ -1,5 +1,6 @@
 from module.logger import logger
 from tasks.base.base_page import BasePageUI
+from tasks.utility.quick_stock import QuickStockUI
 from module.db.models.neopet import Neopet
 from module.db.models.neoitem import NeoItem
 from module.base.utils import str2int
@@ -69,7 +70,9 @@ class PetTrainingUI(BasePageUI):
                 trained = self.train_pet(pet, academy)
                 if trained:
                     self.config.stored.PendingTrainingFee.set(self.scan_fee())
-        if trained:
+            if not trained:
+                continue
+            self.fetch_training_fee()
             self.goto(ACADEMY[academy]['url'])
         return True
 
@@ -151,6 +154,20 @@ class PetTrainingUI(BasePageUI):
             return True
         return v >= ACADEMY[academy]['max_level']*2
 
+    def fetch_training_fee(self):
+        QuickStockUI(self.config, self.device).update_inventory_data()
+        required_items = {}
+        for item in self.config.stored.PendingTrainingFee:
+            if item.name not in required_items:
+                required_items[item.name] = 0
+            required_items[item.name] += 1
+        for item in self.config.stored.InventoryData:
+            if item.name in required_items:
+                required_items[item.name] -= 1
+        if all(v <= 0 for v in required_items.values()):
+            logger.info("All required items are available for training.")
+        else:
+            logger.info("Some required items are missing for training, scanning SDB")
 
 if __name__ == '__main__':
     self = PetTrainingUI()

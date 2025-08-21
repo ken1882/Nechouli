@@ -203,7 +203,7 @@ class QuickStockUI(BasePageUI):
             raise ValueError(f"Script execution failed: {e}")
 
     def update_inventory_data(self):
-        self.page.reload()
+        self.goto('https://www.neopets.com/quickstock.phtml')
         self.scan_all_items()
         self.config.stored.InventoryData.set(self.items)
         logger.info(f"Updated inventory with {len(self.items)} items (size={self.config.stored.InventoryData.size}).")
