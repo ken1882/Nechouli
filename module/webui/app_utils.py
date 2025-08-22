@@ -233,6 +233,6 @@ def kill_all_instances():
     for name, addr in ins.items():
         if name in buts:
             continue
-        kill_remote_browser(name)
-        msg += f'{name} {addr}\n'
+        if kill_remote_browser(name):
+            msg += f'{name} {addr}\n'
     popup('Killed', msg)
