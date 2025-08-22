@@ -7,6 +7,7 @@ from module.base.utils import (
     check_connection
 )
 from module.db import data_manager as dm
+from module import hardware as hw
 from pathlib import Path
 import random
 import os
@@ -32,7 +33,7 @@ class Nechouli(AzurLaneAutoScript):
 
     @property
     def lock_file(self):
-        p = Path('.nch-lock')
+        p = Path('.nch-lock-'+hw.hardware_hash()[::4])
         p.touch(exist_ok=True)
         return p
 
