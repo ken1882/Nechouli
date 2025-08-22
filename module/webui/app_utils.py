@@ -37,8 +37,30 @@ from module.base.utils import (
 
 import time
 import random
+import json
 import hashlib
 import threading
+from datetime import datetime, timedelta
+from module.config.utils import nearest_future
+
+
+def _get_next_run(config_name: str) -> tuple[str, datetime]:
+    try:
+        with open(f'config/{config_name}.json', 'r', encoding='utf-8') as f:
+            conf = json.load(f)
+            enabled_tasks = {}
+            for task in conf.keys():
+                if "Scheduler" not in conf[task]:
+                    continue
+                sched = conf[task]["Scheduler"]
+                if not sched["Enable"]:
+                    continue
+                enabled_tasks[task] = datetime.strptime(sched["NextRun"], '%Y-%m-%d %H:%M:%S')
+        ret_time = nearest_future(enabled_tasks.values())
+        ret_task = next((k for k,v in enabled_tasks.items() if v==ret_time), None)
+        return ret_task, ret_time
+    except Exception:
+        return None, None
 
 def _deterministic_jitter(name: str, window: float, epoch_bucket: int = 30) -> float:
     """
@@ -98,13 +120,30 @@ def run_all_instances(
         schedule.append((offset, name, addr))
     schedule.sort(key=lambda x: x[0])  # earliest first
 
+    next_task_table = {}
+    for name, _ in to_start:
+        task, ttime = _get_next_run(name)
+        if task and ttime:
+            next_task_table[name] = (task, ttime)
+
     def _worker():
+        nonlocal next_task_table
         t0 = time.monotonic()
         for offset, name, addr in schedule:
+            base = 0
+            # sleep until next scheduled task
+            if name in next_task_table:
+                task, ttime = next_task_table[name]
+                if ttime > datetime.now():
+                    base = (ttime - datetime.now()).total_seconds()
+            else: # skip if no enabled task
+                continue
+
             # Sleep only inside the worker thread
             delta = offset - (time.monotonic() - t0)
-            if delta > 0:
-                time.sleep(delta)
+            if base+delta > 0:
+                print(f"Delay start of {name} for {base+delta:.2f} seconds (task: {task})")
+                time.sleep(base+delta)
 
             # Re-check liveness just before starting
             alas = ProcessManager.get_manager(name)
@@ -118,7 +157,17 @@ def run_all_instances(
 
     th = threading.Thread(target=_worker, name="InstanceStarter", daemon=True)
     th.start()
-    popup('Statred', '\n'.join([f'{n} {a}' for n,a in to_start]))
+    msg = ''
+    for n, a in to_start:
+        if n not in next_task_table:
+            msg += f'{n} {a} has no enabled task, skipping\n'
+            continue
+        task, ttime = next_task_table[n]
+        if ttime <= datetime.now():
+            msg += f'{n} {a} will start later, task: {task}\n'
+            continue
+        msg += f'{n} {a} will start around {ttime.strftime("%Y-%m-%d %H:%M:%S")}, task: {task}\n'
+    popup('Started', msg)
     return th
 
 
