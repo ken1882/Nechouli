@@ -36,6 +36,7 @@ orjson==3.11.2            # via -r requirements-in.txt
 packaging==20.9           # via onnxruntime
 pillow==9.5.0             # via -r requirements-in.txt
 playwright==1.50.0        # via -r requirements-in.txt
+portalocker==3.2.0        # via -r requirements-in.txt
 pponnxcr==2.0             # via -r requirements-in.txt
 prettytable==2.2.1        # via -r requirements-in.txt
 protobuf==4.23.0          # via onnxruntime
@@ -52,8 +53,10 @@ pyreadline3==3.5.4        # via humanfriendly
 python-dotenv==1.0.0      # via uvicorn
 pytz==2024.2              # via -r requirements-in.txt
 pywebio==1.8.3            # via -r requirements-in.txt
+pywin32==311              # via portalocker
 pyyaml==6.0               # via -r requirements-in.txt, uvicorn
-redis==6.4.0              # via -r requirements-in.txt
+redis==6.4.0              # via -r requirements-in.txt, redlock
+redlock==1.2.0            # via -r requirements-in.txt
 requests==2.30.0          # via onepush
 rich==13.3.5              # via -r requirements-in.txt
 scipy==1.10.1             # via -r requirements-in.txt
@@ -76,4 +79,3 @@ uvicorn[standard]==0.17.6  # via -r requirements-in.txt
 watchgod==0.8.2           # via uvicorn
 wcwidth==0.2.6            # via prettytable
 websockets==11.0.3        # via uvicorn
-portalocker==3.2.0        # via -r requirements-in.txt

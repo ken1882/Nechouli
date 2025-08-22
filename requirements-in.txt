@@ -25,6 +25,7 @@ redis==6.4.0
 orjson==3.11.2
 psutil==7.0.0
 portalocker==3.2.0
+redlock==1.2.0
 
 # OCR
 pponnxcr==2.0
