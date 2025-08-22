@@ -206,12 +206,17 @@ def stop_all_instances():
     popup('Stopped', msg)
 
 def show_instances_status():
+    global ScheduledStart
     popup('Please wait')
     ins = get_all_instance_addresses()
     msg = ''
     for name, addr in ins.items():
         alas = ProcessManager.get_manager(name)
-        msg += f'{name} {addr} {"Running" if alas.alive else "Stopped"} {"O" if check_connection(addr, timeout=0.1) else "X"}\n'
+        estd = check_connection(addr, timeout=0.1)
+        msg += f'{name} {addr} {"Running" if alas.alive else "Stopped"} {"O" if estd else "X"}'
+        if name in ScheduledStart and (not alas.alive or not estd):
+            msg += f'Scheduled at {ScheduledStart[name].strftime("%Y-%m-%d %H:%M:%S")}'
+        msg += '\n'
     popup('Status', msg)
 
 def kill_all_instances():
