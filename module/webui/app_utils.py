@@ -148,6 +148,7 @@ def run_all_instances(
             delta = offset - (time.monotonic() - t0)
             st = max(0, base+delta)
             print(f"Delay start of {name} for {st:.2f} seconds (task: {task})")
+            ScheduledStart[name] = datetime.now() + timedelta(seconds=int(st+0.5))
             start_order.append([name, addr, st])
 
         start_order.sort(key=lambda x: x[2])
