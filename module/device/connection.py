@@ -254,8 +254,8 @@ class Connection:
         logger.info("Respawning page")
         if self.page:
             self.page.close()
-        self.page = self.new_page()
         try:
+            self.page = self.new_page()
             self.page.goto('https://www.neopets.com/questlog/')
         except Exception as e:
             logger.warning(f"Failed to load questlog after respawn: {e}")
