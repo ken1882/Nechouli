@@ -131,6 +131,7 @@ def run_all_instances(
         global ScheduledStart
         nonlocal next_task_table
         t0 = time.monotonic()
+        start_order = []
         for offset, name, addr in schedule:
             if name in ScheduledStart and datetime.now() < ScheduledStart[name]:
                 continue
@@ -145,10 +146,21 @@ def run_all_instances(
 
             # Sleep only inside the worker thread
             delta = offset - (time.monotonic() - t0)
-            if base+delta > 0:
-                ScheduledStart[name] = ttime
-                print(f"Delay start of {name} for {base+delta:.2f} seconds (task: {task})")
-                time.sleep(base+delta)
+            st = max(0, base+delta)
+            print(f"Delay start of {name} for {st:.2f} seconds (task: {task})")
+            start_order.append((name, addr, st))
+
+        start_order.sort(key=lambda x: x[2])
+        total = 0
+        for i,dat in enumerate(start_order):
+            v = dat[2]
+            start_order[i][2] = v - total
+            total = v
+
+        for name, addr, delay in start_order:
+            if delay > 0:
+                print(f"Waiting {delay:.2f} seconds before starting {name} ({addr})")
+                time.sleep(delay)
 
             # Re-check liveness just before starting
             alas = ProcessManager.get_manager(name)
