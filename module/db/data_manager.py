@@ -24,6 +24,7 @@ load_dotenv()
 REDIS_JN_MEGA_KEY = "jellyneo_itemdb"
 REDIS_JN_KEY_PREFIX = "jellyneo_itemdb:"
 REDIS_GLOBAL_KEY_PREFIX = "nechouli_globals:"
+REDIS_LOCK_PREFIX = "nechouli_lock:"
 REDIS_CACHE_URL = os.getenv("REDIS_CACHE", None)
 
 CACHE_FILE = "cache/items.json"
@@ -33,17 +34,17 @@ DB_LOCK = Lock()
 _GLOBAL_FILE = Path('.nch_globals.json')
 ItemDatabase: Dict[str, dict] = {}
 
-redis_conn = None
-redlock_factory = None
+RedisConn = None
+RedisFactory = None
 if REDIS_CACHE_URL:
     import redis
     from redlock import RedLockFactory
-    redis_conn = redis.Redis.from_url(REDIS_CACHE_URL, decode_responses=True)
-    redlock_factory = RedLockFactory(connection_details=[{'url': REDIS_CACHE_URL}])
+    RedisConn = redis.Redis.from_url(REDIS_CACHE_URL, decode_responses=True)
+    RedisFactory = RedLockFactory(connection_details=[{'url': REDIS_CACHE_URL}])
 
 
 def _redis_enabled() -> bool:
-    return redis_conn is not None
+    return RedisConn is not None
 
 
 def _redis_key(iname: str) -> str:
@@ -56,7 +57,7 @@ def _redis_get_item(iname: str) -> Optional[dict]:
     if not _redis_enabled():
         return None
     try:
-        data = redis_conn.get(_redis_key(iname))
+        data = RedisConn.get(_redis_key(iname))
         if data:
             obj = orjson.loads(data)
             with DB_LOCK:
@@ -72,7 +73,7 @@ def _redis_set_item(item: dict, ttl: int = 0) -> None:
         return
     ttl = ttl or JN_CACHE_TTL
     try:
-        redis_conn.setex(_redis_key(item["name"].lower()), ttl, orjson.dumps(item))
+        RedisConn.setex(_redis_key(item["name"].lower()), ttl, orjson.dumps(item))
     except Exception as exc:  # noqa: BLE001
         logger.warning("Redis SETEX failed (%s): %s", item.get("name"), exc)
 
@@ -90,9 +91,9 @@ def load_item_cache(force_local: bool = False) -> dict:
         try:
             prefix, total, cursor = REDIS_JN_KEY_PREFIX, 0, 0
             while True:
-                cursor, keys = redis_conn.scan(cursor=cursor, match=f"{prefix}*", count=20_000)
+                cursor, keys = RedisConn.scan(cursor=cursor, match=f"{prefix}*", count=20_000)
                 if keys:
-                    values = redis_conn.mget(keys)
+                    values = RedisConn.mget(keys)
                     for k, v in zip(keys, values):
                         if v:
                             ItemDatabase[k[len(prefix):]] = orjson.loads(v)
@@ -166,8 +167,8 @@ def clear_cache() -> None:
 
     if _redis_enabled():
         logger.info("Wiping Redis keys %s*", REDIS_JN_KEY_PREFIX)
-        for key in redis_conn.scan_iter(f"{REDIS_JN_KEY_PREFIX}*"):
-            redis_conn.delete(key)
+        for key in RedisConn.scan_iter(f"{REDIS_JN_KEY_PREFIX}*"):
+            RedisConn.delete(key)
 
     if os.path.exists(CACHE_FILE):
         os.remove(CACHE_FILE)
@@ -199,11 +200,11 @@ def file_lock(path, open_mode="r+b", exclusive=True, timeout=60):
 
 @contextmanager
 def redis_lock(name, timeout=600):
-    global redlock_factory
+    global RedisFactory, REDIS_LOCK_PREFIX
     if not _redis_enabled():
         raise RuntimeError("Redis not enabled")
     n = int(timeout / 0.2) # delay 200ms per retry
-    with redlock_factory.create_lock(name, retry_times=n):
+    with RedisFactory.create_lock(REDIS_LOCK_PREFIX + name, retry_times=n):
         yield
 
 @contextmanager
@@ -217,11 +218,14 @@ def dlock(name, timeout=600, open_mode="r+b", exclusive=True):
         open_mode (str): File open mode if using file lock.
         exclusive (bool): Exclusive lock if True, shared if False.
     """
-    global redlock_factory
+    global RedisFactory
     if not _redis_enabled():
         with file_lock(Path(f'.{name}.lock'), open_mode, exclusive, timeout) as fp:
             yield fp
         return
+    if type(name) == type(Path('.')):
+        name = name.stem
+    name = name.replace('/', '_').replace('\\', '_')
     with redis_lock(name, timeout):
         yield
 
@@ -231,7 +235,7 @@ def global_set(key: str, value: str) -> None:
     Redis if available, else file+flock.
     """
     if _redis_enabled():
-        redis_conn.set(REDIS_GLOBAL_KEY_PREFIX + key, value)
+        RedisConn.set(REDIS_GLOBAL_KEY_PREFIX + key, value)
         return
 
     _GLOBAL_FILE.touch(exist_ok=True)
@@ -251,7 +255,7 @@ def global_get(key: str) -> Optional[str]:
     Returns `None` if key not found.
     """
     if _redis_enabled():
-        val = redis_conn.get(REDIS_GLOBAL_KEY_PREFIX + key)
+        val = RedisConn.get(REDIS_GLOBAL_KEY_PREFIX + key)
         return val if val is not None else None
 
     if not _GLOBAL_FILE.exists():
