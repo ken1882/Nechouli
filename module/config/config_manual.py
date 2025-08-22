@@ -17,7 +17,7 @@ class ManualConfig:
     > NeggCave > MeteorCrashSite > PotatoCounter > RichSlorg > QasalanExpellibox
     > TDMBGPOP > Tombola > TrudysSurprise > MoltaraQuarry > HealingSpring > MonthlyFreebies
     > StockMarket > DailyPuzzle > FashionFever
-    > PetCares
+    > PetCares > PetTraining
     > VoidsWithin > EssenceCollection
     > QuickStock
     > DailyQuest > Restocking

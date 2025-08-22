@@ -265,6 +265,10 @@ class Nechouli(AzurLaneAutoScript):
         from tasks.utility.safety_deposit_box import SafetyDepositBoxUI
         SafetyDepositBoxUI(config=self.config, device=self.device).run()
 
+    def pet_training(self):
+        from tasks.daily.pet_training import PetTrainingUI
+        PetTrainingUI(config=self.config, device=self.device).run()
+
 if __name__ == '__main__':
     nch = Nechouli()
     nch.loop()

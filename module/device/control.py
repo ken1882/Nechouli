@@ -70,8 +70,11 @@ class Control(Connection):
                 if not node.count():
                     continue
                 for n in node.all():
-                    if condition(n):
-                        return n
+                    try:
+                        if condition(n):
+                            return n
+                    except Exception as e:
+                        logger.warning(f"Error checking condition for element {n}: {e}")
             timeout -= wait_interval
             self.sleep(wait_interval)
         logger.warning(f"Timeout waiting for element: {locators}")

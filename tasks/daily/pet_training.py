@@ -5,6 +5,8 @@ from tasks.utility.safety_deposit_box import SafetyDepositBoxUI
 from module.db.models.neopet import Neopet
 from module.db.models.neoitem import NeoItem
 from module.base.utils import str2int
+from module.config.utils import nearest_future
+from datetime import datetime, timedelta
 
 ACADEMY = {
     'pirate': {
@@ -46,6 +48,7 @@ class PetTrainingUI(BasePageUI):
             'island': [],
             'ninja': []
         }
+        self.complete_times = []
         for conf in configs:
             pet_name, academy, target_lv, target_str, target_def, target_mov, target_hp = conf.split(':')
             if academy not in ACADEMY:
@@ -76,18 +79,18 @@ class PetTrainingUI(BasePageUI):
                 trained = self.train_pet(pet, academy)
                 if trained:
                     self.config.stored.PendingTrainingFee.set(self.scan_fee())
-            if not trained:
-                continue
-            missings = self.fetch_training_fee()
-            self.pay_training_fee(academy)
-            if missings and self.config.PetTraining_BuyFeeFromPlayers:
-                msg = "Buying missing items from players:\n"
-                for item_name, amount in missings.items():
-                    self.config.stored.ShopWizardRequests.add(item_name, 'training', amount)
-                    msg += f"{item_name}: {amount}\n"
-                logger.info(msg)
-                self.config.task_call('ShopWizard')
-                return False
+            if trained:
+                missings = self.fetch_training_fee()
+                self.pay_training_fee(academy)
+                if missings and self.config.PetTraining_BuyFeeFromPlayers:
+                    msg = "Buying missing items from players:\n"
+                    for item_name, amount in missings.items():
+                        self.config.stored.ShopWizardRequests.add(item_name, 'training', amount)
+                        msg += f"{item_name}: {amount}\n"
+                    logger.info(msg)
+                    self.config.task_call('ShopWizard')
+                    return False
+            self.complete_times += self.scan_training_time(academy)
         return True
 
     def train_pet(self, desired_pet: Neopet, academy: str):
@@ -216,6 +219,36 @@ class PetTrainingUI(BasePageUI):
                 self.device.click(fee.locator.locator('input[type=submit][value="Pay"]'), nav=True)
                 logger.info(f"Paid item {fee.name} for training fee.")
                 self.config.stored.PendingTrainingFee.remove(fee)
+
+    def scan_training_time(self, academy: str) -> list[datetime]:
+        if academy not in ACADEMY:
+            logger.error(f"Unknown academy: {academy}")
+            return []
+        self.goto(ACADEMY[academy]['url'])
+        training_times = []
+        for t in self.page.locator('td', has_text='till course finishes').all():
+            text = t.text_content().strip()
+            segs = text.split(':')[-1].split(',')
+            finish_time = datetime.now()
+            logger.info(f"Training time left: {segs}")
+            for seg in segs:
+                if 'hr' in seg or 'hour' in seg:
+                    finish_time += timedelta(hours=str2int(seg))
+                elif 'min' in seg:
+                    finish_time += timedelta(minutes=str2int(seg))
+                elif 'sec' in seg:
+                    finish_time += timedelta(seconds=str2int(seg))
+            if finish_time > datetime.now():
+                training_times.append(finish_time)
+        return training_times
+
+    def calc_next_run(self, s=''):
+        if s:
+            return super().calc_next_run(s)
+        if not self.complete_times:
+            return super().calc_next_run()
+        next_time = nearest_future(self.complete_times)
+        self.config.task_delay(target=next_time)
 
 if __name__ == '__main__':
     self = PetTrainingUI()

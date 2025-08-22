@@ -21,7 +21,14 @@ class VoidsWithinUI(BasePageUI):
                     self.device.wait(0.5)
             joins = pane.locator('button[id*="VolunteerButton"]')
             for j in joins.all():
-                done = self.process_shift(j, do_send)
+                done = False
+                while True:
+                    try:
+                        done = self.process_shift(j, do_send)
+                        break
+                    except Exception as e:
+                        logger.warning(f"Failed to process shift: {e}, retrying...")
+                        self.device.wait(1)
                 if done:
                     break
             if done:
