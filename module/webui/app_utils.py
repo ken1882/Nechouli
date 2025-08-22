@@ -43,6 +43,7 @@ import threading
 from datetime import datetime, timedelta
 from module.config.utils import nearest_future
 
+ScheduledStart = {}
 
 def _get_next_run(config_name: str) -> tuple[str, datetime]:
     try:
@@ -127,9 +128,12 @@ def run_all_instances(
             next_task_table[name] = (task, ttime)
 
     def _worker():
+        global ScheduledStart
         nonlocal next_task_table
         t0 = time.monotonic()
         for offset, name, addr in schedule:
+            if name in ScheduledStart and datetime.now() < ScheduledStart[name]:
+                continue
             base = 0
             # sleep until next scheduled task
             if name in next_task_table:
@@ -142,6 +146,7 @@ def run_all_instances(
             # Sleep only inside the worker thread
             delta = offset - (time.monotonic() - t0)
             if base+delta > 0:
+                ScheduledStart[name] = ttime
                 print(f"Delay start of {name} for {base+delta:.2f} seconds (task: {task})")
                 time.sleep(base+delta)
 
@@ -159,6 +164,9 @@ def run_all_instances(
     th.start()
     msg = ''
     for n, a in to_start:
+        if n in ScheduledStart and datetime.now() < ScheduledStart[n]:
+            msg += f'{n} {a} is already scheduled to start at {ScheduledStart[n].strftime("%Y-%m-%d %H:%M:%S")}\n'
+            continue
         if n not in next_task_table:
             msg += f'{n} {a} has no enabled task, skipping\n'
             continue
