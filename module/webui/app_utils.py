@@ -233,8 +233,6 @@ def kill_all_instances():
     for name, addr in ins.items():
         if name in buts:
             continue
-        if not check_connection(addr, timeout=1):
-            continue
         kill_remote_browser(name)
         msg += f'{name} {addr}\n'
     popup('Killed', msg)
