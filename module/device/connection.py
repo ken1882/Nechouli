@@ -8,7 +8,13 @@ from functools import wraps
 from playwright.sync_api import sync_playwright, Page, Browser, Playwright
 from module.config.config import AzurLaneConfig
 from module.logger import logger
-from module.base.utils import ensure_time, str2int, check_connection, get_start_menu_programs
+from module.base.utils import (
+    ensure_time,
+    str2int,
+    check_connection,
+    get_start_menu_programs,
+    kill_remote_browser,
+)
 import subprocess
 
 def retry(func):
@@ -240,12 +246,20 @@ class Connection:
         logger.info(f"Navigating to {url}")
         page.goto(url, timeout=timeout*1000)
 
-    def respawn_page(self):
+    def respawn_page(self, depth=0):
+        if depth > 10:
+            if self.config.Optimization_MaxConcurrentInstance:
+                kill_remote_browser(self.config.config_name)
+            raise RuntimeError("Failed to respawn page after 10 attempts, aborting.")
         logger.info("Respawning page")
         if self.page:
             self.page.close()
         self.page = self.new_page()
-        self.page.goto('https://www.neopets.com/questlog/')
+        try:
+            self.page.goto('https://www.neopets.com/questlog/')
+        except Exception as e:
+            logger.warning(f"Failed to load questlog after respawn: {e}")
+            return self.respawn_page(depth+1)
 
     def new_page(self):
         page = self.context.new_page()

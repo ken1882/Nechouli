@@ -30,11 +30,7 @@ class BasePageUI(ModuleBase):
                 self.calc_next_run()
             elif ok == False:
                 self.calc_next_run('failed')
-        except TimeoutError as e:
-            self.device.respawn_page()
-            logger.exception(e)
-            self.calc_next_run('failed')
-        except PlaywrightError as e:
+        except (TimeoutError, PlaywrightError) as e:
             logger.error(f"Playwright error:")
             logger.exception(e)
             logger.error("Nechouli will skip this task, if this keeps happening, please report to dev.")
