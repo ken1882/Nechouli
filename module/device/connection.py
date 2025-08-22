@@ -6,6 +6,7 @@ from copy import deepcopy
 from random import random
 from functools import wraps
 from playwright.sync_api import sync_playwright, Page, Browser, Playwright
+from playwright._impl._errors import TargetClosedError
 from module.config.config import AzurLaneConfig
 from module.logger import logger
 from module.base.utils import (
@@ -257,9 +258,13 @@ class Connection:
         try:
             self.page = self.new_page()
             self.page.goto('https://www.neopets.com/questlog/')
+            return
+        except TargetClosedError:
+            kill_remote_browser(self.config.config_name)
+            self.start_browser()
         except Exception as e:
             logger.warning(f"Failed to load questlog after respawn: {e}")
-            return self.respawn_page(depth+1)
+        return self.respawn_page(depth+1)
 
     def new_page(self):
         page = self.context.new_page()
