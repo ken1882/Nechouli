@@ -94,9 +94,9 @@ class BasePageUI(ModuleBase):
             return True
         return False
 
-    def goto(self, url):
+    def goto(self, url, timeout=30):
         try:
-            self.device.goto(url)
+            self.device.goto(url, timeout=timeout)
             while 'Maintenance Tunnels' in self.page.content():
                 logger.warning("Site is under maintenance, waiting for 10 minutes before retrying...")
                 self.device.sleep(600)
@@ -105,16 +105,16 @@ class BasePageUI(ModuleBase):
         except TimeoutError:
             logger.warning("Page load timeout, retrying...")
             self.device.respawn_page()
-            return self.device.goto(url)
+            return self.device.goto(url, timeout=timeout)
         except PlaywrightError as e:
             logger.warning(f"Page load error: {e}, likely interrupted by login or maintenance. Retrying")
             self.device.wait(1)
             self.page.reload()
-            return self.goto(url)
+            return self.goto(url, timeout=timeout)
         if not self.is_logged_in():
             logger.info("Attempting neopass login")
             if self.login_neopass():
-                return self.goto(url)
+                return self.goto(url, timeout=timeout)
             logger.critical("You have to login first, launch with gui then navigate to https://www.neopets.com/home after you logged in.")
             while True:
                 try:
@@ -126,8 +126,9 @@ class BasePageUI(ModuleBase):
                     if 'navigation' in str(e):
                         logger.info("Page navigation interrupted, retrying...")
                         continue
-            self.goto('https://www.neopets.com/questlog/') # quest won't start if not visited
-            return self.goto(url)
+            # quest won't start if not visited
+            self.goto('https://www.neopets.com/questlog/', timeout=timeout)
+            return self.goto(url, timeout=timeout)
         try:
             self.execute_script('remove_antiadb') # Remove annoying popup showing adblock detected
         except PlaywrightError:

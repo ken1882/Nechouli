@@ -5,7 +5,7 @@ from module.base.utils import str2int
 class VoidsWithinUI(BasePageUI):
 
     def main(self):
-        self.goto('https://www.neopets.com/hospital/volunteer.phtml')
+        self.goto('https://www.neopets.com/hospital/volunteer.phtml', timeout=180)
         done = False
         do_send = True
         if self.config.VoidsWithin_DelayForDailyFeed and self.config.stored.DailyQuestFeedTimesLeft.value:

@@ -234,11 +234,11 @@ class Connection:
         for _ in range(keeps - 1):
             self.new_page()
 
-    def goto(self, url, page=None):
+    def goto(self, url, page=None, timeout=30):
         if page is None:
             page = self.page
         logger.info(f"Navigating to {url}")
-        page.goto(url)
+        page.goto(url, timeout=timeout*1000)
 
     def respawn_page(self):
         logger.info("Respawning page")
