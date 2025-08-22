@@ -65,7 +65,7 @@ def run_all_instances(
     spread_cap   : max window size in seconds.
     epoch_bucket : jitter seed changes every N seconds (keeps spread stable briefly).
     """
-    help = 'List of profile names not to start, separated by line',
+    help = '# List of profile names not to start, separated by line',
     buts = textarea(
         'Exception List',
         code = {

@@ -34,10 +34,12 @@ _GLOBAL_FILE = Path('.nch_globals.json')
 ItemDatabase: Dict[str, dict] = {}
 
 redis_conn = None
+redlock_factory = None
 if REDIS_CACHE_URL:
     import redis
-
+    from redlock import RedLockFactory
     redis_conn = redis.Redis.from_url(REDIS_CACHE_URL, decode_responses=True)
+    redlock_factory = RedLockFactory(connection_details=[{'url': REDIS_CACHE_URL}])
 
 
 def _redis_enabled() -> bool:
@@ -195,6 +197,34 @@ def file_lock(path, open_mode="r+b", exclusive=True, timeout=60):
                 if datetime.now() >= st+timedelta(seconds=timeout):
                     raise e
 
+@contextmanager
+def redis_lock(name, timeout=600):
+    global redlock_factory
+    if not _redis_enabled():
+        raise RuntimeError("Redis not enabled")
+    n = int(timeout / 0.2) # delay 200ms per retry
+    with redlock_factory.create_lock(name, retry_times=n):
+        yield
+
+@contextmanager
+def dlock(name, timeout=600, open_mode="r+b", exclusive=True):
+    """
+    Distributed lock using Redis or file-based locking.
+
+    Args:
+        name (str): Lock name.
+        timeout (int): Lock timeout in seconds.
+        open_mode (str): File open mode if using file lock.
+        exclusive (bool): Exclusive lock if True, shared if False.
+    """
+    global redlock_factory
+    if not _redis_enabled():
+        with file_lock(Path(f'.{name}.lock'), open_mode, exclusive, timeout) as fp:
+            yield fp
+        return
+    with redis_lock(name, timeout):
+        yield
+
 def global_set(key: str, value: str) -> None:
     """
     Write a key-value pair, cross-process safe.
@@ -233,6 +263,8 @@ def global_get(key: str) -> Optional[str]:
         except orjson.JSONDecodeError:
             return None
     return data.get(key)
+
+
 
 class DataManager:
 

@@ -77,8 +77,23 @@ class Nechouli(AzurLaneAutoScript):
         logger.info("Checking running instances")
         msg = ''
         addresses = []
-        with dm.file_lock(self.lock_file) as _:
-            for profile_name, addr in get_all_instance_addresses().items():
+        def _quickmath(
+                n,
+                magic=1.2,               # magic number
+                backoff=(0.02, 0.08),    # retry jitter window (min,max) seconds
+                safety=1.75,             # safety multiplier s
+                tmin=3,
+                tmax=86400,
+            ):
+            n = max(1, n)
+            b = 0.5 * (backoff[0] + backoff[1])
+            H = magic * n
+            t = safety * n * (H + b)
+            return max(tmin, min(tmax, t))
+
+        instances = get_all_instance_addresses()
+        with dm.dlock(self.lock_file, timeout=_quickmath(len(instances))):
+            for profile_name, addr in instances.items():
                 msg += f"{profile_name} ({addr})"
                 if check_connection(addr, timeout=0.1):
                     addresses.append(addr)
