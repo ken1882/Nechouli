@@ -474,8 +474,8 @@ def set_localstorage(key, value):
     return run_js("localStorage.setItem(key, value)", key=key, value=value)
 
 
-def get_localstorage(key):
-    return eval_js("localStorage.getItem(key)", key=key)
+def get_localstorage(key, default=''):
+    return eval_js("localStorage.getItem(key)", key=key) or default
 
 
 def re_fullmatch(pattern, string):

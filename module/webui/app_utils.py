@@ -1,3 +1,7 @@
+from module.webui.utils import (
+    get_localstorage,
+    set_localstorage,
+)
 from pywebio.output import (
     Output,
     clear,
@@ -21,6 +25,7 @@ from pywebio.output import (
     toast,
     use_scope,
 )
+from pywebio.input import textarea
 from module.webui.process_manager import ProcessManager
 from module.webui.updater import updater
 from module.base.utils import (
@@ -60,11 +65,25 @@ def run_all_instances(
     spread_cap   : max window size in seconds.
     epoch_bucket : jitter seed changes every N seconds (keeps spread stable briefly).
     """
+    help = 'List of profile names not to start, separated by line',
+    buts = textarea(
+        'Exception List',
+        code = {
+            'mode': "markdown",
+            'theme': 'darcula',
+        },
+        value=get_localstorage('start_buts', help)
+    )
+    set_localstorage('start_buts', buts)
+    buts = [l.strip() for l in str(buts).split('\n')]
+    buts = [l for l in buts if not l.startswith('#')]
     popup('Please wait')
 
     ins = get_all_instance_addresses()
-    to_start = [(name, addr) for name, addr in ins.items()
-                if not ProcessManager.get_manager(name).alive]
+    to_start = [
+        (name, addr) for name, addr in ins.items()
+        if not ProcessManager.get_manager(name).alive and name not in buts
+    ]
 
     if not to_start:
         popup('Started', 'All instances already running')
@@ -96,7 +115,7 @@ def run_all_instances(
                 alas.start(None, updater.event)
             except Exception as e:
                 print("Failed to start %s (%s): %s", name, addr, e)
-    
+
     th = threading.Thread(target=_worker, name="InstanceStarter", daemon=True)
     th.start()
     popup('Statred', '\n'.join([f'{n} {a}' for n,a in to_start]))
@@ -104,10 +123,24 @@ def run_all_instances(
 
 
 def stop_all_instances():
+    help = '# List of profile names not to stop, separated by line'
+    buts = textarea(
+        'Exception List',
+        code = {
+            'mode': "markdown",
+            'theme': 'darcula',
+        },
+        value=get_localstorage('stop_buts', help),
+    )
+    set_localstorage('stop_buts', buts)
+    buts = [l.strip() for l in str(buts).split('\n')]
+    buts = [l for l in buts if not l.startswith('#')]
     popup('Please wait')
     ins = get_all_instance_addresses()
     msg = ''
     for name, addr in ins.items():
+        if name in buts:
+            continue
         alas = ProcessManager.get_manager(name)
         if not alas.alive:
             continue
