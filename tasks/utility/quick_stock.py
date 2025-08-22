@@ -35,7 +35,7 @@ class QuickStockUI(BasePageUI):
             item_name = node.locator('td').first.text_content().strip()
             if item_name.lower() == 'check all':
                 break
-            item = NeoItem(name=item_name, _locator=node, _act='deposit')
+            item = NeoItem(name=item_name, _locator=node, quantity=1, _act='deposit')
             self.items.append(item)
         jn.batch_search(set(item.name for item in self.items))
         for item in self.items:

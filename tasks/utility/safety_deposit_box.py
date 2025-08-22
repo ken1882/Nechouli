@@ -51,7 +51,11 @@ class SafetyDepositBoxUI(BasePageUI):
                     name = name[:-len(rm_rarity_suffix)].strip()
             logger.info("Found item: %s", name)
             amount = str2int(cells.nth(4).text_content())
-            ret.append(NeoItem(name=name, quantity=amount))
+            ret.append(NeoItem(
+                name=name,
+                quantity=amount,
+                _locator=cells
+            ))
         if include_data:
             item_names = [i.name for i in ret]
             jn.batch_search(item_names)
@@ -100,14 +104,20 @@ class SafetyDepositBoxUI(BasePageUI):
         search_queue = lcs_multi(names)
         retrieved = {}
         unscanned = set()
+        moved = False
         for kw in search_queue:
             results = self.search(kw)
             for r in results:
                 if r.name not in required_items:
                     continue
                 amount = min(required_items[r.name], r.quantity)
+                r.locator.nth(5).locator('input').fill(str(amount))
                 required_items[r.name] -= amount
                 retrieved[r.name] = amount
+                if amount > 0:
+                    moved = True
+            if moved:
+                self.device.click('.submit_data', nav=True)
             if len(results) >= self.PAGE_LIMIT:
                 unscanned.update([n for n in names if kw in n])
         for kw in unscanned:

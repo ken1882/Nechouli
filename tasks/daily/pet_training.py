@@ -59,14 +59,17 @@ class PetTrainingUI(BasePageUI):
                 defense=int(target_def),
                 movement=int(target_mov),
             ))
+        self.config.stored.PendingTrainingFee.clear()
         for academy, pets in aca_pets.items():
             if not pets:
                 continue
             self.goto(ACADEMY[academy]['url'])
             completed = self.page.locator('input[type=submit][value="Complete Course!"]')
-            if completed.count():
+            while completed.count():
+                logger.info("Completing course for %s academy", academy)
                 self.device.click(completed.first, nav=True)
                 self.goto(ACADEMY[academy]['url'])
+                completed = self.page.locator('input[type=submit][value="Complete Course!"]')
             self.scan_pets(pets, academy=academy)
             trained = False
             for pet in pets:
@@ -75,8 +78,16 @@ class PetTrainingUI(BasePageUI):
                     self.config.stored.PendingTrainingFee.set(self.scan_fee())
             if not trained:
                 continue
-            self.fetch_training_fee()
-            self.goto(ACADEMY[academy]['url'])
+            missings = self.fetch_training_fee()
+            self.pay_training_fee(academy)
+            if missings and self.config.PetTraining_BuyFeeFromPlayers:
+                msg = "Buying missing items from players:\n"
+                for item_name, amount in missings.items():
+                    self.config.stored.ShopWizardRequests.add(item_name, 'training', amount)
+                    msg += f"{item_name}: {amount}\n"
+                logger.info(msg)
+                self.config.task_call('ShopWizard')
+                return False
         return True
 
     def train_pet(self, desired_pet: Neopet, academy: str):
@@ -85,6 +96,9 @@ class PetTrainingUI(BasePageUI):
         pet = next((p for p in self.current_pets if p.name == desired_pet.name), None)
         if not pet:
             logger.warning(f"Pet {desired_pet.name} not found in current pets, skipping training.")
+            return False
+        if pet.training:
+            logger.info(f"Pet {pet.name} is already training, skipping.")
             return False
         for a in attrs:
             if self.is_capped(pet, academy, ATTR_CONF_TABLE[a]):
@@ -118,14 +132,18 @@ class PetTrainingUI(BasePageUI):
             if len(infos) < 5:
                 logger.warning(f"Parse pet info failed for {pet_name} in {academy} academy")
                 continue
-            self.current_pets.append(Neopet(
+            p = Neopet(
                 name=pet_name,
                 level=str2int(infos[0].text_content()),
                 strength=str2int(infos[1].text_content()),
                 defense=str2int(infos[2].text_content()),
                 movement=str2int(infos[3].text_content()),
                 max_health=str2int(infos[4].text_content().split('/')[-1]),
-            ))
+                training=False,
+            )
+            if 'currently studying' in rows[i].text_content():
+                p.training = True
+            self.current_pets.append(p)
             msg += '\n'.join(
                 f"{p.name} (Lv={p.level}, Str={p.strength}, Def={p.defense}, Mov={p.movement}, Hp={p.max_health})"
                 for p in self.current_pets
@@ -137,8 +155,10 @@ class PetTrainingUI(BasePageUI):
         fees = []
         images = self.page.locator('.content >> img[src*="images.neopets.com/items/"]')
         for img in images.all():
+            tr = img.locator('../..')
             fees.append(NeoItem(
-                name=img.locator('../..').text_content().strip(),
+                name=tr.text_content().strip(),
+                _locator=tr.locator('../../..')
             ))
         return fees
 
@@ -160,7 +180,7 @@ class PetTrainingUI(BasePageUI):
             return True
         return v >= ACADEMY[academy]['max_level']*2
 
-    def fetch_training_fee(self):
+    def fetch_training_fee(self) -> dict[str, int]:
         QuickStockUI(self.config, self.device).update_inventory_data()
         required_items = {}
         for item in self.config.stored.PendingTrainingFee:
@@ -177,12 +197,25 @@ class PetTrainingUI(BasePageUI):
         # Scan Safety Deposit Box for missing items
         sdb = SafetyDepositBoxUI(self.config, self.device)
         _, missings = sdb.retrieve_items(required_items)
-        if missings and not self.config.PetTraining_BuyFeeFromPlayers:
+        if missings:
             msg = "Missing items for training:\n" + '\n'.join(
                 f"{item}: {count}" for item, count in missings.items()
             )
             logger.warning(msg)
-            return True
+        return missings
+
+    def pay_training_fee(self, academy: str):
+        QuickStockUI(self.config, self.device).update_inventory_data()
+        self.goto(ACADEMY[academy]['url'])
+        fees = self.scan_fee()
+        for fee in fees:
+            for item in self.config.stored.InventoryData:
+                if item.name != fee.name or item.quantity == 0:
+                    continue
+                item.quantity -= 1
+                self.device.click(fee.locator.locator('input[type=submit][value="Pay"]'), nav=True)
+                logger.info(f"Paid item {fee.name} for training fee.")
+                self.config.stored.PendingTrainingFee.remove(fee)
 
 if __name__ == '__main__':
     self = PetTrainingUI()

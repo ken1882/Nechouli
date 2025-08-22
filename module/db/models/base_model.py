@@ -215,6 +215,11 @@ class BaseModel:
     def locator(self) -> Locator:
         return self.__dict__.get("_locator", None)
 
+    @property
+    def node(self) -> Locator:
+        """Alias for locator."""
+        return self.locator
+
     # pretty repr ---------------------------------------------------------
     def __str__(self) -> str:  # noqa: D401
         return f"<{self.__class__.__name__}: {self.__dict__}>"

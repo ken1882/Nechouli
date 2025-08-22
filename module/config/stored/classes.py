@@ -194,6 +194,9 @@ class StoredList(StoredBase):
     def remove(self, value):
         self.values = [v for v in self.values if v != value]
 
+    def is_empty(self) -> bool:
+        return not self.values
+
     def __iter__(self):
         return iter(self.values)
 
@@ -234,21 +237,12 @@ class StoredDailyQuestRestockCounter(StoredCounter):
 class StoredDailyQuestFeedCounter(StoredCounter):
     FIXED_TOTAL = 1
 
-class StoredItemContainer(StoredCounter):
-    items: list['NeoItem'] = []
-    np: int = 0
+class StoredItemContainer(StoredList):
     capacity: int = 50
 
-    def set(self, items: list['NeoItem']):
-        if any(type(i).__name__ != 'NeoItem' for i in items):
-            raise ScriptError(f'Unsupported item type in {self._name} for container')
-        self.items = items
-
-    def add(self, *items: 'NeoItem'):
-        items = list(items)
-        if any(type(i).__name__ != 'NeoItem' for i in items):
-            raise ScriptError(f'Unsupported item type in {self._name} for container')
-        self.items = self.items + list(items)
+    @property
+    def items(self) -> list['NeoItem']:
+        return self.values
 
     def normal_items(self) -> list['NeoItem']:
         return [i for i in self.items if i.category != 'cash']
@@ -260,60 +254,19 @@ class StoredItemContainer(StoredCounter):
     def is_full(self, keeps: int = 0) -> bool:
         return self.size + keeps >= self.capacity
 
-    def __iter__(self):
-        return iter(self.items)
-
-    def __getitem__(self, item):
-        if isinstance(item, int):
-            return self.items[item]
-        elif isinstance(item, str):
-            for i in self.items:
-                if i.name == item:
-                    return i
-            raise KeyError(f'Item {item} not found in {self._name}')
-        else:
-            raise TypeError(f'Unsupported item type: {type(item)} for {self._name}')
-
-    def __setitem__(self, key, value):
-        if isinstance(key, int):
-            if type(value).__name__ != 'NeoItem':
-                raise ScriptError(f'Unsupported item type in {self._name} for container')
-            self.items[key] = value
-        else:
-            raise TypeError(f'Unsupported item type: {type(key)} for {self._name}')
-
-    def __contains__(self, item):
-        if isinstance(item, str):
-            return any(i.name == item for i in self.items)
-        elif type(item).__name__ == 'NeoItem':
-            return item in self.items
-        else:
-            raise TypeError(f'Unsupported item type: {type(item)} for {self._name}')
-
-    def __len__(self):
-        return len(self.items)
-
-    def __bool__(self):
-        return bool(self.items)
-
-class StoredShopWizardRequests(StoredBase):
-    value: list[str] = []
-
+class StoredShopWizardRequests(StoredList):
     @property
     def requests(self):
-        return self.value
+        return self.values
 
     @requests.setter
     def requests(self, value: list[str]):
         if not isinstance(value, list):
             raise TypeError(f'ShopWizardRequests must be a list, got {type(value)}')
-        self.value = value
+        self.values = value
 
-    def add(self, item_name: str, source: str):
-        self.requests = self.requests + [f'{item_name}@{source}']
-
-    def clear(self):
-        self.requests = []
+    def add(self, item_name: str, source: str, amount: int = 1):
+        self.requests = self.requests + [f'{item_name}@{source}#{amount}']
 
     def pop(self) -> str:
         """
@@ -325,21 +278,6 @@ class StoredShopWizardRequests(StoredBase):
         ret = self.requests[0]
         self.requests = self.requests[1:]
         return ret
-
-    def is_empty(self) -> bool:
-        return not self.requests
-
-    def __iter__(self):
-        return iter(self.requests)
-
-    def __getitem__(self, item):
-        return self.requests[item]
-
-    def __len__(self):
-        return len(self.requests)
-
-    def __bool__(self):
-        return bool(self.requests)
 
 class StoredPendingTrainingFee(StoredList):
     @property

@@ -25,7 +25,7 @@ class ShopWizardUI(BasePageUI):
             item = jn.get_item_details_by_name(i.name)
             if item.get("price_timestamp", 0) > now_ts - dm.JN_CACHE_TTL/2:
                 continue
-            self.config.stored.ShopWizardRequests.add(i.name, 'price_update')
+            self.config.stored.ShopWizardRequests.add(i.name, 'price_update', 0)
             added += 1
             added_names.add(i.name)
             if added >= self.config.ShopWizard_PriceUpdateBatchSize:
@@ -50,47 +50,84 @@ class ShopWizardUI(BasePageUI):
         while not self.config.stored.ShopWizardRequests.is_empty():
             req = self.config.stored.ShopWizardRequests.pop()
             name, src = req.split('@')
+            src, amount = src.split('#') if '#' in src else (src, '0')
+            amount = str2int(amount)
             mp = jn.get_item_details_by_name(name).get('market_price', 0)
             if mp == 0 or mp > 950000:
                 logger.warning(f"Skipping {name} due to probably unavailable at shops (jn price={mp})")
                 continue
-            price = self.search_item_price(name)
+            shop_link, price = self.search_item(name)
             if not price:
                 logger.warning(f"Failed to find price for {name}")
                 return
-            if src == 'price_update':
-                jn.update_item_market_price(name, price)
+            jn.update_item_market_price(name, price)
+            if src == 'training' and amount:
+                if self.update_np <= self.config.ProfileSettings_MinNpKeep:
+                    logger.warning(f"Skipping {name} buying due to insufficient NP")
+                else:
+                    brought = self.purchase_item(name, shop_link, amount)
+                    amount -= brought
+                    if brought:
+                        if amount > 0:
+                            self.config.stored.ShopWizardRequests.add(name, src, amount)
+                        self.config.task_call('PetTraining')
+                    else:
+                        logger.warning(f"Failed to buy {name} from {shop_link}, amount: {amount}")
             self.goto('https://www.neopets.com/shops/wizard.phtml')
 
-    def search_item_price(self, name: str):
+    def search_item(self, name: str) -> tuple[str, int]:
         logger.info(f"Searching for item: {name}")
         if self.check_blocked():
-            return None
+            return None,None
         self.page.locator('#shopwizard').fill(name)
         with self.page.expect_response("**/wizard.php") as resp:
                 self.device.click('#submit_wizard')
                 resp.value.finished()
         if self.check_blocked():
-            return None
+            return None,None
         self.device.wait_for_element('.wizard-results-text')
         depth = 0
-        ret = 0
+        ret_price = 0
+        ret_shop = ''
         while depth < self.config.ShopWizard_PriceUpdateRescans:
             self.device.wait_for_element('#resubmitWizard')
             rows = self.page.locator('.wizard-results-price')
             if rows.count():
-                price = str2int(rows.first.text_content())
-                if ret == 0 or price < ret:
-                    ret = price
+                r = rows.first
+                price = str2int(r.text_content())
+                if ret_price == 0 or price < ret_price:
+                    ret_shop = r.locator('../a').get_attribute('href')
+                    ret_price = price
                     depth = 0
-            logger.info(f"Found lowest price: {ret} for {name}, depth: {depth}")
+            logger.info(f"Found lowest price: {ret_price} for {name}, depth: {depth}")
             btn = self.page.locator('#resubmitWizard')
             self.device.scroll_to(loc=btn)
             with self.page.expect_response("**/wizard.php") as resp:
                 self.device.click(btn)
                 resp.value.finished()
             depth += 1
-        return ret
+        if ret_shop and not ret_shop.startswith('http'):
+            ret_shop = 'https://www.neopets.com' + ret_shop
+        return ret_shop, ret_price
+
+    def purchase_item(self, name, shop_link, amount=1) -> int:
+        self.goto(shop_link)
+        segs = self.page.url.split('&')
+        good_id = next((s for s in segs if s.startswith('buy_obj_info')), None)
+        if not good_id:
+            logger.error(f"Failed to find good_id for {name} in {shop_link}")
+            return 0
+        good_id = good_id.split('=')[1]
+        goods = self.page.locator(f'a[href*="obj_info_id={good_id}"]')
+        brought = 0
+        self.page.on('dialog', lambda dialog: dialog.accept())
+        while goods.count() and amount:
+            node = goods.nth(0)
+            self.device.scroll_to(loc=node)
+            self.device.click(node, nav=True)
+            amount  -= 1
+            brought += 1
+        return brought
 
     def check_blocked(self):
         content = self.page.content().lower()

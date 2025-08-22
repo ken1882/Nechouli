@@ -12,31 +12,38 @@ from tasks.daily.pet_cares import PetCaresUI
 from tasks.daily.faerie_crossword import FaerieCrosswordUI
 from tasks.daily.trudys_surprise import TrudysSurpriseUI
 from tasks.daily.grave_danger import GraveDangerUI
-from tasks.utility.quick_stock import QuickStockUI
 from tasks.utility.restocking import RestockingUI
 from tasks.daily.daily_quest import DailyQuestUI
+from tasks.utility import quick_stock
 from tasks.daily import pet_training
-from tasks.utility.safety_deposit_box import SafetyDepositBoxUI
+from tasks.utility import safety_deposit_box
 
 BaseFlash = base_flash.BaseFlash
 BasePageUI = base_page.BasePageUI
 Neopet = neopet.Neopet
 NeoItem = neoitem.NeoItem
+QuickStockUI = quick_stock.QuickStockUI
 PetTrainingUI = pet_training.PetTrainingUI
+SafetyDepositBoxUI = safety_deposit_box.SafetyDepositBoxUI
 
 def reload_modules():
-    global BaseFlash, BasePageUI, Neopet, NeoItem, PetTrainingUI
+    global BaseFlash, BasePageUI, Neopet, NeoItem, PetTrainingUI, SafetyDepositBoxUI
+    global QuickStockUI
     from importlib import reload
     reload(base_page)
     reload(base_flash)
     reload(neopet)
     reload(neoitem)
     reload(pet_training)
+    reload(safety_deposit_box)
+    reload(quick_stock)
     BaseFlash = base_flash.BaseFlash
     BasePageUI = base_page.BasePageUI
     Neopet = neopet.Neopet
     NeoItem = neoitem.NeoItem
     PetTrainingUI = pet_training.PetTrainingUI
+    SafetyDepositBoxUI = safety_deposit_box.SafetyDepositBoxUI
+    QuickStockUI = quick_stock.QuickStockUI
 
 def sc():
     Image.fromarray(device.screenshot()).save('test.png')
