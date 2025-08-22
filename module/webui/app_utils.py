@@ -213,3 +213,28 @@ def show_instances_status():
         alas = ProcessManager.get_manager(name)
         msg += f'{name} {addr} {"Running" if alas.alive else "Stopped"} {"O" if check_connection(addr, timeout=0.1) else "X"}\n'
     popup('Status', msg)
+
+def kill_all_instances():
+    help = '# List of profile instances to keep, separated by line'
+    buts = textarea(
+        'Exception List',
+        code = {
+            'mode': "markdown",
+            'theme': 'darcula',
+        },
+        value=get_localstorage('kill_buts', help),
+    )
+    set_localstorage('kill_buts', buts)
+    buts = [l.strip() for l in str(buts).split('\n')]
+    buts = [l for l in buts if not l.startswith('#')]
+    popup('Please wait')
+    ins = get_all_instance_addresses()
+    msg = ''
+    for name, addr in ins.items():
+        if name in buts:
+            continue
+        if not check_connection(addr, timeout=1):
+            continue
+        kill_remote_browser(name)
+        msg += f'{name} {addr}\n'
+    popup('Killed', msg)

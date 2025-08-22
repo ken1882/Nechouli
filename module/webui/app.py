@@ -1043,6 +1043,7 @@ class AlasGUI(Frame):
         put_button(label="Force restart", onclick=_force_restart)
         put_button(label="Run all instances", onclick=run_all_instances)
         put_button(label="Stop all instances", onclick=stop_all_instances)
+        put_button(label="Kill all instances", onclick=kill_all_instances)
         put_button(label="Instances status", onclick=show_instances_status)
 
         enable_eval = get_localstorage("DANGER_ENABLE_EVAL") or ''
