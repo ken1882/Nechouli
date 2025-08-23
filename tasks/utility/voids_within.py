@@ -20,10 +20,12 @@ class VoidsWithinUI(BasePageUI):
                     self.device.click(btn)
                     self.device.wait(0.5)
             joins = pane.locator('button[id*="VolunteerButton"]')
+            err_popup = self.page.locator('h3', has_text='Error Occurred')
             for j in joins.all():
                 done = False
                 while True:
-                    if 'error occurred' in self.page.content().lower():
+                    if err_popup.is_visible():
+                        logger.error("Stopped due to error page")
                         return False
                     try:
                         done = self.process_shift(j, do_send)
