@@ -23,6 +23,8 @@ class VoidsWithinUI(BasePageUI):
             for j in joins.all():
                 done = False
                 while True:
+                    if 'error occurred' in self.page.content().lower():
+                        return False
                     try:
                         done = self.process_shift(j, do_send)
                         break

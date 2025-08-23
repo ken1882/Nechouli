@@ -263,7 +263,7 @@ class Connection:
             kill_remote_browser(self.config.config_name)
             self.start_browser()
         except Exception as e:
-            logger.warning(f"Failed to load questlog after respawn: {e}")
+            logger.warning(f"Failed to load questlog after respawn: {e} ({type(e)})")
         return self.respawn_page(depth+1)
 
     def new_page(self):
