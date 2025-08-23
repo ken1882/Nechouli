@@ -129,7 +129,7 @@ class PetTrainingUI(BasePageUI):
         while i < len(rows)-1:
             i += 1
             pet_name = next((p.name for p in pets if p.name in rows[i].text_content()), None)
-            if not pet_name:
+            if not pet_name or any(p.name == pet_name for p in self.current_pets):
                 continue
             infos = rows[i+1].locator('b').all()
             if len(infos) < 5:
@@ -173,15 +173,15 @@ class PetTrainingUI(BasePageUI):
             return pet.level >= ACADEMY[academy]['max_level']
         # hard cap is 850
         if attr == 'strength':
-            return pet.strength >= min(850, ACADEMY[academy]['max_level']*2)
+            return pet.strength >= min(850, ACADEMY[academy]['max_level']*2, pet.level*2)
         if attr == 'defense':
-            return pet.defense >= min(850, ACADEMY[academy]['max_level']*2)
+            return pet.defense >= min(850, ACADEMY[academy]['max_level']*2, pet.level*2)
         try:
             v = getattr(pet, attr)
         except AttributeError:
             logger.error(f"Unknown attribute: {attr}")
             return True
-        return v >= ACADEMY[academy]['max_level']*2
+        return v >= min(ACADEMY[academy]['max_level']*2, pet.level*2)
 
     def fetch_training_fee(self) -> dict[str, int]:
         QuickStockUI(self.config, self.device).update_inventory_data()

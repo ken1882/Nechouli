@@ -178,33 +178,33 @@ class StoredCounter(StoredBase):
         return stored
 
 class StoredList(StoredBase):
-    values: list = []
+    value: list = []
 
-    def set(self, values: list):
-        if not isinstance(values, list):
-            raise TypeError(f'StoredList must be a list, got {type(values)}')
-        self.values = values
+    def set(self, val: list):
+        if not isinstance(val, list):
+            raise TypeError(f'StoredList must be a list, got {type(val)}')
+        self.value = val
 
     def add(self, value):
-        self.values = self.values + [value]
+        self.value = self.value + [value]
 
     def clear(self):
-        self.values = []
+        self.value = []
 
     def remove(self, value):
-        self.values = [v for v in self.values if v != value]
+        self.value = [v for v in self.value if v != value]
 
     def is_empty(self) -> bool:
-        return not self.values
+        return not self.value
 
     def __iter__(self):
-        return iter(self.values)
+        return iter(self.value)
 
     def __getitem__(self, item):
         if isinstance(item, int):
-            return self.values[item]
+            return self.value[item]
         elif isinstance(item, str):
-            for v in self.values:
+            for v in self.value:
                 if getattr(v, 'name') == item:
                     return v
             raise KeyError(f'Value {item} not found in {self._name}')
@@ -213,23 +213,23 @@ class StoredList(StoredBase):
 
     def __setitem__(self, key, value):
         if isinstance(key, int):
-            self.values[key] = value
+            self.value[key] = value
         else:
             raise TypeError(f'Unsupported item type: {type(key)} for {self._name}')
 
     def __contains__(self, item):
         if isinstance(item, str):
-            return any(getattr(v, 'name') == item for v in self.values)
+            return any(getattr(v, 'name') == item for v in self.value)
         elif hasattr(item, 'name'):
-            return any(v.name == item.name for v in self.values)
+            return any(v.name == item.name for v in self.value)
         else:
             raise TypeError(f'Unsupported item type: {type(item)} for {self._name}')
 
     def __len__(self):
-        return len(self.values)
+        return len(self.value)
 
     def __bool__(self):
-        return bool(self.values)
+        return bool(self.value)
 
 class StoredDailyQuestRestockCounter(StoredCounter):
     FIXED_TOTAL = 3
@@ -242,7 +242,7 @@ class StoredItemContainer(StoredList):
 
     @property
     def items(self) -> list['NeoItem']:
-        return self.values
+        return self.value
 
     def normal_items(self) -> list['NeoItem']:
         return [i for i in self.items if i.category != 'cash']
@@ -257,13 +257,13 @@ class StoredItemContainer(StoredList):
 class StoredShopWizardRequests(StoredList):
     @property
     def requests(self):
-        return self.values
+        return self.value
 
     @requests.setter
     def requests(self, value: list[str]):
         if not isinstance(value, list):
             raise TypeError(f'ShopWizardRequests must be a list, got {type(value)}')
-        self.values = value
+        self.value = value
 
     def add(self, item_name: str, source: str, amount: int = 1):
         self.requests = self.requests + [f'{item_name}@{source}#{amount}']
@@ -282,9 +282,9 @@ class StoredShopWizardRequests(StoredList):
 class StoredPendingTrainingFee(StoredList):
     @property
     def items(self) -> list['NeoItem']:
-        return self.values
+        return self.value
 
 class StoredPetsData(StoredList):
     @property
     def pets(self) -> list['Neopet']:
-        return self.values
+        return self.value
