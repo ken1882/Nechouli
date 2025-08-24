@@ -30,6 +30,7 @@ class GeneratedConfig:
     # Group `Playwright`
     Playwright_Browser = 'msedge'  # msedge, chrome
     Playwright_Headless = False
+    Playwright_SelfHeal = False
     Playwright_CleanPagesOnStart = False
     Playwright_AutoOpenDevtools = False
     Playwright_RemoteDebuggingAddress = '127.0.0.1:9222'
@@ -101,13 +102,6 @@ class GeneratedConfig:
     PetTraining_TrainPriority = 'str > def > hp > mov > lv'
     PetTraining_Config = 'PetName:Academy:TargetLv:TargetStr:TargetDef:TargetMov:TargetHp\n'
     PetTraining_PendingTrainingFee = {}
-
-    # Group `BattleDome`
-    BattleDome_PetName = 'FightingPetName'
-    BattleDome_Difficulty = 'Easy'  # Easy, Normal, Hard
-    BattleDome_GrindNP = False
-    BattleDome_CombatOrder = '# seperate turn by line, first valid line will be turn 1 and so on\n# format: item1,item2,ability (None for bypass)\nThe Omelette Sceptre,Downsize!,Meditate\nCursed Elixir of Neovia,Wand of the Dark Faerie,None\n'
-    BattleDome_Opponent = 'Koi Warrior'  # Flaming Meerca, Count Von Roo, Harry the Mutant Moehog, Edna, Balthazar, Pant Devil, Evil Sloth Clone, Robo Grarrl, Tiki Tack Man, Chiazilla, Koi Warrior, Highland Chia, The Black Pteri, Chia Clown, Snow Faerie, Ryshu the Nimmo, The Snowager, Grarrg, Sabre-X, Punchbag Bob, Meuka, Tekkitu the Witch Doctor, Vira, Advisor Broo, Meerca Henchmen, Boochi, Giant Hungry Malevolent Chomby, Mootix Warrior, S750 Kreludan Defender Robot, Neopets v2, Donny, Valin, Giant Spectral Mutant Walein
 
     # Group `VoidsWithin`
     VoidsWithin_DelayForDailyFeed = True

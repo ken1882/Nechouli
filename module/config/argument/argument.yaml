@@ -39,6 +39,7 @@ Playwright:
       - msedge
       - chrome
   Headless: false
+  SelfHeal: false
   CleanPagesOnStart: false
   AutoOpenDevtools: false
   RemoteDebuggingAddress: "127.0.0.1:9222"
@@ -201,59 +202,6 @@ PetTraining:
   PendingTrainingFee:
     stored: StoredPendingTrainingFee
     display: true
-
-BattleDome:
-  PetName: "FightingPetName"
-  Difficulty:
-    type: select
-    value: Easy
-    option: [ Easy, Normal, Hard ]
-  GrindNP: false
-  CombatOrder:
-    type: textarea
-    value: |
-      # seperate turn by line, first valid line will be turn 1 and so on
-      # format: item1,item2,ability (None for bypass)
-      The Omelette Sceptre,Downsize!,Meditate
-      Cursed Elixir of Neovia,Wand of the Dark Faerie,None
-  Opponent:
-    type: select
-    value: "Koi Warrior"
-    option:
-      - "Flaming Meerca"
-      - "Count Von Roo"
-      - "Harry the Mutant Moehog"
-      - "Edna"
-      - "Balthazar"
-      - "Pant Devil"
-      - "Evil Sloth Clone"
-      - "Robo Grarrl"
-      - "Tiki Tack Man"
-      - "Chiazilla"
-      - "Koi Warrior"
-      - "Highland Chia"
-      - "The Black Pteri"
-      - "Chia Clown"
-      - "Snow Faerie"
-      - "Ryshu the Nimmo"
-      - "The Snowager"
-      - "Grarrg"
-      - "Sabre-X"
-      - "Punchbag Bob"
-      - "Meuka"
-      - "Tekkitu the Witch Doctor"
-      - "Vira"
-      - "Advisor Broo"
-      - "Meerca Henchmen"
-      - "Boochi"
-      - "Giant Hungry Malevolent Chomby"
-      - "Mootix Warrior"
-      - "S750 Kreludan Defender Robot"
-      - "Neopets v2"
-      - "Donny"
-      - "Valin"
-      - "Giant Spectral Mutant Walein"
-
 
 VoidsWithin:
   DelayForDailyFeed: true
