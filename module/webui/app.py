@@ -585,6 +585,29 @@ class AlasGUI(Frame):
         except Exception as e:
             logger.exception(e)
 
+    def _alas_thread_instance_watchdog(self):
+        print("Started instance watchdog")
+        while self.alive:
+            try:
+                ins = get_all_instance_addresses()
+                for name, addr in ins.items():
+                    with open(f'config/{name}.json', 'r', encoding='utf-8') as f:
+                        conf = json.load(f)
+                    if not conf.get('Alas',{}).get('Playwright', {}).get('SelfHeal', False):
+                        continue
+                    alas = ProcessManager.get_manager(name)
+                    if alas.state == 3:
+                        print(f"[Watchdog] Auto restarting {name}")
+                        kill_remote_browser(name)
+                        time.sleep(3)
+                        try:
+                            alas.start(None, updater.event)
+                        except Exception as e:
+                            print("Failed to start %s (%s): %s", name, addr, e)
+            except Exception as e:
+                print(f"[Watchdog] Unexpected error: {e}")
+            time.sleep(10)
+
     def get_snapshot(self) -> bytes:
         address = self.alas_config.Playwright_RemoteDebuggingAddress
         cdp_url = address if address.startswith(("http://", "https://")) else f"http://{address}"
@@ -1316,6 +1339,11 @@ class AlasGUI(Frame):
         _thread_save_config = threading.Thread(target=self._alas_thread_update_config)
         register_thread(_thread_save_config)
         _thread_save_config.start()
+
+        # watchdog
+        _instance_watchdog = threading.Thread(target=self._alas_thread_instance_watchdog)
+        register_thread(_instance_watchdog)
+        _instance_watchdog.start()
 
         visibility_state_switch = Switch(
             status={

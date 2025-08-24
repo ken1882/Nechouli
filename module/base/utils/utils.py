@@ -1136,6 +1136,7 @@ def kill_by_port(port: int, proto: str = "tcp", grace: float = 5.0) -> list[int]
         except Exception:
             pass
     for pid in list(pids):
+        print(f"Killing {pid}")
         kill_process_tree(pid, grace=grace)
     return sorted(pids)
 

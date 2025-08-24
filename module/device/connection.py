@@ -3,10 +3,11 @@ import time
 import json
 import re
 from copy import deepcopy
-from random import random
+from random import random, uniform
 from functools import wraps
 from playwright.sync_api import sync_playwright, Page, Browser, Playwright
 from playwright._impl._errors import TargetClosedError
+from playwright._impl._errors import Error as PlaywrightError
 from module.config.config import AzurLaneConfig
 from module.logger import logger
 from module.base.utils import (
@@ -129,6 +130,7 @@ class Connection:
 
     def start_browser(self):
         self.stop()
+        self.wait(1)
         self.pw = sync_playwright().start()
 
         kwargs = {
@@ -248,23 +250,37 @@ class Connection:
         page.goto(url, timeout=timeout*1000)
 
     def respawn_page(self, depth=0):
-        if depth > 10:
+        if depth > 3:
             if self.config.Optimization_MaxConcurrentInstance:
                 kill_remote_browser(self.config.config_name)
             raise RuntimeError("Failed to respawn page after 10 attempts, aborting.")
+        wt = uniform(1, 2**depth)
         logger.info("Respawning page")
-        if self.page:
-            self.page.close()
+        self.close_page()
         try:
             self.page = self.new_page()
             self.page.goto('https://www.neopets.com/questlog/')
             return
-        except TargetClosedError:
+        except (TargetClosedError, PlaywrightError) as e:
+            logger.error(f"Playwright errored: {e}, restarting (depth={depth})")
             kill_remote_browser(self.config.config_name)
             self.start_browser()
         except Exception as e:
-            logger.warning(f"Failed to load questlog after respawn: {e} ({type(e)})")
+            logger.warning(
+                f"Failed to load questlog after respawn: {e} ({type(e)})\n"
+                f"Waiting for {wt} seconds (depth={depth})"
+            )
+            self.wait(wt)
         return self.respawn_page(depth+1)
+
+    def close_page(self):
+        try:
+            if self.page:
+                self.page.close()
+        except Exception as e:
+            logger.error(f"Error closing page: {e}")
+        finally:
+            self.page = None
 
     def new_page(self):
         page = self.context.new_page()
