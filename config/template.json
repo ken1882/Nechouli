@@ -3,6 +3,7 @@
     "Playwright": {
       "Browser": "msedge",
       "Headless": false,
+"SelfHeal": true,
       "SelfHeal": false,
       "CleanPagesOnStart": false,
       "AutoOpenDevtools": false,
