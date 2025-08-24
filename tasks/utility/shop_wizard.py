@@ -8,7 +8,10 @@ from datetime import datetime
 class ShopWizardUI(BasePageUI):
 
     def main(self):
-        if self.config.ShopWizard_EnableActivePriceUpdate:
+        if (
+            self.config.stored.ShopWizardRequests.is_empty()
+            and self.config.ShopWizard_EnableActivePriceUpdate
+        ):
             self.add_price_update_items()
         if self.config.stored.ShopWizardRequests.is_empty():
             logger.info("No requests to process, skipping Shop Wizard")
@@ -47,33 +50,47 @@ class ShopWizardUI(BasePageUI):
                 break
 
     def process_requests(self):
+        failed = []
         while not self.config.stored.ShopWizardRequests.is_empty():
             req = self.config.stored.ShopWizardRequests.pop()
             name, src = req.split('@')
             src, amount = src.split('#') if '#' in src else (src, '0')
             amount = str2int(amount)
-            mp = jn.get_item_details_by_name(name).get('market_price', 0)
-            if mp == 0 or mp > 950000:
-                logger.warning(f"Skipping {name} due to probably unavailable at shops (jn price={mp})")
-                continue
-            shop_link, price = self.search_item(name)
-            if not price:
-                logger.warning(f"Failed to find price for {name}")
-                return
-            jn.update_item_market_price(name, price)
-            if src == 'training' and amount:
-                if self.update_np <= self.config.ProfileSettings_MinNpKeep:
-                    logger.warning(f"Skipping {name} buying due to insufficient NP")
-                else:
-                    brought = self.purchase_item(name, shop_link, amount)
-                    amount -= brought
-                    if brought:
-                        if amount > 0:
-                            self.config.stored.ShopWizardRequests.add(name, src, amount)
-                        self.config.task_call('PetTraining')
-                    else:
-                        logger.warning(f"Failed to buy {name} from {shop_link}, amount: {amount}")
+            ok = False
+            try:
+                ok = self._process_request(name, src, amount)
+            except Exception as e:
+                logger.error(f"Error processing request {req}: {e}")
+                failed.append((name, src, amount))
+            if not ok:
+                failed.append((name, src, amount))
             self.goto('https://www.neopets.com/shops/wizard.phtml')
+        for name, src, amount in failed:
+            self.config.stored.ShopWizardRequests.add(name, src, amount)
+
+    def _process_request(self, name: str, src: str, amount: int):
+        if self.config.stored.InventoryData.is_full(amount):
+            logger.warning(f"Skipping {name} (x{amount}) buying due to full inventory")
+            return False
+        shop_link, price = self.search_item(name)
+        if not price:
+            logger.warning(f"Failed to find price for {name}")
+            return False
+        jn.update_item_market_price(name, price)
+        if src == 'training' and amount:
+            if self.update_np() <= self.config.ProfileSettings_MinNpKeep:
+                logger.warning(f"Skipping {name} buying due to insufficient NP")
+                return False
+            else:
+                brought = self.purchase_item(name, shop_link, amount)
+                amount -= brought
+                if brought:
+                    if amount > 0:
+                        self.config.stored.ShopWizardRequests.add(name, src, amount)
+                    self.config.task_call('PetTraining')
+                else:
+                    logger.warning(f"Failed to buy {name} from {shop_link}, amount: {amount}")
+        return True
 
     def search_item(self, name: str) -> tuple[str, int]:
         logger.info(f"Searching for item: {name}")

@@ -80,6 +80,21 @@
       "PurchaseCheapItems": false
     }
   },
+  "BattleDome": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "BattleDome",
+      "ServerUpdate": "00:00"
+    },
+    "BattleDome": {
+      "PetName": "FightingPetName",
+      "Difficulty": "Easy",
+      "GrindNP": false,
+      "CombatOrder": "# seperate turn by line, first valid line will be turn 1 and so on\n# format: item1,item2,ability (None for bypass)\nThe Omelette Sceptre,Downsize!,Meditate\nCursed Elixir of Neovia,Wand of the Dark Faerie,None\n",
+      "Opponent": "Koi Warrior"
+    }
+  },
   "AltadorCouncil": {
     "Scheduler": {
       "Enable": false,

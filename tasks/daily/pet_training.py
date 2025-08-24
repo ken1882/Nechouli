@@ -63,6 +63,17 @@ class PetTrainingUI(BasePageUI):
                 movement=int(target_mov),
             ))
         self.config.stored.PendingTrainingFee.clear()
+        trained = []
+        msg = 'Goal training status:\n'
+        msg += '\n'.join(
+            (
+                f"{p.name} Lv={p.level}, Str={p.strength}, "
+                f"Def={p.defense}, Mov={p.movement}, Hp={p.max_health}, "
+                f"Academy={academy}"
+            )
+            for academy, pets in aca_pets.items() for p in pets
+        )
+        logger.info(msg)
         for academy, pets in aca_pets.items():
             if not pets:
                 continue
@@ -74,22 +85,27 @@ class PetTrainingUI(BasePageUI):
                 self.goto(ACADEMY[academy]['url'])
                 completed = self.page.locator('input[type=submit][value="Complete Course!"]')
             self.scan_pets(pets, academy=academy)
-            trained = False
             for pet in pets:
-                trained = self.train_pet(pet, academy)
-                if trained:
-                    self.config.stored.PendingTrainingFee.set(self.scan_fee())
-            if trained:
-                missings = self.fetch_training_fee()
-                self.pay_training_fee(academy)
-                if missings and self.config.PetTraining_BuyFeeFromPlayers:
-                    msg = "Buying missing items from players:\n"
-                    for item_name, amount in missings.items():
-                        self.config.stored.ShopWizardRequests.add(item_name, 'training', amount)
-                        msg += f"{item_name}: {amount}\n"
-                    logger.info(msg)
-                    self.config.task_call('ShopWizard')
-                    return False
+                self.train_pet(pet, academy)
+            fees = self.scan_fee(academy)
+            if fees:
+                trained.append(academy)
+            self.config.stored.PendingTrainingFee.add(*fees)
+        missings = {}
+        if self.config.stored.PendingTrainingFee:
+            missings = self.fetch_training_fee()
+            for aca in trained:
+                logger.info(f"Paying training fee for {aca} academy")
+                self.pay_training_fee(aca)
+        if missings and self.config.PetTraining_BuyFeeFromPlayers:
+            msg = "Buying missing items from players:\n"
+            for item_name, amount in missings.items():
+                self.config.stored.ShopWizardRequests.add(item_name, 'training', amount)
+                msg += f"{item_name}: {amount}\n"
+            logger.info(msg)
+            self.config.task_call('ShopWizard')
+            return False
+        for academy, pets in aca_pets.items():
             self.complete_times += self.scan_training_time(academy)
         return True
 
@@ -108,9 +124,15 @@ class PetTrainingUI(BasePageUI):
                 continue
             target_course = a
             break
+        if self.is_overstated(pet):
+            if pet.level >= ACADEMY[academy]['max_level']:
+                logger.info(f"Pet {pet.name} is capped at max level and overstated, skipping training.")
+                return False
+            target_course = 'lv'
         if not target_course:
             logger.info(f"Pet {pet.name} is already capped in all attributes in {academy} academy, skipping training.")
             return False
+        logger.info(f"Training pet {pet.name} in {academy} academy for {target_course}.")
         self.goto(ACADEMY[academy]['url'].split('?')[0] + '?type=courses')
         sel = self.page.locator('select[name=course_type]')
         self.device.scroll_to(loc=sel)
@@ -147,23 +169,27 @@ class PetTrainingUI(BasePageUI):
             if 'currently studying' in rows[i].text_content():
                 p.training = True
             self.current_pets.append(p)
-            msg += '\n'.join(
-                f"{p.name} (Lv={p.level}, Str={p.strength}, Def={p.defense}, Mov={p.movement}, Hp={p.max_health})"
-                for p in self.current_pets
-            )
+            msg += f"{p.name} (Lv={p.level}, Str={p.strength}, Def={p.defense}, Mov={p.movement}, Hp={p.max_health})\n"
         if self.current_pets:
             logger.info(msg)
 
-    def scan_fee(self):
+    def scan_fee(self, academy):
+        self.goto(ACADEMY[academy]['url'])
         fees = []
         images = self.page.locator('.content >> img[src*="images.neopets.com/items/"]')
         for img in images.all():
             tr = img.locator('../..')
+            td = tr.locator('../../..')
             fees.append(NeoItem(
                 name=tr.text_content().strip(),
-                _locator=tr.locator('../../..')
+                _pay_bb=td.locator('input[type=submit][value="Pay"]').bounding_box(),
             ))
         return fees
+
+    def is_overstated(self, pet: Neopet) -> bool:
+        lv = pet.level
+        attrs = ['max_health', 'strength', 'defense', 'movement']
+        return any(getattr(pet, a) > lv*2 for a in attrs)
 
     def is_capped(self, pet: Neopet, academy: str, attr: str) -> bool:
         if academy not in ACADEMY:
@@ -184,7 +210,8 @@ class PetTrainingUI(BasePageUI):
         return v >= min(ACADEMY[academy]['max_level']*2, pet.level*2)
 
     def fetch_training_fee(self) -> dict[str, int]:
-        QuickStockUI(self.config, self.device).update_inventory_data()
+        logger.info("Running Quick Stock to update inventory data")
+        QuickStockUI(self.config, self.device).run()
         required_items = {}
         for item in self.config.stored.PendingTrainingFee:
             if item.name not in required_items:
@@ -210,21 +237,24 @@ class PetTrainingUI(BasePageUI):
     def pay_training_fee(self, academy: str):
         QuickStockUI(self.config, self.device).update_inventory_data()
         self.goto(ACADEMY[academy]['url'])
-        fees = self.scan_fee()
+        fees = self.scan_fee(academy)
+        logger.info(f"Found {len(fees)} pending fees to pay.")
         for fee in fees:
             for item in self.config.stored.InventoryData:
                 if item.name != fee.name or item.quantity == 0:
                     continue
                 item.quantity -= 1
-                self.device.click(fee.locator.locator('input[type=submit][value="Pay"]'), nav=True)
+                self.device.click(fee._pay_bb, nav=True)
                 logger.info(f"Paid item {fee.name} for training fee.")
                 self.config.stored.PendingTrainingFee.remove(fee)
+                self.config.stored.InventoryData.remove(item)
 
     def scan_training_time(self, academy: str) -> list[datetime]:
         if academy not in ACADEMY:
             logger.error(f"Unknown academy: {academy}")
             return []
         self.goto(ACADEMY[academy]['url'])
+        logger.info(f"Scanning training time for {academy} academy")
         training_times = []
         for t in self.page.locator('td', has_text='till course finishes').all():
             text = t.text_content().strip()

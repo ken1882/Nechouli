@@ -67,14 +67,16 @@ class Control(Connection):
                         node = selector
                 except Exception:
                     pass
-                if not node.count():
-                    continue
-                for n in node.all():
+                while True:
+                    n = None
                     try:
-                        if condition(n):
-                            return n
+                        for n in node.all():
+                            if condition(n):
+                                return n
                     except Exception as e:
                         logger.warning(f"Error checking condition for element {n}: {e}")
+                        self.wait(wait_interval)
+                    break
             timeout -= wait_interval
             self.sleep(wait_interval)
         logger.warning(f"Timeout waiting for element: {locators}")
@@ -125,11 +127,17 @@ class Control(Connection):
         '''
         x, y = 0, 0
         loc = None
-        if type(target) is tuple:
+        if type(target) is dict and 'x' in target and 'y' in target:
+            x, y = target['x'], target['y']
+            if 'width' in target:
+                x += int(target['width'] * x_mul)
+            if 'height' in target:
+                y += int(target['height'] * y_mul)
+        elif type(target) is tuple:
             x, y = target
-        if type(target) is str:
+        elif type(target) is str:
             loc = self.page.locator(target)
-        if type(target) is Locator:
+        elif type(target) is Locator:
             loc = target
         if type(point_random) == int:
             point_random = (-point_random, -point_random, point_random, point_random)
@@ -168,7 +176,23 @@ class Control(Connection):
             if modifiers:
                 raise ValueError("`page.mouse` does not support modifiers")
             logger.info(f"Clicking on Page at ({mx+x}, {my+y})")
-            self.page.mouse.click(max(mx+x, 0), max(my+y, 0), button=button, delay=md)
+            cx, cy = max(mx+x, 0), max(my+y, 0)
+            depth = 0
+            while True:
+                try:
+                    viewport_height = self.page.evaluate("window.innerHeight")
+                    break
+                except Exception as e:
+                    depth += 1
+                    if depth > 10:
+                        raise e
+                    self.sleep(0.3)
+            if cy > viewport_height:
+                self.scroll_to(0, cy - int(viewport_height * 0.5))
+                cy -= self.page.evaluate("window.scrollY")
+            self.page.mouse.click(cx, cy, button=button, delay=md)
+            if not nav:
+                self.scroll_to(0, 0)
         if nav:
             logger.info("Waiting for navigation")
         if nav == True:

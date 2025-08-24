@@ -106,6 +106,8 @@ class SafetyDepositBoxUI(BasePageUI):
         unscanned = set()
         moved = False
         for kw in search_queue:
+            if all(v <= 0 for v in required_items.values()):
+                break
             results = self.search(kw)
             for r in results:
                 if r.name not in required_items:

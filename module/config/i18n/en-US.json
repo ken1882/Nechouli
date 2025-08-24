@@ -38,6 +38,10 @@
       "name": "Daily Quest",
       "help": ""
     },
+    "BattleDome": {
+      "name": "Battledome",
+      "help": ""
+    },
     "AltadorCouncil": {
       "name": "Council Chamber",
       "help": "https://www.jellyneo.net/?go=altador_plot&id=council_chamber"
@@ -553,6 +557,68 @@
     "PendingTrainingFee": {
       "name": "Pending Training Fee",
       "help": "Pets in course but haven't paid the training fee yet."
+    }
+  },
+  "BattleDome": {
+    "_info": {
+      "name": "Battledome",
+      "help": ""
+    },
+    "PetName": {
+      "name": "Fighter Pet Name",
+      "help": "Pet name to fight in battledome"
+    },
+    "Difficulty": {
+      "name": "Difficulty",
+      "help": "",
+      "Easy": "Easy",
+      "Normal": "Normal",
+      "Hard": "Hard"
+    },
+    "GrindNP": {
+      "name": "Grind NP",
+      "help": "Whether to grind Neopoints in the Battledome, uncheck for items only"
+    },
+    "CombatOrder": {
+      "name": "Combat Order",
+      "help": "Actions to use in combat of each turn"
+    },
+    "Opponent": {
+      "name": "Opponent",
+      "help": "",
+      "Flaming Meerca": "Flaming Meerca",
+      "Count Von Roo": "Count Von Roo",
+      "Harry the Mutant Moehog": "Harry the Mutant Moehog",
+      "Edna": "Edna",
+      "Balthazar": "Balthazar",
+      "Pant Devil": "Pant Devil",
+      "Evil Sloth Clone": "Evil Sloth Clone",
+      "Robo Grarrl": "Robo Grarrl",
+      "Tiki Tack Man": "Tiki Tack Man",
+      "Chiazilla": "Chiazilla",
+      "Koi Warrior": "Koi Warrior",
+      "Highland Chia": "Highland Chia",
+      "The Black Pteri": "The Black Pteri",
+      "Chia Clown": "Chia Clown",
+      "Snow Faerie": "Snow Faerie",
+      "Ryshu the Nimmo": "Ryshu the Nimmo",
+      "The Snowager": "The Snowager",
+      "Grarrg": "Grarrg",
+      "Sabre-X": "Sabre-X",
+      "Punchbag Bob": "Punchbag Bob",
+      "Meuka": "Meuka",
+      "Tekkitu the Witch Doctor": "Tekkitu the Witch Doctor",
+      "Vira": "Vira",
+      "Advisor Broo": "Advisor Broo",
+      "Meerca Henchmen": "Meerca Henchmen",
+      "Boochi": "Boochi",
+      "Giant Hungry Malevolent Chomby": "Giant Hungry Malevolent Chomby",
+      "Mootix Warrior": "Mootix Warrior",
+      "S750 Kreludan Defender Robot": "S750 Kreludan Defender Robot",
+      "Neopets v2": "Neopets v2",
+      "Donny": "Donny",
+      "Valin": "Valin",
+      "Giant Spectral Mutant Walein": "Giant Spectral Mutant Walein"
     }
   },
   "VoidsWithin": {

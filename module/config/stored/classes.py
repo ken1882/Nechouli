@@ -185,8 +185,8 @@ class StoredList(StoredBase):
             raise TypeError(f'StoredList must be a list, got {type(val)}')
         self.value = val
 
-    def add(self, value):
-        self.value = self.value + [value]
+    def add(self, *value):
+        self.value = self.value + list(value)
 
     def clear(self):
         self.value = []

@@ -35,7 +35,7 @@ def handle_inventory(kwargs):
     name = kwargs["name"]
     rows = []
     data = kwargs.get('value', {})
-    items: list['NeoItem'] = data.get('items', [])
+    items: list['NeoItem'] = data.get('value', [])
     html = "<div>"
     tmp = ''
     for item in items:
@@ -174,21 +174,26 @@ def generate_item_info_script(item: 'NeoItem'):
 
 def handle_deposit(kwargs):
     try:
-        kwargs['value']['items'] = sorted(kwargs['value']['items'], key=lambda x: x.market_price, reverse=True)
+        kwargs['value']['value'] = sorted(kwargs['value']['value'], key=lambda x: x.market_price, reverse=True)
     except KeyError:
         pass
     return handle_inventory(kwargs)
+
+def _render_object(obj: Any) -> str:
+    if getattr(obj, 'name', None):
+        return obj.name
+    return str(obj)
 
 def handle_list(kwargs, value: list):
     name = kwargs["name"]
     html = "<ol>"
     for v in value:
         html += f'''
-        <li>{v}</li>
+        <li>{_render_object(v)}</li>
         '''
     html += "</ol>"
     return put_scope(
-        f"arg_container-stored-{name}",
+        f"arg_container-stored-list-{name}",
         [
             get_title_help(kwargs),
             put_scope(

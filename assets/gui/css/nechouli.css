@@ -1,7 +1,10 @@
 #pywebio-scope-arg_container-stored-InventoryTool_PlayerStorage_InventoryData,
 #pywebio-scope-arg_container-stored-InventoryTool_PlayerStorage_StockData,
-#pywebio-scope-arg_container-stored-ShopWizard_ShopWizard_ShopWizardRequests,
 #pywebio-scope-arg_container-stored-SafetyDepositBox_SafetyDepositBox_DepositData {
+    display: block;
+}
+
+[id^="pywebio-scope-arg_container-stored-list-"] {
     display: block;
 }
 

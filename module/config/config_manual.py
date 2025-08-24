@@ -22,6 +22,7 @@ class ManualConfig:
     > QuickStock
     > DailyQuest > Restocking
     > ShopWizard > SafetyDepositBox
+    > BattleDome
     """
 
     """

@@ -15,8 +15,9 @@ from tasks.daily.grave_danger import GraveDangerUI
 from tasks.utility.restocking import RestockingUI
 from tasks.daily.daily_quest import DailyQuestUI
 from tasks.utility import quick_stock
-from tasks.daily import pet_training
 from tasks.utility import safety_deposit_box
+from tasks.daily import pet_training
+from tasks.daily import battledome
 
 BaseFlash = base_flash.BaseFlash
 BasePageUI = base_page.BasePageUI
@@ -25,10 +26,11 @@ NeoItem = neoitem.NeoItem
 QuickStockUI = quick_stock.QuickStockUI
 PetTrainingUI = pet_training.PetTrainingUI
 SafetyDepositBoxUI = safety_deposit_box.SafetyDepositBoxUI
+BattleDomeUI = battledome.BattleDomeUI
 
 def reload_modules():
     global BaseFlash, BasePageUI, Neopet, NeoItem, PetTrainingUI, SafetyDepositBoxUI
-    global QuickStockUI
+    global QuickStockUI, BattleDomeUI
     from importlib import reload
     reload(base_page)
     reload(base_flash)
@@ -37,6 +39,7 @@ def reload_modules():
     reload(pet_training)
     reload(safety_deposit_box)
     reload(quick_stock)
+    reload(battledome)
     BaseFlash = base_flash.BaseFlash
     BasePageUI = base_page.BasePageUI
     Neopet = neopet.Neopet
@@ -44,6 +47,7 @@ def reload_modules():
     PetTrainingUI = pet_training.PetTrainingUI
     SafetyDepositBoxUI = safety_deposit_box.SafetyDepositBoxUI
     QuickStockUI = quick_stock.QuickStockUI
+    BattleDomeUI = battledome.BattleDomeUI
 
 def sc():
     Image.fromarray(device.screenshot()).save('test.png')
@@ -54,55 +58,40 @@ class TestUI(BaseFlash, BasePageUI):
 
 alas = Nechouli('nechouli2')
 config, device = alas.config, alas.device
-self = PetTrainingUI(config, device)
+self = BattleDomeUI(config, device)
 
 device.start_browser()
 device.disable_stuck_detection()
 device.screenshot_interval_set(0.1)
-self.goto('https://www.neopets.com/pirates/academy.phtml?type=status')
 
-self.config.bind('PetTraining')
-ACADEMY = pet_training.ACADEMY
-ATTR_CONF_TABLE = pet_training.ATTR_CONF_TABLE
-ATTR_COURSE_TABLE = pet_training.ATTR_COURSE_TABLE
-configs = self.config.PetTraining_Config.splitlines()
-self.current_pets = []
-aca_pets = {
-    'pirate': [],
-    'island': [],
-    'ninja': []
-}
-for conf in configs:
-    pet_name, academy, target_lv, target_str, target_def, target_mov, target_hp = conf.split(':')
-    if academy not in ACADEMY:
-        logger.error(f'Unknown academy: {academy}')
-        continue
-    aca_pets[academy].append(Neopet(
-        name=pet_name,
-        level=int(target_lv),
-        max_health=int(target_hp),
-        strength=int(target_str),
-        defense=int(target_def),
-        movement=int(target_mov),
-    ))
+self.config.bind('BattleDome')
+self.goto('https://www.neopets.com/dome/fight.phtml')
+self.load_actions()
 
+def fight():
+    self.wait_for_turn()
+    self.parse_status()
+    w = self.determine_winner()
+    if w == True:
+        logger.info("Victory!")
+        self.collect_rewards()
+        self.device.click('#bdplayagain', nav=True)
+        return True
+    elif w == False:
+        logger.info("Defeated!")
+        return False
+    else:
+        pass
+    if self.round > len(self.actions):
+        logger.info("No more actions configured, ending battle")
+        return False
+    self.select_action()
+    self.send_actions()
+    self.wait_for_turn()
 
-for academy, pets in aca_pets.items():
-    if not pets:
-        continue
-    self.goto(ACADEMY[academy]['url'])
-    completed = self.page.locator('input[type=submit][value="Complete Course!"]')
-    while completed.count():
-        self.device.click(completed.first, nav=True)
-        self.goto(ACADEMY[academy]['url'])
-    self.scan_pets(pets, academy=academy)
-    trained = False
-    for pet in pets:
-        trained = self.train_pet(pet, academy)
-    if trained:
-        for item in self.scan_fee():
-            self.config.stored.PendingTrainingFee.add(item)
-    if not trained:
-        continue
-    self.fetch_training_fee()
-    self.goto(ACADEMY[academy]['url'])
+self.wait_and_start()
+while not fight():
+    pass
+
+self.wait_and_start()
+

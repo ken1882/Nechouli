@@ -269,6 +269,10 @@ class Nechouli(AzurLaneAutoScript):
         from tasks.daily.pet_training import PetTrainingUI
         PetTrainingUI(config=self.config, device=self.device).run()
 
+    def battle_dome(self):
+        from tasks.daily.battledome import BattleDomeUI
+        BattleDomeUI(config=self.config, device=self.device).run()
+
 if __name__ == '__main__':
     nch = Nechouli()
     nch.loop()

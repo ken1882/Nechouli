@@ -31,6 +31,9 @@ Chore:
     DailyQuest:
       - Scheduler
       - DailyQuest
+    BattleDome:
+      - Scheduler
+      - BattleDome
     AltadorCouncil:
       - Scheduler
     AnchorManagement:

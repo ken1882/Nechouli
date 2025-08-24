@@ -19,10 +19,7 @@
     "attrs": {
       "time": "2020-01-01 00:00:00",
       "capacity": 50,
-      "items": [],
-      "np": 0,
-      "total": 0,
-      "value": 0
+      "value": []
     },
     "order": 2,
     "color": "#6DA9E4"
@@ -35,10 +32,7 @@
     "attrs": {
       "time": "2020-01-01 00:00:00",
       "capacity": 50,
-      "items": [],
-      "np": 0,
-      "total": 0,
-      "value": 0
+      "value": []
     },
     "order": 3,
     "color": "#E4B86D"
@@ -62,7 +56,7 @@
     "stored": "StoredPendingTrainingFee",
     "attrs": {
       "time": "2020-01-01 00:00:00",
-      "values": []
+      "value": []
     },
     "order": 0,
     "color": "#777777"
@@ -112,7 +106,7 @@
     "stored": "StoredPetsData",
     "attrs": {
       "time": "2020-01-01 00:00:00",
-      "values": []
+      "value": []
     },
     "order": 0,
     "color": "#777777"
@@ -125,10 +119,7 @@
     "attrs": {
       "time": "2020-01-01 00:00:00",
       "capacity": 50,
-      "items": [],
-      "np": 0,
-      "total": 0,
-      "value": 0
+      "value": []
     },
     "order": 0,
     "color": "#777777"

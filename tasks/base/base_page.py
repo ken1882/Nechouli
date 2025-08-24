@@ -77,8 +77,6 @@ class BasePageUI(ModuleBase):
         content = self.device.page.content().lower()
         if '/login/index.phtml' in self.device.page.url:
             return False
-        if 'you are not logged in' in content:
-            return False
         if 'id="loginbutton"' in content:
             return False
         if 'forgot password?' in content:
