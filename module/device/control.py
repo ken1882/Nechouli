@@ -95,6 +95,7 @@ class Control(Connection):
                 raise InvisibleElement(f"Element {loc} is not visible or not found.")
             x += bb['x']
             y += bb['y']
+        logger.info(f"Scrolling to ({x}, {y})")
         return self.page.evaluate(f"window.scrollTo({x}, {y})")
 
     def click(self,
@@ -190,6 +191,7 @@ class Control(Connection):
             if cy > viewport_height:
                 self.scroll_to(0, cy - int(viewport_height * 0.5))
                 cy -= self.page.evaluate("window.scrollY")
+                self.wait(0.3)
             self.page.mouse.click(cx, cy, button=button, delay=md)
             if not nav:
                 self.scroll_to(0, 0)

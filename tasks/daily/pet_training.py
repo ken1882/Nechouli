@@ -243,6 +243,8 @@ class PetTrainingUI(BasePageUI):
             for item in self.config.stored.InventoryData:
                 if item.name != fee.name or item.quantity == 0:
                     continue
+                self.device.scroll_to(0, 0)
+                self.device.wait(0.3)
                 item.quantity -= 1
                 self.device.click(fee._pay_bb, nav=True)
                 logger.info(f"Paid item {fee.name} for training fee.")

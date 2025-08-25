@@ -214,6 +214,9 @@ class QuickStockUI(BasePageUI):
             return
         self.goto('https://www.neopets.com/market.phtml?type=till')
         money = str2int(self.page.locator('.content >> p > b').text_content())
+        if money <= 0:
+            logger.info("No NP in till to withdraw")
+            return
         self.page.locator('input[name="amount"]').fill(str(money))
         self.device.click('input[type="submit"][value="Withdraw"]', nav=True)
 
