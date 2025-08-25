@@ -30,7 +30,7 @@
     "ProfileSettings": {
       "MinNpKeep": 100000,
       "JellyNeoExpiry": 168,
-      "TaskSoftTerminationTime": 5
+      "TaskSoftTerminationTime": 2
     }
   },
   "Restart": {
