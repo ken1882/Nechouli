@@ -8,6 +8,8 @@ class MeteorCrashSiteUI(BasePageUI):
         btn = self.page.locator('input[value="Take a chance"]')
         if btn.count():
             self.device.click(btn, nav=True)
+            logger.info("Seems meteor reward gained today")
+            return True
         select = self.page.locator('select[name="pickstep"]')
         if not select.count():
             logger.info("Seems meteor reward gained today")

@@ -21,6 +21,7 @@ class RestockingUI(BasePageUI):
 
     def main(self):
         self.check_inventory()
+        self.check_stock()
         self.update_np()
         if not self.has_enough_np():
             logger.warning("No enough NP to restock, skip restocking")
@@ -41,9 +42,10 @@ class RestockingUI(BasePageUI):
                     continue
                 if success:
                     self.inventory_free -= 1
+                    self.stock_free -= 1
                     if self.check_full():
-                        return False
-                    logger.info(f"Inventory free slots left: {self.inventory_free}")
+                        return None
+                    logger.info(f"Inventory/Stock free slots left: {self.inventory_free}/{self.stock_free}")
                     self.device.wait(4) # neopets enforce 5 seconds cooldown between purchases
                 elif success == None:
                     logger.info("Nothing to buy in shop, skipping")
@@ -66,19 +68,36 @@ class RestockingUI(BasePageUI):
             cur, total = r.groups()
             self.inventory_free = int(total) - int(cur)
 
+    def check_stock(self):
+        self.goto("https://www.neopets.com/market.phtml?type=your")
+        stock_text = self.page.locator('center').first.text_content().split(':')
+        if len(stock_text) < 3:
+            logger.warning("Failed to parse stock capacity")
+            self.config.stored.StockData.capacity = 0
+            return
+        used, free = str2int(stock_text[-2]), str2int(stock_text[-1])
+        logger.info(f"Stock capacity: {used+free} ({used}/{free})")
+        self.config.stored.StockData.capacity = used + free
+        self.stock_free = free
+
     def check_full(self):
-        if self.inventory_free > self.config.QuickStock_KeepInventorySlot:
-            return False
-        logger.warning(
-            f"Not enough inventory space: {self.inventory_free} slots available, "
-            f"need at least {self.config.QuickStock_KeepInventorySlot+1} (by QuickStock setting)"
-        )
-        if self.config.stored.StockData.size and self.config.stored.StockData.is_full():
+        fulled = False
+        if self.inventory_free <= self.config.QuickStock_KeepInventorySlot:
+            logger.warning(
+                f"Not enough inventory space: {self.inventory_free} slots available, "
+                f"need at least {self.config.QuickStock_KeepInventorySlot+1} (by QuickStock setting)"
+            )
+            fulled = True
+        elif self.stock_free <= 1:
+            logger.warning(f"Not enough shop stock space: only {self.stock_free} slot available")
+            fulled = True
+        elif self.config.stored.StockData.size and self.config.stored.StockData.is_full():
             logger.warning("Your shop stock is full, abort restocking")
-            return True
-        self.config.task_call('QuickStock')
-        self.config.task_delay(minute=1)
-        return True
+            fulled = True
+        if fulled:
+            self.config.task_call('QuickStock')
+            self.config.task_delay(minute=60*8)
+        return fulled
 
     def calc_next_run(self, s=None):
         if not s:

@@ -211,7 +211,7 @@ class PetTrainingUI(BasePageUI):
 
     def fetch_training_fee(self) -> dict[str, int]:
         logger.info("Running Quick Stock to update inventory data")
-        QuickStockUI(self.config, self.device).run()
+        QuickStockUI(self.config, self.device).run(no_stock=True)
         required_items = {}
         for item in self.config.stored.PendingTrainingFee:
             if item.name not in required_items:

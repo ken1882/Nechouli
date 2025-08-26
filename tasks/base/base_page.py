@@ -19,7 +19,8 @@ class BasePageUI(ModuleBase):
     def page(self) -> Page:
         return self.device.page
 
-    def run(self):
+    def run(self, **kwargs):
+        self._kwargs = kwargs or {}
         try:
             ok = self.main()
             stime = self.config.ProfileSettings_TaskSoftTerminationTime

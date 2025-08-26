@@ -193,8 +193,6 @@ class Control(Connection):
                 cy -= self.eval("window.scrollY")
                 self.wait(0.3)
             self.page.mouse.click(cx, cy, button=button, delay=md)
-            if not nav:
-                self.scroll_to(0, 0)
         if nav:
             logger.info("Waiting for navigation")
         if nav == True:

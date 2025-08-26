@@ -61,6 +61,7 @@ class QuickStockUI(BasePageUI):
         blacklist = [l.strip() for l in (self.config.QuickStock_DepositBlacklist or '').split('\n') if l.strip()]
         donate_list = [l.strip() for l in (self.config.QuickStock_DonateNameList or '').split('\n') if l.strip()]
         deposit_list = [l.strip().lower() for l in (self.config.QuickStock_ForceDepositList or '').split('\n') if l.strip()]
+        no_stock = self._kwargs.get('no_stock', False)
         for item in self.items:
             item.profit = item.market_price - item.restock_price
             if (
@@ -81,7 +82,7 @@ class QuickStockUI(BasePageUI):
             available_acts = [act.get_attribute('value') for act in item._locator.locator('input').all()]
             if item.category in keep_dict and keep_dict[item.category] > 0:
                 if item.category == 'food' and item.market_price >= self.config.PetCares_MaxFeedValue:
-                    if item.profit > self.config.QuickStock_RestockProfit:
+                    if item.profit > self.config.QuickStock_RestockProfit and not no_stock:
                         item._act = 'stock'
                         self._stocked = True
                     else:
@@ -89,7 +90,7 @@ class QuickStockUI(BasePageUI):
                 else:
                     item._act = 'keep'
                     keep_dict[item.category] -= 1
-            elif item.profit > self.config.QuickStock_RestockProfit:
+            elif item.profit > self.config.QuickStock_RestockProfit and not no_stock:
                 item._act = 'stock'
                 self._stocked = True
             elif 'closet' in available_acts:
