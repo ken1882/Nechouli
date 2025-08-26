@@ -9,6 +9,10 @@
           "chrome"
         ]
       },
+      "SelfHeal": {
+        "type": "checkbox",
+        "value": false
+      },
       "Headless": {
         "type": "checkbox",
         "value": false

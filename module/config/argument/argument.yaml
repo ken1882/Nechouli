@@ -38,6 +38,7 @@ Playwright:
     option:
       - msedge
       - chrome
+  SelfHeal: false
   Headless: false
   CleanPagesOnStart: false
   AutoOpenDevtools: false

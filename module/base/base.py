@@ -8,13 +8,11 @@ from module.device.device import Device
 from module.device.method.utils import HierarchyButton
 from module.logger import logger
 from module.webui.setting import cached_class_property
-from module.db.data_manager import DataManager
 
 
 class ModuleBase:
     config: AzurLaneConfig
     device: Device
-    dm: DataManager
 
     def __init__(self, config, device=None, task=None):
         """
@@ -51,11 +49,6 @@ class ModuleBase:
             self.device = device
 
         self.interval_timer = {}
-        self.dm = DataManager(
-            self.config.config_name,
-            'local',
-            os.path.join(self.device.PROFILE_DIRECTORY, f"{self.config.config_name}.dat")
-        )
 
     @cached_class_property
     def worker(self):

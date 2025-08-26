@@ -22,7 +22,6 @@ class BasePageUI(ModuleBase):
     def run(self):
         try:
             ok = self.main()
-            self.dm.save()
             stime = self.config.ProfileSettings_TaskSoftTerminationTime
             logger.info(f"Task finished, soft sleep for {stime} seconds.")
             self.device.sleep(stime)

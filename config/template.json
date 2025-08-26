@@ -2,8 +2,8 @@
   "Alas": {
     "Playwright": {
       "Browser": "msedge",
-      "Headless": false,
       "SelfHeal": false,
+      "Headless": false,
       "CleanPagesOnStart": false,
       "AutoOpenDevtools": false,
       "RemoteDebuggingAddress": "127.0.0.1:9222",
@@ -30,7 +30,7 @@
     "ProfileSettings": {
       "MinNpKeep": 100000,
       "JellyNeoExpiry": 168,
-      "TaskSoftTerminationTime": 2
+      "TaskSoftTerminationTime": 5
     }
   },
   "Restart": {

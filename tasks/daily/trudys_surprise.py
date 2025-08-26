@@ -34,7 +34,7 @@ class TrudysSurpriseUI(BasePageUI):
         self.device.click((int(mx+50), int(my+20)))
         self.device.wait(1)
         logger.info("Clicked, wait for result")
-        if not self.device.wait_for_element('#trudyPrizeTitle', timeout=30):
+        if not self.device.wait_for_element('#trudyPrizeTitle', timeout=120):
             return False
         return True
 

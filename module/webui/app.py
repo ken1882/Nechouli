@@ -588,6 +588,7 @@ class AlasGUI(Frame):
     def _alas_thread_instance_watchdog(self):
         print("Started instance watchdog")
         while self.alive:
+            msg = ''
             try:
                 ins = get_all_instance_addresses()
                 for name, addr in ins.items():
@@ -596,6 +597,7 @@ class AlasGUI(Frame):
                     if not conf.get('Alas',{}).get('Playwright', {}).get('SelfHeal', False):
                         continue
                     alas = ProcessManager.get_manager(name)
+                    msg += f"{name}: {alas.state}\n"
                     if alas.state == 3:
                         print(f"[Watchdog] Auto restarting {name}")
                         kill_remote_browser(name)
@@ -606,6 +608,7 @@ class AlasGUI(Frame):
                             print("Failed to start %s (%s): %s", name, addr, e)
             except Exception as e:
                 print(f"[Watchdog] Unexpected error: {e}")
+            print(f"[Watchdog] Ticked, instance status:\n{msg}")
             time.sleep(10)
 
     def get_snapshot(self) -> bytes:
