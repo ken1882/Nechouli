@@ -29,6 +29,7 @@ class GeneratedConfig:
 
     # Group `Playwright`
     Playwright_Browser = 'msedge'  # msedge, chrome
+    Playwright_SelfHeal = False
     Playwright_Headless = False
     Playwright_CleanPagesOnStart = False
     Playwright_AutoOpenDevtools = False

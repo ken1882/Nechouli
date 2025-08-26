@@ -279,6 +279,10 @@
       "msedge": "msedge",
       "chrome": "chrome"
     },
+    "SelfHeal": {
+      "name": "Self Heal",
+      "help": "Automatically restart if aborted due to error."
+    },
     "Headless": {
       "name": "Headless Mode",
       "help": "Run without a visible UI"
