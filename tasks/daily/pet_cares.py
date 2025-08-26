@@ -87,7 +87,7 @@ class PetCaresUI(BasePageUI):
         while True:
             bb = self.selected_pet.locator.bounding_box()
             logger.info("Visibility check: %s", bb)
-            ww = self.page.evaluate('window.innerWidth')
+            ww = self.device.eval('window.innerWidth')
             if 0 <= bb['x'] + bb['width'] and bb['x'] <= ww*0.8:
                 break
             self.device.click('button[class="slick-next slick-arrow"]')

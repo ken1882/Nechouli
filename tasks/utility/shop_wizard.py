@@ -3,9 +3,11 @@ from tasks.base.base_page import BasePageUI
 from module.base.utils import str2int
 from module import jelly_neo as jn
 from module.db import data_manager as dm
+from module.db.models.neoitem import NeoItem
 from datetime import datetime
 
 class ShopWizardUI(BasePageUI):
+    MAX_MARKET_PRICE = 999999
 
     def main(self):
         if (
@@ -26,6 +28,9 @@ class ShopWizardUI(BasePageUI):
         now_ts = datetime.now().timestamp()
         for i in self.config.stored.StockData.items+self.config.stored.InventoryData.items:
             item = jn.get_item_details_by_name(i.name)
+            if item.market_price >= self.MAX_MARKET_PRICE:
+                logger.info(f"Skipping {i.name} price update due to too expensive to search")
+                continue
             if item.get("price_timestamp", 0) > now_ts - dm.JN_CACHE_TTL/2:
                 continue
             self.config.stored.ShopWizardRequests.add(i.name, 'price_update', 0)
@@ -39,6 +44,9 @@ class ShopWizardUI(BasePageUI):
         jn.load_cache()
         cache = sorted(dm.ItemDatabase.values(), key=lambda x: x.get('price_timestamp', 0))
         for item in cache:
+            if item.market_price >= self.MAX_MARKET_PRICE:
+                logger.info(f"Skipping {item.name} price update due to too expensive to search")
+                continue
             if item.get("price_timestamp", 0) > now_ts - dm.JN_CACHE_TTL/2:
                 break
             if item["name"] in added_names:
@@ -50,47 +58,51 @@ class ShopWizardUI(BasePageUI):
                 break
 
     def process_requests(self):
-        failed = []
+        reqs = []
         while not self.config.stored.ShopWizardRequests.is_empty():
             req = self.config.stored.ShopWizardRequests.pop()
             name, src = req.split('@')
             src, amount = src.split('#') if '#' in src else (src, '0')
             amount = str2int(amount)
-            ok = False
+            if amount > 0 and self.update_np() <= self.config.ProfileSettings_MinNpKeep:
+                logger.warning(f"Skipping {name} (x{amount}) buying due to insufficient NP")
+                reqs.append((name, src, amount))
+                continue
             try:
-                ok = self._process_request(name, src, amount)
+                amount -= self._process_request(name, src, amount)
             except Exception as e:
                 logger.error(f"Error processing request {req}: {e}")
-                failed.append((name, src, amount))
-            if not ok:
-                failed.append((name, src, amount))
+            if amount > 0:
+                reqs.append((name, src, amount))
             self.goto('https://www.neopets.com/shops/wizard.phtml')
-        for name, src, amount in failed:
+        for name, src, amount in reqs:
             self.config.stored.ShopWizardRequests.add(name, src, amount)
 
     def _process_request(self, name: str, src: str, amount: int):
         if self.config.stored.InventoryData.is_full(amount):
             logger.warning(f"Skipping {name} (x{amount}) buying due to full inventory")
-            return False
+            return 0
         shop_link, price = self.search_item(name)
         if not price:
             logger.warning(f"Failed to find price for {name}")
-            return False
+            return 0
         jn.update_item_market_price(name, price)
+        brought = 0
         if src == 'training' and amount:
             if self.update_np() <= self.config.ProfileSettings_MinNpKeep:
                 logger.warning(f"Skipping {name} buying due to insufficient NP")
-                return False
+                return 0
             else:
-                brought = self.purchase_item(name, shop_link, amount)
+                brought += self.purchase_item(name, shop_link, amount)
                 amount -= brought
+                item = NeoItem(name=name)
+                item.update_jn()
+                self.config.stored.InventoryData.add(item)
                 if brought:
-                    if amount > 0:
-                        self.config.stored.ShopWizardRequests.add(name, src, amount)
                     self.config.task_call('PetTraining')
                 else:
                     logger.warning(f"Failed to buy {name} from {shop_link}, amount: {amount}")
-        return True
+        return brought
 
     def search_item(self, name: str) -> tuple[str, int]:
         logger.info(f"Searching for item: {name}")

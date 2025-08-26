@@ -49,6 +49,11 @@ class EssenceCollectionUI(BasePageUI):
 
     def main(self):
         self.goto('https://www.neopets.com/tvw/')
+        bonus = self.page.locator('button[tabindex="0"]').filter(has_text='Collect Reward')
+        if bonus.count() and bonus.is_visible():
+            self.device.click(bonus)
+            btn = self.device.wait_for_element('button[title="Return to Hub"]')
+            self.device.click(btn)
         for url in PLACES:
             self.goto(url)
             loader = self.page.locator('#mapH5Loading')
