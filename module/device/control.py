@@ -19,7 +19,7 @@ class Control(Connection):
         return {}
 
     def draw_debug_point(self, x, y, radius=5, timeout=3000):
-        return self.page.evaluate(f"""
+        return self.eval(f"""
             const marker = document.createElement('div');
             marker.style.width = '{radius*2}px';
             marker.style.height = '{radius*2}px';
@@ -96,7 +96,7 @@ class Control(Connection):
             x += bb['x']
             y += bb['y']
         logger.info(f"Scrolling to ({x}, {y})")
-        return self.page.evaluate(f"window.scrollTo({x}, {y})")
+        return self.eval(f"window.scrollTo({x}, {y})")
 
     def click(self,
             target,
@@ -181,7 +181,7 @@ class Control(Connection):
             depth = 0
             while True:
                 try:
-                    viewport_height = self.page.evaluate("window.innerHeight")
+                    viewport_height = self.eval("window.innerHeight")
                     break
                 except Exception as e:
                     depth += 1
@@ -190,7 +190,7 @@ class Control(Connection):
                     self.sleep(0.3)
             if cy > viewport_height:
                 self.scroll_to(0, cy - int(viewport_height * 0.5))
-                cy -= self.page.evaluate("window.scrollY")
+                cy -= self.eval("window.scrollY")
                 self.wait(0.3)
             self.page.mouse.click(cx, cy, button=button, delay=md)
             if not nav:
@@ -272,3 +272,14 @@ class Control(Connection):
         for _ in range(delta):
             ret += randint(10, 50) / 500.0
         return ret
+
+    def eval(self, js_script: str, retries=10):
+        depth = 0
+        while True:
+            try:
+                return self.page.evaluate(js_script)
+            except Exception as e:
+                depth += 1
+                if depth > retries:
+                    raise e
+                self.sleep(0.3)

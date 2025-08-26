@@ -136,7 +136,7 @@ class BasePageUI(ModuleBase):
         try:
             with open(path, 'r', encoding='utf-8') as f:
                 script_content = f.read()
-            result = self.page.evaluate(script_content)
+            result = self.device.eval(script_content)
             logger.info(f"Script {script_name} executed successfully.")
             return result
         except Exception as e:
