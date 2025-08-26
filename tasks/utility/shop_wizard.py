@@ -51,7 +51,7 @@ class ShopWizardUI(BasePageUI):
                 break
             if item["name"] in added_names:
                 continue
-            self.config.stored.ShopWizardRequests.add(item["name"], 'price_update')
+            self.config.stored.ShopWizardRequests.add(item["name"], 'price_update', 0)
             added += 1
             added_names.add(item["name"])
             if added >= self.config.ShopWizard_PriceUpdateBatchSize:
