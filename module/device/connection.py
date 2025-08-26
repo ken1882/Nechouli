@@ -240,8 +240,6 @@ class Connection:
             if p == self.page:
                 continue
             p.close()
-        for _ in range(keeps - 1):
-            self.new_page()
 
     def goto(self, url, page=None, timeout=30):
         if page is None:
@@ -253,7 +251,7 @@ class Connection:
         if depth > 3:
             if self.config.Optimization_MaxConcurrentInstance:
                 kill_remote_browser(self.config.config_name)
-            raise RuntimeError("Failed to respawn page after 10 attempts, aborting.")
+            raise RuntimeError(f"Failed to respawn page after {depth-1} attempts, aborting.")
         wt = uniform(1, 2**depth)
         logger.info("Respawning page")
         self.close_page()
@@ -265,6 +263,8 @@ class Connection:
             logger.error(f"Playwright errored: {e}, restarting (depth={depth})")
             kill_remote_browser(self.config.config_name)
             self.start_browser()
+            logger.info(f"Halt {3+wt//2} seconds for context load")
+            self.wait(3+wt//2)
         except Exception as e:
             logger.warning(
                 f"Failed to load questlog after respawn: {e} ({type(e)})\n"

@@ -88,7 +88,7 @@ class PetCaresUI(BasePageUI):
             bb = self.selected_pet.locator.bounding_box()
             logger.info("Visibility check: %s", bb)
             ww = self.device.eval('window.innerWidth')
-            if 0 <= bb['x'] + bb['width'] and bb['x'] <= ww*0.8:
+            if 100 <= bb['x'] + bb['width'] and bb['x'] <= ww*0.8:
                 break
             self.device.click('button[class="slick-next slick-arrow"]')
             self.device.wait(0.5)
@@ -219,8 +219,7 @@ class PetCaresUI(BasePageUI):
             logger.warning(f'No toys found for pet {self.selected_pet.name}')
             return False
         items = sorted(items, key=lambda x: x.market_price)
-        result_node = self.use_item(items[0])
-        logger.info(f'Played with {items[0].name}, result:\n{result_node.inner_text()}')
+        self.use_item(items[0])
         return True
 
     def groom_pet(self) -> bool:
@@ -231,8 +230,7 @@ class PetCaresUI(BasePageUI):
             logger.warning(f'No grooming items found for pet {self.selected_pet.name}')
             return False
         items = sorted(items, key=lambda x: x.market_price)
-        result_node = self.use_item(items[0])
-        logger.info(f'Groomed with {items[0].name}, result:\n{result_node.inner_text()}')
+        self.use_item(items[0])
         return True
 
     def customise_pet(self) -> bool:

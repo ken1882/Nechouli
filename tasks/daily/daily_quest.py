@@ -33,12 +33,12 @@ class DailyQuestUI(BasePageUI):
                 continue
             self.claim_and_close(ok_btn)
         extra = self.page.locator('#QuestLogBonusAlert')
-        if extra.is_visible():
+        if extra.is_visible() and extra.text_content().strip():
             self.claim_and_close(extra)
         self.device.click(self.page.locator('.ql-label-reward').first)
         extra = self.page.locator('#QuestLogStreakAlert')
         self.device.wait(1) # wait for animation
-        if extra.is_visible():
+        if extra.is_visible() and extra.text_content().strip():
             self.claim_and_close(extra)
 
     def claim_and_close(self, btn):
