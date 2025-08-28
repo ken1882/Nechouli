@@ -619,7 +619,6 @@ class AlasGUI(Frame):
                             logger.info(f"Failed to start {name} ({addr}): {e}")
             except Exception as e:
                 logger.info(f"[Watchdog] Unexpected error: {e}")
-            logger.info(f"[Watchdog] Ticked, instance status:\n{msg}")
             time.sleep(10)
 
     def get_snapshot(self) -> bytes:

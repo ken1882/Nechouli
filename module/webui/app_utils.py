@@ -41,6 +41,7 @@ import json
 import hashlib
 import threading
 from datetime import datetime, timedelta
+from module.logger import logger
 from module.config.utils import nearest_future
 
 ScheduledStart = {}
@@ -229,8 +230,11 @@ def show_instances_status():
         msg += f'{name} {addr} {"Running" if alas.alive else "Stopped"} {"O" if estd else "X"}'
         if name in ScheduledStart and not alas.alive:
             msg += f' Scheduled at {ScheduledStart[name].strftime("%Y-%m-%d %H:%M:%S")}'
+        task, ttime = _get_next_run(name)
+        msg += f' Next task: {task} @ {ttime}'
         msg += '\n'
     popup('Status', msg)
+    logger.info("Instance status:\n"+msg)
 
 def kill_all_instances():
     help = '# List of profile instances to keep, separated by line'
