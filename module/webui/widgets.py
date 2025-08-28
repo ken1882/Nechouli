@@ -3,6 +3,7 @@ import json
 import random
 import string
 from typing import TYPE_CHECKING, Any, Callable, Dict, Generator, List, Optional, Union
+from io import StringIO
 
 from pywebio.exceptions import SessionException
 from pywebio.io_ctrl import Output
@@ -264,6 +265,25 @@ class BinarySwitchButton(Switch):
         clear(self.scope)
         put_button(label=label, onclick=onclick, color=color, scope=self.scope)
 
+
+class LoggerRenderer:
+    def __init__(self, buffer: StringIO):
+        self.renderables = []
+        self.renderables_max_length = 400
+        self.renderables_reduce_length = 80
+        self.buffer = buffer
+        self.last_index = 0
+        self.counter = 0
+
+    def read(self) -> List[str]:
+        self.buffer.seek(0)
+        lines = self.buffer.readlines()
+        self.buffer.truncate(0)
+        self.buffer.seek(0)
+        self.renderables.extend(lines)
+        if len(self.renderables) > self.renderables_max_length:
+            self.renderables = self.renderables[self.renderables_reduce_length :]
+        return copy.deepcopy(self.renderables)
 
 # aside buttons
 

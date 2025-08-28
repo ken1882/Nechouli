@@ -43,3 +43,19 @@
 #pywebio-scope-killer_btn div button {
     margin: auto;
 }
+
+
+#pywebio-scope-util-buttons,
+#pywebio-scope-dev-log {
+    font-weight: 500;
+    margin: 0.3125rem;
+    padding: 0.625rem;
+}
+
+#pywebio-scope-dev-log {
+    overflow-y: auto;
+    line-height: 0.6rem;
+    font-size: 0.85rem;
+    font-family: Menlo, consolas, DejaVu Sans Mono, Courier New, monospace;
+    white-space: pre;
+}

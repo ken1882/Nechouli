@@ -1,5 +1,6 @@
 from module.logger import logger
 from tasks.base.base_page import BasePageUI
+import json
 import requests
 import re
 
@@ -10,13 +11,12 @@ class FaerieCrosswordUI(BasePageUI):
         if 'already solved' in self.page.content():
             logger.info("Crossword puzzle already solved today")
             return True
-        res = requests.get('https://raw.githubusercontent.com/unoriginality786/NeopetsFaerieCrosswordJSON/refs/heads/main/QuestionsAnswers')
-        if res.status_code != 200:
-            logger.error("Failed to fetch crossword answers")
+        answers = {}
+        with open('assets/crossword-answer.json', 'r', encoding='utf-8') as f:
+            answers = json.load(f)
+        if not answers:
+            logger.error("Missing file: assets/crossword-answer.json")
             return False
-        answers = res.json()['clues']
-        answers = {o.get('clue') or o.get('question'): o.get('answer') for o in answers}
-        answers = {k.lower(): v for k, v in answers.items()}
         loc = self.page.locator('input[value="Start today\'s puzzle!"]')
         if not loc.count():
             loc = self.page.locator('input[value="Continue today\'s puzzle!"]')

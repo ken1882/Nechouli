@@ -7,6 +7,8 @@ from functools import partial
 from typing import Dict, List, Optional
 from playwright.sync_api import sync_playwright
 from PIL import Image
+import io, logging
+from logging import StreamHandler, Formatter
 
 from pywebio import config as webconfig
 from pywebio.output import (
@@ -90,6 +92,7 @@ from module.webui.widgets import (
     BinarySwitchButton,
     RichLog,
     T_Output_Kwargs,
+    LoggerRenderer,
     put_icon_buttons,
     put_loading_text,
     put_none,
@@ -120,6 +123,7 @@ class AlasGUI(Frame):
         self.ALAS_ARGS = read_file(filepath_args("args", self.alas_mod))
         self.ALAS_STORED = read_file(filepath_args("stored", self.alas_mod))
         self._init_alas_config_watcher()
+        self._inject_logger_listener()
 
     def __init__(self) -> None:
         super().__init__()
@@ -510,6 +514,13 @@ class AlasGUI(Frame):
             )
         logger.info("Init config watcher done.")
 
+    def _inject_logger_listener(self):
+        log_capture = io.StringIO()
+        text_handler = StreamHandler(log_capture)
+        text_handler.setFormatter(Formatter('%(asctime)s.%(msecs)03d │ %(message)s', '%H:%M:%S'))
+        logger.addHandler(text_handler)
+        self._logger_renderer = LoggerRenderer(log_capture)
+
     def _alas_thread_update_config(self) -> None:
         modified = {}
         while self.alive:
@@ -586,7 +597,7 @@ class AlasGUI(Frame):
             logger.exception(e)
 
     def _alas_thread_instance_watchdog(self):
-        print("Started instance watchdog")
+        logger.info("Started instance watchdog")
         while self.alive:
             msg = ''
             try:
@@ -599,16 +610,16 @@ class AlasGUI(Frame):
                     alas = ProcessManager.get_manager(name)
                     msg += f"{name}: {alas.state}\n"
                     if alas.state == 3:
-                        print(f"[Watchdog] Auto restarting {name}")
+                        logger.info(f"[Watchdog] Auto restarting {name}")
                         kill_remote_browser(name)
                         time.sleep(3)
                         try:
                             alas.start(None, updater.event)
                         except Exception as e:
-                            print("Failed to start %s (%s): %s", name, addr, e)
+                            logger.info(f"Failed to start {name} ({addr}): {e}")
             except Exception as e:
-                print(f"[Watchdog] Unexpected error: {e}")
-            print(f"[Watchdog] Ticked, instance status:\n{msg}")
+                logger.info(f"[Watchdog] Unexpected error: {e}")
+            logger.info(f"[Watchdog] Ticked, instance status:\n{msg}")
             time.sleep(10)
 
     def get_snapshot(self) -> bytes:
@@ -1065,30 +1076,75 @@ class AlasGUI(Frame):
             else:
                 toast("Reload not enabled", color="error")
 
-        put_button(label="Raise exception", onclick=raise_exception)
-        put_button(label="Force restart", onclick=_force_restart)
-        put_button(label="Run all instances", onclick=run_all_instances)
-        put_button(label="Stop all instances", onclick=stop_all_instances)
-        put_button(label="Kill all instances", onclick=kill_all_instances)
-        put_button(label="Instances status", onclick=show_instances_status)
+        put_scope("overview", [put_scope("util-buttons"), put_scope("logs")])
+        with use_scope("util-buttons"):
+            put_button(label="Raise exception", onclick=raise_exception)
+            put_button(label="Force restart", onclick=_force_restart)
+            put_button(label="Run all instances", onclick=run_all_instances)
+            put_button(label="Stop all instances", onclick=stop_all_instances)
+            put_button(label="Kill all instances", onclick=kill_all_instances)
+            put_button(label="Instances status", onclick=show_instances_status)
 
-        enable_eval = get_localstorage("DANGER_ENABLE_EVAL") or ''
-        if enable_eval != 'DO_NOT_PASTE_ANY_CODE_HERE_UNLESS_YOU_KNOW_WHAT_YOU_ARE_DOING':
-            return
+            enable_eval = get_localstorage("DANGER_ENABLE_EVAL") or ''
+            if enable_eval == 'DO_NOT_PASTE_ANY_CODE_HERE_UNLESS_YOU_KNOW_WHAT_YOU_ARE_DOING':
+                self._exec_namespace = {**globals(), **locals()}
+                def _eval(self):
+                    try:
+                        code = textarea('Code Edit', code={
+                            'mode': "python",
+                            'theme': 'darcula',
+                        }, value=self.last_exec)
+                        self._exec_namespace = {**globals(), **locals(), **self._exec_namespace}
+                        self.last_exec = code
+                        exec(code, self._exec_namespace, self._exec_namespace)
+                    except Exception as e:
+                        logger.exception(e)
+                put_button(label="Run Code", onclick=lambda: _eval(self))
 
-        self._exec_namespace = {**globals(), **locals()}
-        def _eval(self):
-            try:
-                code = textarea('Code Edit', code={
-                    'mode': "python",
-                    'theme': 'darcula',
-                }, value=self.last_exec)
-                self._exec_namespace = {**globals(), **locals(), **self._exec_namespace}
-                self.last_exec = code
-                exec(code, self._exec_namespace, self._exec_namespace)
-            except Exception as e:
-                logger.exception(e)
-        put_button(label="Run Code", onclick=lambda: _eval(self))
+        log = RichLog("dev-log")
+        with use_scope("logs"):
+            put_scope("log-bar", [
+                put_scope("log-title", [
+                    put_text(t("Gui.Overview.Log")).style("font-size: 1.25rem; margin: auto .5rem auto;"),
+                    put_scope("log-title-btns", [
+                        put_scope("log_scroll_btn"),
+                    ]),
+                ]),
+                put_html('<hr class="hr-group">'),
+            ])
+            put_scope("dev-log", [put_html("")])
+
+        log.console.width = log.get_width()
+        switch_log_scroll = BinarySwitchButton(
+            label_on=t("Gui.Button.ScrollON"),
+            label_off=t("Gui.Button.ScrollOFF"),
+            onclick_on=lambda: log.set_scroll(False),
+            onclick_off=lambda: log.set_scroll(True),
+            get_state=lambda: log.keep_bottom,
+            color_on="on",
+            color_off="off",
+            scope="log_scroll_btn",
+        )
+        def _render_logger():
+            nonlocal log
+            lr = self._logger_renderer
+            lr.read()
+            if lr.counter >= lr.renderables_max_length * 2:
+                lr.last_index = len(lr.renderables)
+                html = "".join(map(log.render, lr.renderables[:]))
+                log.reset()
+                log.extend(html)
+                lr.counter = lr.last_index
+            idx = len(lr.renderables)
+            if idx < lr.last_index:
+                lr.last_index -= lr.renderables_reduce_length
+            if idx != lr.last_index:
+                html = "".join(map(log.render, lr.renderables[lr.last_index:idx]))
+                log.extend(html)
+                lr.counter += idx - lr.last_index
+                lr.last_index = idx
+        self.task_handler.add(switch_log_scroll.g(), 1, True)
+        self.task_handler.add(_render_logger, 0.25, True)
 
     def kill_remote_browser(self):
         killed = kill_remote_browser(self.alas_config.config_name)
