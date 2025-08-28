@@ -74,6 +74,7 @@ class RestockingUI(BasePageUI):
         if len(stock_text) < 3:
             logger.warning("Failed to parse stock capacity")
             self.config.stored.StockData.capacity = 0
+            self.stock_free = 0
             return
         used, free = str2int(stock_text[-2]), str2int(stock_text[-1])
         logger.info(f"Stock capacity: {used+free} ({used}/{free})")
@@ -88,7 +89,7 @@ class RestockingUI(BasePageUI):
                 f"need at least {self.config.QuickStock_KeepInventorySlot+1} (by QuickStock setting)"
             )
             fulled = True
-        elif self.stock_free <= 1:
+        elif self.stock_free <= 1 and self.config.stored.DailyQuestRestockTimesLeft.value <= 0:
             logger.warning(f"Not enough shop stock space: only {self.stock_free} slot available")
             fulled = True
         elif self.config.stored.StockData.size and self.config.stored.StockData.is_full():

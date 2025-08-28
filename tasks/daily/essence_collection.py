@@ -77,7 +77,8 @@ class EssenceCollectionUI(BasePageUI):
         return True
 
     def claim_and_close(self, btn):
-        self.device.click(btn)
+        bb = btn.bounding_box()
+        self.device.click((bb['x']+20, bb['y']+20))
         close_btn = self.page.locator('button').filter(has_text='Keep Searching').all()
         close_btn = self.device.wait_for_element(*close_btn)
         if not close_btn:

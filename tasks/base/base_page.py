@@ -39,6 +39,7 @@ class BasePageUI(ModuleBase):
         except Exception as e:
             raise e
         finally:
+            self.page.unroute_all()
             # sync cookies back to manual context
             if self.config.Playwright_Headless:
                 self.debug_screenshot()

@@ -11,6 +11,11 @@ class VoidsWithinUI(BasePageUI):
         if self.config.VoidsWithin_DelayForDailyFeed and self.config.stored.DailyQuestFeedTimesLeft.value:
             do_send = False
             logger.info("Delay dispatch for daily feed")
+        # block useless self-redirect
+        self.page.route(
+            "https://www.neopets.com/hospital/volunteer.phtml",
+            lambda route: route.fulfill(status=204)
+        )
         for i in [5, 4, 3, 2, 1]:
             pane = self.page.locator(f'#Act{i}Pane')
             btn = self.page.locator(f'#Act{i}PaneBtn')
@@ -21,12 +26,18 @@ class VoidsWithinUI(BasePageUI):
                     self.device.wait(0.5)
             joins = pane.locator('button[id*="VolunteerButton"]')
             err_popup = self.page.locator('h3', has_text='Error Occurred')
+            back = self.page.locator('.popup-exit-icon')
             for j in joins.all():
                 done = False
                 while True:
                     if err_popup.is_visible():
                         logger.error("Stopped due to error page")
                         return False
+                    for btn in back.all():
+                        if not btn.is_visible():
+                            continue
+                        self.device.click(btn)
+                        self.device.wait(0.3)
                     try:
                         done = self.process_shift(j, do_send)
                         break
