@@ -124,6 +124,9 @@ Utility:
     ShopWizard:
       - Scheduler
       - ShopWizard
+    Auction:
+      - Scheduler
+      - Auction
     VoidsWithin:
       - Scheduler
       - VoidsWithin

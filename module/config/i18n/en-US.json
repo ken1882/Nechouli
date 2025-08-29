@@ -182,6 +182,10 @@
       "name": "Shop Wizard",
       "help": ""
     },
+    "Auction": {
+      "name": "Auction",
+      "help": ""
+    },
     "VoidsWithin": {
       "name": "Voids Within",
       "help": "Auto dispatch volunteer to the Void's Within hospital"
@@ -405,6 +409,14 @@
     "PurchaseCheapItems": {
       "name": "Purchase Cheap Items",
       "help": "Allow purchase cheap items (< 1000 NP) when calling restocking task to complete daily quest."
+    },
+    "DailyQuestRestockTimesLeft": {
+      "name": "Daily Quest Restock Counter",
+      "help": "Numbers left to complete 'purchase items from shops' daily quest"
+    },
+    "DailyQuestFeedTimesLeft": {
+      "name": "Daily Quest Feed Counter",
+      "help": "Numbers left to complete 'feed pets' daily quest"
     }
   },
   "Restocking": {
@@ -625,6 +637,28 @@
       "Giant Spectral Mutant Walein": "Giant Spectral Mutant Walein"
     }
   },
+  "Auction": {
+    "_info": {
+      "name": "Auction",
+      "help": ""
+    },
+    "IsRunningBackground": {
+      "name": "Is Running",
+      "help": "Whether task is currently running in background"
+    },
+    "MaxConcurrentBids": {
+      "name": "Max Concurrent Bids",
+      "help": "Maximum number of concurrent bids allowed, set to 0 for unlimited"
+    },
+    "PlaceBidUntilMinutesLeft": {
+      "name": "Bid Entry Time",
+      "help": "Start placing bids after the specified number of minutes left in the auction"
+    },
+    "BiddingConfig": {
+      "name": "Bidding Config",
+      "help": "Bidding configuration for auction, separated by line.\nFormat: `ItemName:MaxBid:NumbersToBid`"
+    }
+  },
   "VoidsWithin": {
     "_info": {
       "name": "Voids Within",
@@ -655,14 +689,6 @@
     "NeoPoints": {
       "name": "NP",
       "help": ""
-    },
-    "DailyQuestRestockTimesLeft": {
-      "name": "Daily Quest Restock Counter",
-      "help": "Numbers left to complete 'purchase items from shops' daily quest"
-    },
-    "DailyQuestFeedTimesLeft": {
-      "name": "Daily Quest Feed Counter",
-      "help": "Numbers left to complete 'feed pets' daily quest"
     },
     "InventoryData": {
       "name": "Inventory",

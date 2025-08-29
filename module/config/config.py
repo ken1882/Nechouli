@@ -2,6 +2,7 @@ import copy
 import datetime
 import operator
 import threading
+import time
 
 import pywebio
 
@@ -270,7 +271,18 @@ class AzurLaneConfig(ConfigUpdater, ManualConfig, GeneratedConfig, ConfigWatcher
         # Don't use self.modified = {}, that will create a new object.
         self.modified.clear()
         del_cached_property(self, 'stored')
-        self.write_file(self.config_name, data=self.data)
+        depth = 0
+        while True:
+            try:
+                self.write_file(self.config_name, data=self.data)
+                break
+            except PermissionError as e:
+                depth += 1
+                if depth > 3:
+                    logger.error(f"{e} while saving config, giving up")
+                    raise e
+                logger.warning(f"{e} while saving config, retry after 1 second")
+                time.sleep(1)
 
     def update(self):
         self.load()

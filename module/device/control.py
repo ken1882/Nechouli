@@ -181,7 +181,7 @@ class Control(Connection):
             depth = 0
             while True:
                 try:
-                    viewport_height = self.eval("window.innerHeight")
+                    viewport_height = self.eval("window.innerHeight") * 0.9
                     break
                 except Exception as e:
                     depth += 1
@@ -189,9 +189,11 @@ class Control(Connection):
                         raise e
                     self.sleep(0.3)
             if cy > viewport_height:
+                dy = self.eval("window.scrollY")
                 self.scroll_to(0, cy - int(viewport_height * 0.5))
-                cy -= self.eval("window.scrollY")
+                cy -= self.eval("window.scrollY") - dy
                 self.wait(0.3)
+                logger.info(f"Adjusted viewport at ({mx+x}, {my+y})")
             self.page.mouse.click(cx, cy, button=button, delay=md)
         if nav:
             logger.info("Waiting for navigation")

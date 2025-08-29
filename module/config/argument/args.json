@@ -289,6 +289,18 @@
       "PurchaseCheapItems": {
         "type": "checkbox",
         "value": false
+      },
+      "DailyQuestRestockTimesLeft": {
+        "type": "stored",
+        "value": {},
+        "display": true,
+        "stored": "StoredDailyQuestRestockCounter"
+      },
+      "DailyQuestFeedTimesLeft": {
+        "type": "stored",
+        "value": {},
+        "display": true,
+        "stored": "StoredDailyQuestFeedCounter"
       }
     }
   },
@@ -1452,6 +1464,51 @@
       }
     }
   },
+  "Auction": {
+    "Scheduler": {
+      "Enable": {
+        "type": "checkbox",
+        "value": false,
+        "option": [
+          true,
+          false
+        ]
+      },
+      "NextRun": {
+        "type": "datetime",
+        "value": "2020-01-01 00:00:00",
+        "validate": "datetime"
+      },
+      "Command": {
+        "type": "input",
+        "value": "Auction",
+        "display": "hide"
+      },
+      "ServerUpdate": {
+        "type": "input",
+        "value": "00:00",
+        "display": "hide"
+      }
+    },
+    "Auction": {
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "MaxConcurrentBids": {
+        "type": "input",
+        "value": 10
+      },
+      "PlaceBidUntilMinutesLeft": {
+        "type": "input",
+        "value": 5
+      },
+      "BiddingConfig": {
+        "type": "textarea",
+        "value": "# ItemName:MaxBid:NumbersToBid\n"
+      }
+    }
+  },
   "VoidsWithin": {
     "Scheduler": {
       "Enable": {
@@ -1509,18 +1566,6 @@
         "stored": "StoredInt",
         "order": 1,
         "color": "#FFD700"
-      },
-      "DailyQuestRestockTimesLeft": {
-        "type": "stored",
-        "value": {},
-        "display": true,
-        "stored": "StoredDailyQuestRestockCounter"
-      },
-      "DailyQuestFeedTimesLeft": {
-        "type": "stored",
-        "value": {},
-        "display": true,
-        "stored": "StoredDailyQuestFeedCounter"
       },
       "InventoryData": {
         "type": "stored",

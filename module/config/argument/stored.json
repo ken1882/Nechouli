@@ -61,22 +61,10 @@
     "order": 0,
     "color": "#777777"
   },
-  "ShopWizardRequests": {
-    "name": "ShopWizardRequests",
-    "path": "ShopWizard.ShopWizard.ShopWizardRequests",
-    "i18n": "ShopWizard.ShopWizardRequests.name",
-    "stored": "StoredShopWizardRequests",
-    "attrs": {
-      "time": "2020-01-01 00:00:00",
-      "value": []
-    },
-    "order": 0,
-    "color": "#777777"
-  },
   "DailyQuestRestockTimesLeft": {
     "name": "DailyQuestRestockTimesLeft",
-    "path": "InventoryTool.PlayerStorage.DailyQuestRestockTimesLeft",
-    "i18n": "PlayerStorage.DailyQuestRestockTimesLeft.name",
+    "path": "DailyQuest.DailyQuest.DailyQuestRestockTimesLeft",
+    "i18n": "DailyQuest.DailyQuestRestockTimesLeft.name",
     "stored": "StoredDailyQuestRestockCounter",
     "attrs": {
       "time": "2020-01-01 00:00:00",
@@ -88,13 +76,25 @@
   },
   "DailyQuestFeedTimesLeft": {
     "name": "DailyQuestFeedTimesLeft",
-    "path": "InventoryTool.PlayerStorage.DailyQuestFeedTimesLeft",
-    "i18n": "PlayerStorage.DailyQuestFeedTimesLeft.name",
+    "path": "DailyQuest.DailyQuest.DailyQuestFeedTimesLeft",
+    "i18n": "DailyQuest.DailyQuestFeedTimesLeft.name",
     "stored": "StoredDailyQuestFeedCounter",
     "attrs": {
       "time": "2020-01-01 00:00:00",
       "total": 1,
       "value": 0
+    },
+    "order": 0,
+    "color": "#777777"
+  },
+  "ShopWizardRequests": {
+    "name": "ShopWizardRequests",
+    "path": "ShopWizard.ShopWizard.ShopWizardRequests",
+    "i18n": "ShopWizard.ShopWizardRequests.name",
+    "stored": "StoredShopWizardRequests",
+    "attrs": {
+      "time": "2020-01-01 00:00:00",
+      "value": []
     },
     "order": 0,
     "color": "#777777"

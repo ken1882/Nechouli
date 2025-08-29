@@ -102,6 +102,12 @@ PetCares:
       - "bloated"
 DailyQuest:
   PurchaseCheapItems: false
+  DailyQuestRestockTimesLeft:
+    stored: StoredDailyQuestRestockCounter
+    display: true
+  DailyQuestFeedTimesLeft:
+    stored: StoredDailyQuestFeedCounter
+    display: true
 Restocking:
   ActiveRestocking: false
   ActiveRestockInterval: 60
@@ -255,6 +261,14 @@ BattleDome:
       - "Valin"
       - "Giant Spectral Mutant Walein"
 
+Auction:
+  IsRunningBackground: false
+  MaxConcurrentBids: 10
+  PlaceBidUntilMinutesLeft: 5
+  BiddingConfig:
+    type: textarea
+    value: |
+      # ItemName:MaxBid:NumbersToBid
 
 VoidsWithin:
   DelayForDailyFeed: true
@@ -273,12 +287,6 @@ PlayerStorage:
     display: true
     order: 1
     color: "#FFD700"
-  DailyQuestRestockTimesLeft:
-    stored: StoredDailyQuestRestockCounter
-    display: true
-  DailyQuestFeedTimesLeft:
-    stored: StoredDailyQuestFeedCounter
-    display: true
   InventoryData:
     stored: StoredItemContainer
     display: true

@@ -45,7 +45,7 @@ class ShopWizardUI(BasePageUI):
         cache = sorted(dm.ItemDatabase.values(), key=lambda x: x.get('price_timestamp', 0))
         for item in cache:
             if item.get('market_price', 0) >= self.MAX_MARKET_PRICE:
-                logger.info(f"Skipping {item.name} price update due to too expensive to search")
+                logger.info(f"Skipping {item['name']} price update due to too expensive to search")
                 continue
             if item.get("price_timestamp", 0) > now_ts - dm.JN_CACHE_TTL/2:
                 break

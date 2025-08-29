@@ -60,6 +60,8 @@ class GeneratedConfig:
 
     # Group `DailyQuest`
     DailyQuest_PurchaseCheapItems = False
+    DailyQuest_DailyQuestRestockTimesLeft = {}
+    DailyQuest_DailyQuestFeedTimesLeft = {}
 
     # Group `Restocking`
     Restocking_ActiveRestocking = False
@@ -110,6 +112,12 @@ class GeneratedConfig:
     BattleDome_CombatOrder = '# seperate turn by line, first valid line will be turn 1 and so on\n# format: item1,item2,ability (None for bypass)\nThe Omelette Sceptre,Downsize!,Meditate\nCursed Elixir of Neovia,Wand of the Dark Faerie,None\n'
     BattleDome_Opponent = 'Koi Warrior'  # Flaming Meerca, Count Von Roo, Harry the Mutant Moehog, Edna, Balthazar, Pant Devil, Evil Sloth Clone, Robo Grarrl, Tiki Tack Man, Chiazilla, Koi Warrior, Highland Chia, The Black Pteri, Chia Clown, Snow Faerie, Ryshu the Nimmo, The Snowager, Grarrg, Sabre-X, Punchbag Bob, Meuka, Tekkitu the Witch Doctor, Vira, Advisor Broo, Meerca Henchmen, Boochi, Giant Hungry Malevolent Chomby, Mootix Warrior, S750 Kreludan Defender Robot, Neopets v2, Donny, Valin, Giant Spectral Mutant Walein
 
+    # Group `Auction`
+    Auction_IsRunningBackground = False
+    Auction_MaxConcurrentBids = 10
+    Auction_PlaceBidUntilMinutesLeft = 5
+    Auction_BiddingConfig = '# ItemName:MaxBid:NumbersToBid\n'
+
     # Group `VoidsWithin`
     VoidsWithin_DelayForDailyFeed = True
     VoidsWithin_AvailablePetsCount = 0
@@ -118,8 +126,6 @@ class GeneratedConfig:
 
     # Group `PlayerStorage`
     PlayerStorage_NeoPoints = {}
-    PlayerStorage_DailyQuestRestockTimesLeft = {}
-    PlayerStorage_DailyQuestFeedTimesLeft = {}
     PlayerStorage_InventoryData = {}
     PlayerStorage_StockData = {}
     PlayerStorage_PetsData = {}

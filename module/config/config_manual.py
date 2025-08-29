@@ -10,6 +10,7 @@ class ManualConfig:
 
     SCHEDULER_PRIORITY = """
     Restart
+    > Auction
     > DesertedTomb > Snowager > FaerieCrossword
     > AltadorCouncil > AnchorManagement > AppleBobbing > BankInterest > ColtzansShrine
     > Fishing > ForgottenShore > FruitMachine > GiantJelly

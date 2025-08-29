@@ -78,7 +78,9 @@
       "ServerUpdate": "00:00"
     },
     "DailyQuest": {
-      "PurchaseCheapItems": false
+      "PurchaseCheapItems": false,
+      "DailyQuestRestockTimesLeft": {},
+      "DailyQuestFeedTimesLeft": {}
     }
   },
   "BattleDome": {
@@ -416,6 +418,20 @@
       "ShopWizardRequests": {}
     }
   },
+  "Auction": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "Command": "Auction",
+      "ServerUpdate": "00:00"
+    },
+    "Auction": {
+      "IsRunningBackground": false,
+      "MaxConcurrentBids": 10,
+      "PlaceBidUntilMinutesLeft": 5,
+      "BiddingConfig": "# ItemName:MaxBid:NumbersToBid\n"
+    }
+  },
   "VoidsWithin": {
     "Scheduler": {
       "Enable": false,
@@ -433,8 +449,6 @@
   "InventoryTool": {
     "PlayerStorage": {
       "NeoPoints": {},
-      "DailyQuestRestockTimesLeft": {},
-      "DailyQuestFeedTimesLeft": {},
       "InventoryData": {},
       "StockData": {},
       "PetsData": {}

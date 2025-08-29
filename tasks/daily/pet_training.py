@@ -178,8 +178,12 @@ class PetTrainingUI(BasePageUI):
         fees = []
         images = self.page.locator('.content >> img[src*="images.neopets.com/items/"]')
         for img in images.all():
-            tr = img.locator('../..')
-            td = tr.locator('../../..')
+            if academy == 'pirate':
+                tr = img.locator('../..')
+                td = tr.locator('../../..')
+            else:
+                td = img.locator('..')
+                tr = img.locator('..').locator('b')
             fees.append(NeoItem(
                 name=tr.text_content().strip(),
                 _pay_bb=td.locator('input[type=submit][value="Pay"]').bounding_box(),

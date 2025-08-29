@@ -91,7 +91,7 @@ class BasePageUI(ModuleBase):
 
     def goto(self, url, timeout=30):
         try:
-            self.device.goto(url, timeout=timeout)
+            self.device.goto(url, self.page, timeout=timeout)
             while 'Maintenance Tunnels' in self.page.content():
                 logger.warning("Site is under maintenance, waiting for 10 minutes before retrying...")
                 self.device.sleep(600)
@@ -100,7 +100,7 @@ class BasePageUI(ModuleBase):
         except TimeoutError:
             logger.warning("Page load timeout, retrying...")
             self.device.respawn_page()
-            return self.device.goto(url, timeout=timeout)
+            return self.device.goto(url, self.page, timeout=timeout)
         except PlaywrightError as e:
             logger.warning(f"Page load error: {e}, likely interrupted by login or maintenance. Retrying")
             self.device.wait(1)
