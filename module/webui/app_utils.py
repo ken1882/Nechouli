@@ -228,10 +228,10 @@ def show_instances_status():
         alas = ProcessManager.get_manager(name)
         estd = check_connection(addr, timeout=0.1)
         msg += f'{name} {addr} {"Running" if alas.alive else "Stopped"} {"O" if estd else "X"}'
-        if name in ScheduledStart and not alas.alive:
-            msg += f' Scheduled at {ScheduledStart[name].strftime("%Y-%m-%d %H:%M:%S")}'
         task, ttime = _get_next_run(name)
         msg += f' Next task: {task} @ {ttime}'
+        if name in ScheduledStart and not alas.alive:
+            msg += f' Scheduled at {ScheduledStart[name].strftime("%Y-%m-%d %H:%M:%S")}'
         msg += '\n'
     popup('Status', msg)
     logger.info("Instance status:\n"+msg)

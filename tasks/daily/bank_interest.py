@@ -19,9 +19,13 @@ class BankInterestUI(BasePageUI):
             self.config.stored.Balance.set(balance)
             return True
         deposit = min(
-            self.config.NeopianBank_DepositThreshold,
-            (threshold - self.config.ProfileSettings_MinNpKeep) // 2
+            self.config.NeopianBank_MaxDeposit,
+            max(
+                (threshold - self.config.ProfileSettings_MinNpKeep) * (wallet/threshold*0.8),
+                wallet-threshold*0.9
+            )
         )
+        deposit = int(deposit)
         cur_level_name = self.page.locator('#txtAccountType').text_content().strip()
         cur_level = next((lvl for lvl, name in BANK_LEVEL_NAME.items() if name == cur_level_name), 1)
         fields = self.page.locator('input[name="amount"]')
@@ -29,7 +33,7 @@ class BankInterestUI(BasePageUI):
             logger.error("Bank deposit fields not found")
             return True
         qualified = next(
-            (lvl for lvl, req in reversed(BANK_LEVEL_REQUIREMENT.items()) if balance >= req),
+            (lvl for lvl, req in reversed(BANK_LEVEL_REQUIREMENT.items()) if balance+deposit >= req),
             cur_level
         )
         self.page.on('dialog', lambda dialog: dialog.accept())
@@ -39,9 +43,8 @@ class BankInterestUI(BasePageUI):
                 f"Upgrading bank from {BANK_LEVEL_NAME[cur_level]} to {BANK_LEVEL_NAME[qualified]}\n"
                 f"Depositing {deposit} NP"
             )
-            deposit = BANK_LEVEL_REQUIREMENT[cur_level + 1] - balance
             acc_sel = self.page.locator('#account_type')
-            acc_sel.select_option(value=str(cur_level + 1))
+            acc_sel.select_option(value=str(qualified))
             fields.nth(2).fill(str(deposit))
             self.device.click('input[value="Change Account"]')
             result_txt = self.page.locator('#frmUpgradeAccountResult')

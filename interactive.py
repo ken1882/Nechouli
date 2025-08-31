@@ -6,7 +6,13 @@ from tasks.base import base_page, base_flash
 from module.exception import TaskError
 from module.db.models import neopet, neoitem
 from module.db.data_map import *
-from module.base.utils import ensure_time, str2int, check_connection, kill_by_port
+from module.base.utils import (
+    ensure_time,
+    str2int,
+    check_connection,
+    kill_by_port,
+    get_all_instance_addresses
+)
 import module.jelly_neo as jn
 from tasks.daily.pet_cares import PetCaresUI
 from tasks.daily.faerie_crossword import FaerieCrosswordUI
@@ -51,6 +57,12 @@ def reload_modules():
 
 def sc():
     Image.fromarray(device.screenshot()).save('test.png')
+
+def chconf(k, v):
+    profiles = get_all_instance_addresses()
+    for p in profiles:
+        alas = Nechouli(p)
+        alas.config.cross_set(k, v)
 
 class TestUI(BaseFlash, BasePageUI):
     pass
