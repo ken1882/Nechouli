@@ -135,8 +135,7 @@ class BasePageUI(ModuleBase):
             return self.device.goto(url, self.page, timeout=timeout)
         except PlaywrightError as e:
             logger.warning(f"Page load error: {e}, likely interrupted by login or maintenance. Retrying")
-            self.device.wait(1)
-            self.page.reload()
+            self.device.respawn_page()
             return self.goto(url, timeout=timeout)
         if not self.is_logged_in():
             logger.info("Attempting neopass login")
