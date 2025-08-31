@@ -22,6 +22,7 @@ class StoredGenerated:
     ShopWizardRequests = StoredShopWizardRequests("ShopWizard.ShopWizard.ShopWizardRequests")
     EarnedPlotPoints = StoredInt("VoidsWithin.VoidsWithin.EarnedPlotPoints")
     NeoPoints = StoredInt("InventoryTool.PlayerStorage.NeoPoints")
+    Balance = StoredInt("InventoryTool.PlayerStorage.Balance")
     InventoryData = StoredItemContainer("InventoryTool.PlayerStorage.InventoryData")
     StockData = StoredItemContainer("InventoryTool.PlayerStorage.StockData")
     PetsData = StoredPetsData("InventoryTool.PlayerStorage.PetsData")

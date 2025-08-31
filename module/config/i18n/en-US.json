@@ -188,7 +188,7 @@
     },
     "VoidsWithin": {
       "name": "Voids Within",
-      "help": "Auto dispatch volunteer to the Void's Within hospital"
+      "help": "Auto dispatch volunteer to the Void's Within hospital\nhttps://www.neopets.com/hospital/volunteer.phtml"
     },
     "InventoryTool": {
       "name": "Inventory",
@@ -213,6 +213,14 @@
     "NextRun": {
       "name": "Next Run",
       "help": "Updated automatically after completing the task to set next scheduled run, typically not manually modified\nHowever you can force immediate scheduling if you clear this text field"
+    },
+    "EnableBackground": {
+      "name": "Enable Background Running",
+      "help": "Makes the task run in background, allowing other tasks to run concurrently.\nBut will consume more resources and not all tasks are supported."
+    },
+    "IsRunningBackground": {
+      "name": "Running Background",
+      "help": "Whether task is currently running in background, uncheck to stop the task"
     },
     "Command": {
       "name": "Command",
@@ -642,10 +650,6 @@
       "name": "Auction",
       "help": ""
     },
-    "IsRunningBackground": {
-      "name": "Is Running",
-      "help": "Whether task is currently running in background"
-    },
     "MaxConcurrentBids": {
       "name": "Max Concurrent Bids",
       "help": "Maximum number of concurrent bids allowed, set to 0 for unlimited"
@@ -688,6 +692,10 @@
     },
     "NeoPoints": {
       "name": "NP",
+      "help": ""
+    },
+    "Balance": {
+      "name": "Balance",
       "help": ""
     },
     "InventoryData": {

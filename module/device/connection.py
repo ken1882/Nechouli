@@ -254,9 +254,10 @@ class Connection:
             raise RuntimeError(f"Failed to respawn page after {depth-1} attempts, aborting.")
         wt = uniform(1, 2**depth)
         logger.info("Respawning page")
-        self.close_page()
         try:
-            self.page = self.new_page()
+            p = self.new_page()
+            self.close_page()
+            self.page = p
             self.page.goto('https://www.neopets.com/questlog/')
             return
         except (TargetClosedError, PlaywrightError) as e:

@@ -1,4 +1,16 @@
 {
+  "Balance": {
+    "name": "Balance",
+    "path": "InventoryTool.PlayerStorage.Balance",
+    "i18n": "PlayerStorage.Balance.name",
+    "stored": "StoredInt",
+    "attrs": {
+      "time": "2020-01-01 00:00:00",
+      "value": 0
+    },
+    "order": 1,
+    "color": "#FDD017"
+  },
   "NeoPoints": {
     "name": "NeoPoints",
     "path": "InventoryTool.PlayerStorage.NeoPoints",
@@ -8,7 +20,7 @@
       "time": "2020-01-01 00:00:00",
       "value": 0
     },
-    "order": 1,
+    "order": 2,
     "color": "#FFD700"
   },
   "InventoryData": {
@@ -21,21 +33,8 @@
       "capacity": 50,
       "value": []
     },
-    "order": 2,
-    "color": "#6DA9E4"
-  },
-  "StockData": {
-    "name": "StockData",
-    "path": "InventoryTool.PlayerStorage.StockData",
-    "i18n": "PlayerStorage.StockData.name",
-    "stored": "StoredItemContainer",
-    "attrs": {
-      "time": "2020-01-01 00:00:00",
-      "capacity": 50,
-      "value": []
-    },
     "order": 3,
-    "color": "#E4B86D"
+    "color": "#6DA9E4"
   },
   "EarnedPlotPoints": {
     "name": "EarnedPlotPoints",
@@ -48,6 +47,19 @@
     },
     "order": 4,
     "color": "#777777"
+  },
+  "StockData": {
+    "name": "StockData",
+    "path": "InventoryTool.PlayerStorage.StockData",
+    "i18n": "PlayerStorage.StockData.name",
+    "stored": "StoredItemContainer",
+    "attrs": {
+      "time": "2020-01-01 00:00:00",
+      "capacity": 50,
+      "value": []
+    },
+    "order": 4,
+    "color": "#E4B86D"
   },
   "PendingTrainingFee": {
     "name": "PendingTrainingFee",

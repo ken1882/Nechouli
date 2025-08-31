@@ -1,7 +1,7 @@
 from module.logger import logger
 from tasks.base.base_page import BasePageUI
 from module.base.utils import str2int
-from datetime import datetime
+from datetime import datetime, timedelta
 
 class BattleDomeUI(BasePageUI):
     DIFFICULTY_MAP = {
@@ -24,6 +24,8 @@ class BattleDomeUI(BasePageUI):
         self.load_actions()
         won = True
         while won:
+            if self.on_background and not self.update_background_status():
+                return True
             won = self.process_battle()
             self.collect_rewards()
             if 'item limit' in self.page.content() and not self.config.BattleDome_GrindNP:
@@ -33,13 +35,15 @@ class BattleDomeUI(BasePageUI):
                 logger.info("Daily NP limit reached, stopping")
                 return True
             self.config.load()
-            logger.info("Next task: %s", self.config.get_next())
-            if self.config.pending_task and self.config.pending_task[0].command != 'BattleDome':
-                msg = "Other tasks available, replay after 5 minutes:\n"
-                msg += '\n'.join([f"- {t}" for t in self.config.pending_task])
-                logger.info(msg)
-                self.config.task_delay(minute=5)
-                return None
+            if not self.on_background:
+                logger.info("Next task: %s", self.config.get_next())
+                if self.config.pending_task and self.config.pending_task[0].command != 'BattleDome':
+                    msg = "Other tasks available, replay after 5 minutes:\n"
+                    msg += '\n'.join([f"- {t}" for t in self.config.pending_task])
+                    logger.info(msg)
+                    future = datetime.now() + timedelta(minutes=5)
+                    self.config.task_delay(target=future)
+                    return None
             self.device.click('#bdplayagain')
         logger.info("Stopped and canceled due to defeat")
         self.config.task_cancel()

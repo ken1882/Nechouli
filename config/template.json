@@ -37,6 +37,8 @@
     "Scheduler": {
       "Enable": true,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "Restart",
       "ServerUpdate": "00:00"
     }
@@ -45,6 +47,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "PetCares",
       "ServerUpdate": "00:00"
     },
@@ -60,6 +64,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "PetTraining",
       "ServerUpdate": "00:00"
     },
@@ -74,6 +80,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "DailyQuest",
       "ServerUpdate": "00:00"
     },
@@ -87,6 +95,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "BattleDome",
       "ServerUpdate": "00:00"
     },
@@ -102,6 +112,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "AltadorCouncil",
       "ServerUpdate": "00:00"
     }
@@ -110,6 +122,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "AnchorManagement",
       "ServerUpdate": "00:00"
     }
@@ -118,6 +132,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "AppleBobbing",
       "ServerUpdate": "00:00"
     }
@@ -126,6 +142,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "BankInterest",
       "ServerUpdate": "00:00"
     },
@@ -138,6 +156,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "ColtzansShrine",
       "ServerUpdate": "00:00"
     }
@@ -146,6 +166,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "DailyPuzzle",
       "ServerUpdate": "00:00"
     }
@@ -154,6 +176,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "DesertedTomb",
       "ServerUpdate": "00:00"
     }
@@ -162,6 +186,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "FaerieCrossword",
       "ServerUpdate": "00:00"
     }
@@ -170,6 +196,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "Fishing",
       "ServerUpdate": "00:00"
     }
@@ -178,6 +206,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "ForgottenShore",
       "ServerUpdate": "00:00"
     }
@@ -186,6 +216,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "FruitMachine",
       "ServerUpdate": "00:00"
     }
@@ -194,6 +226,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "GiantJelly",
       "ServerUpdate": "00:00"
     }
@@ -202,6 +236,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "GiantOmelette",
       "ServerUpdate": "00:00"
     }
@@ -210,6 +246,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "GraveDanger",
       "ServerUpdate": "00:00"
     }
@@ -218,6 +256,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "GrumpyKing",
       "ServerUpdate": "00:00"
     }
@@ -226,6 +266,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "LunarTemple",
       "ServerUpdate": "00:00"
     }
@@ -234,6 +276,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "MeteorCrashSite",
       "ServerUpdate": "00:00"
     }
@@ -242,6 +286,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "MoltaraQuarry",
       "ServerUpdate": "00:00"
     }
@@ -250,6 +296,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "NeggCave",
       "ServerUpdate": "00:00"
     }
@@ -258,6 +306,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "PotatoCounter",
       "ServerUpdate": "00:00"
     }
@@ -266,6 +316,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "QasalanExpellibox",
       "ServerUpdate": "00:00"
     }
@@ -274,6 +326,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "RichSlorg",
       "ServerUpdate": "00:00"
     }
@@ -282,6 +336,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "Snowager",
       "ServerUpdate": "00:00"
     }
@@ -290,6 +346,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "TDMBGPOP",
       "ServerUpdate": "00:00"
     }
@@ -298,6 +356,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "Tombola",
       "ServerUpdate": "00:00"
     }
@@ -306,6 +366,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "TrudysSurprise",
       "ServerUpdate": "00:00"
     }
@@ -314,6 +376,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "WiseKing",
       "ServerUpdate": "00:00"
     }
@@ -322,6 +386,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "HealingSpring",
       "ServerUpdate": "00:00"
     },
@@ -333,6 +399,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "MonthlyFreebies",
       "ServerUpdate": "00:00"
     }
@@ -341,6 +409,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "StockMarket",
       "ServerUpdate": "00:00"
     },
@@ -352,6 +422,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "EssenceCollection",
       "ServerUpdate": "00:00"
     }
@@ -360,6 +432,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "FashionFever",
       "ServerUpdate": "00:00"
     }
@@ -368,6 +442,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "QuickStock",
       "ServerUpdate": "00:00"
     },
@@ -387,6 +463,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "Restocking",
       "ServerUpdate": "00:00"
     },
@@ -407,6 +485,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "ShopWizard",
       "ServerUpdate": "00:00"
     },
@@ -422,11 +502,12 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "Auction",
       "ServerUpdate": "00:00"
     },
     "Auction": {
-      "IsRunningBackground": false,
       "MaxConcurrentBids": 10,
       "PlaceBidUntilMinutesLeft": 5,
       "BiddingConfig": "# ItemName:MaxBid:NumbersToBid\n"
@@ -436,6 +517,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "VoidsWithin",
       "ServerUpdate": "00:00"
     },
@@ -449,6 +532,7 @@
   "InventoryTool": {
     "PlayerStorage": {
       "NeoPoints": {},
+      "Balance": {},
       "InventoryData": {},
       "StockData": {},
       "PetsData": {}
@@ -458,6 +542,8 @@
     "Scheduler": {
       "Enable": false,
       "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
       "Command": "SafetyDepositBox",
       "ServerUpdate": "00:00"
     },

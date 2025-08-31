@@ -138,6 +138,14 @@
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
       },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
       "Command": {
         "type": "input",
         "value": "Restart",
@@ -164,6 +172,14 @@
         "type": "datetime",
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
+      },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
       },
       "Command": {
         "type": "input",
@@ -227,6 +243,14 @@
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
       },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
       "Command": {
         "type": "input",
         "value": "PetTraining",
@@ -274,6 +298,14 @@
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
       },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
       "Command": {
         "type": "input",
         "value": "DailyQuest",
@@ -318,6 +350,14 @@
         "type": "datetime",
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
+      },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
       },
       "Command": {
         "type": "input",
@@ -408,6 +448,14 @@
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
       },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
       "Command": {
         "type": "input",
         "value": "AltadorCouncil",
@@ -434,6 +482,14 @@
         "type": "datetime",
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
+      },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
       },
       "Command": {
         "type": "input",
@@ -462,6 +518,14 @@
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
       },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
       "Command": {
         "type": "input",
         "value": "AppleBobbing",
@@ -488,6 +552,14 @@
         "type": "datetime",
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
+      },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
       },
       "Command": {
         "type": "input",
@@ -526,6 +598,14 @@
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
       },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
       "Command": {
         "type": "input",
         "value": "ColtzansShrine",
@@ -552,6 +632,14 @@
         "type": "datetime",
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
+      },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
       },
       "Command": {
         "type": "input",
@@ -580,6 +668,14 @@
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
       },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
       "Command": {
         "type": "input",
         "value": "DesertedTomb",
@@ -606,6 +702,14 @@
         "type": "datetime",
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
+      },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
       },
       "Command": {
         "type": "input",
@@ -634,6 +738,14 @@
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
       },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
       "Command": {
         "type": "input",
         "value": "Fishing",
@@ -660,6 +772,14 @@
         "type": "datetime",
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
+      },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
       },
       "Command": {
         "type": "input",
@@ -688,6 +808,14 @@
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
       },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
       "Command": {
         "type": "input",
         "value": "FruitMachine",
@@ -714,6 +842,14 @@
         "type": "datetime",
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
+      },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
       },
       "Command": {
         "type": "input",
@@ -742,6 +878,14 @@
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
       },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
       "Command": {
         "type": "input",
         "value": "GiantOmelette",
@@ -768,6 +912,14 @@
         "type": "datetime",
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
+      },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
       },
       "Command": {
         "type": "input",
@@ -796,6 +948,14 @@
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
       },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
       "Command": {
         "type": "input",
         "value": "GrumpyKing",
@@ -822,6 +982,14 @@
         "type": "datetime",
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
+      },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
       },
       "Command": {
         "type": "input",
@@ -850,6 +1018,14 @@
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
       },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
       "Command": {
         "type": "input",
         "value": "MeteorCrashSite",
@@ -876,6 +1052,14 @@
         "type": "datetime",
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
+      },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
       },
       "Command": {
         "type": "input",
@@ -904,6 +1088,14 @@
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
       },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
       "Command": {
         "type": "input",
         "value": "NeggCave",
@@ -930,6 +1122,14 @@
         "type": "datetime",
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
+      },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
       },
       "Command": {
         "type": "input",
@@ -958,6 +1158,14 @@
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
       },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
       "Command": {
         "type": "input",
         "value": "QasalanExpellibox",
@@ -984,6 +1192,14 @@
         "type": "datetime",
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
+      },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
       },
       "Command": {
         "type": "input",
@@ -1012,6 +1228,14 @@
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
       },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
       "Command": {
         "type": "input",
         "value": "Snowager",
@@ -1038,6 +1262,14 @@
         "type": "datetime",
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
+      },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
       },
       "Command": {
         "type": "input",
@@ -1066,6 +1298,14 @@
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
       },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
       "Command": {
         "type": "input",
         "value": "Tombola",
@@ -1092,6 +1332,14 @@
         "type": "datetime",
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
+      },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
       },
       "Command": {
         "type": "input",
@@ -1120,6 +1368,14 @@
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
       },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
       "Command": {
         "type": "input",
         "value": "WiseKing",
@@ -1146,6 +1402,14 @@
         "type": "datetime",
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
+      },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
       },
       "Command": {
         "type": "input",
@@ -1180,6 +1444,14 @@
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
       },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
       "Command": {
         "type": "input",
         "value": "MonthlyFreebies",
@@ -1206,6 +1478,14 @@
         "type": "datetime",
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
+      },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
       },
       "Command": {
         "type": "input",
@@ -1240,6 +1520,14 @@
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
       },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
       "Command": {
         "type": "input",
         "value": "EssenceCollection",
@@ -1267,6 +1555,14 @@
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
       },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
       "Command": {
         "type": "input",
         "value": "FashionFever",
@@ -1293,6 +1589,14 @@
         "type": "datetime",
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
+      },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
       },
       "Command": {
         "type": "input",
@@ -1358,6 +1662,14 @@
         "type": "datetime",
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
+      },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
       },
       "Command": {
         "type": "input",
@@ -1428,6 +1740,14 @@
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
       },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
       "Command": {
         "type": "input",
         "value": "ShopWizard",
@@ -1479,6 +1799,14 @@
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
       },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
       "Command": {
         "type": "input",
         "value": "Auction",
@@ -1491,10 +1819,6 @@
       }
     },
     "Auction": {
-      "IsRunningBackground": {
-        "type": "checkbox",
-        "value": false
-      },
       "MaxConcurrentBids": {
         "type": "input",
         "value": 10
@@ -1523,6 +1847,14 @@
         "type": "datetime",
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
+      },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
       },
       "Command": {
         "type": "input",
@@ -1564,15 +1896,23 @@
         "value": {},
         "display": true,
         "stored": "StoredInt",
-        "order": 1,
+        "order": 2,
         "color": "#FFD700"
+      },
+      "Balance": {
+        "type": "stored",
+        "value": {},
+        "display": true,
+        "stored": "StoredInt",
+        "order": 1,
+        "color": "#FDD017"
       },
       "InventoryData": {
         "type": "stored",
         "value": {},
         "display": true,
         "stored": "StoredItemContainer",
-        "order": 2,
+        "order": 3,
         "color": "#6DA9E4"
       },
       "StockData": {
@@ -1580,7 +1920,7 @@
         "value": {},
         "display": true,
         "stored": "StoredItemContainer",
-        "order": 3,
+        "order": 4,
         "color": "#E4B86D"
       },
       "PetsData": {
@@ -1605,6 +1945,14 @@
         "type": "datetime",
         "value": "2020-01-01 00:00:00",
         "validate": "datetime"
+      },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
       },
       "Command": {
         "type": "input",

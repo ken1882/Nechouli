@@ -129,6 +129,8 @@ class ShopWizardUI(BasePageUI):
                     ret_price = price
                     depth = 0
             logger.info(f"Found lowest price: {ret_price} for {name}, depth: {depth}")
+            if ret_price == 1:
+                break
             btn = self.page.locator('#resubmitWizard')
             self.device.scroll_to(loc=btn)
             with self.page.expect_response("**/wizard.php") as resp:

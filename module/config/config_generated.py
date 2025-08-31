@@ -12,6 +12,8 @@ class GeneratedConfig:
     # Group `Scheduler`
     Scheduler_Enable = False  # True, False
     Scheduler_NextRun = datetime.datetime(2020, 1, 1, 0, 0)
+    Scheduler_EnableBackground = False
+    Scheduler_IsRunningBackground = False
     Scheduler_Command = 'Alas'
     Scheduler_ServerUpdate = '00:00'
 
@@ -113,7 +115,6 @@ class GeneratedConfig:
     BattleDome_Opponent = 'Koi Warrior'  # Flaming Meerca, Count Von Roo, Harry the Mutant Moehog, Edna, Balthazar, Pant Devil, Evil Sloth Clone, Robo Grarrl, Tiki Tack Man, Chiazilla, Koi Warrior, Highland Chia, The Black Pteri, Chia Clown, Snow Faerie, Ryshu the Nimmo, The Snowager, Grarrg, Sabre-X, Punchbag Bob, Meuka, Tekkitu the Witch Doctor, Vira, Advisor Broo, Meerca Henchmen, Boochi, Giant Hungry Malevolent Chomby, Mootix Warrior, S750 Kreludan Defender Robot, Neopets v2, Donny, Valin, Giant Spectral Mutant Walein
 
     # Group `Auction`
-    Auction_IsRunningBackground = False
     Auction_MaxConcurrentBids = 10
     Auction_PlaceBidUntilMinutesLeft = 5
     Auction_BiddingConfig = '# ItemName:MaxBid:NumbersToBid\n'
@@ -126,6 +127,7 @@ class GeneratedConfig:
 
     # Group `PlayerStorage`
     PlayerStorage_NeoPoints = {}
+    PlayerStorage_Balance = {}
     PlayerStorage_InventoryData = {}
     PlayerStorage_StockData = {}
     PlayerStorage_PetsData = {}

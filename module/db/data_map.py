@@ -53,3 +53,43 @@ SHOP_NAME = defaultdict(lambda: "", {
     101: "exotic_foods",
     103: "fanciful_fauna"
 })
+
+BANK_LEVEL_NAME = defaultdict(lambda: 0, {
+    0: "Junior Saver",
+    1: "Neopian Student",
+    2: "Bronze Saver",
+    3: "Silver Saver",
+    4: "Super Gold Plus",
+    5: "Platinum Extra",
+    6: "Double Platinum",
+    7: "Triple Platinum",
+    8: "Diamond Deposit",
+    9: "Diamond Deposit Plus",
+    10: "Diamond Deposit Gold",
+    11: "Millionaire Platinum",
+    12: "Millionaire Double Platinum",
+    13: "Millionaire Mega-Platinum",
+    14: "Neopian Mega-Riches",
+    15: "Ultimate Riches!",
+    16: "Whitehouse"
+})
+
+BANK_LEVEL_REQUIREMENT = defaultdict(lambda: 0, {
+    0: 0,
+    1: 1_000,
+    2: 2_500,
+    3: 5_000,
+    4: 10_000,
+    5: 25_000,
+    6: 50_000,
+    7: 75_000,
+    8: 100_000,
+    9: 250_000,
+    10: 500_000,
+    11: 1_000_000,
+    12: 2_000_000,
+    13: 5_000_000,
+    14: 7_500_000,
+    15: 10_000_000,
+    16: 2**63 - 1
+})

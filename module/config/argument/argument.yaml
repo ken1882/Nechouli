@@ -10,6 +10,8 @@ Scheduler:
     value: false
     option: [ true, false ]
   NextRun: 2020-01-01 00:00:00
+  EnableBackground: false
+  IsRunningBackground: false
   Command: Alas
   ServerUpdate:
     value: "00:00"
@@ -262,7 +264,6 @@ BattleDome:
       - "Giant Spectral Mutant Walein"
 
 Auction:
-  IsRunningBackground: false
   MaxConcurrentBids: 10
   PlaceBidUntilMinutesLeft: 5
   BiddingConfig:
@@ -285,17 +286,22 @@ PlayerStorage:
   NeoPoints:
     stored: StoredInt
     display: true
-    order: 1
+    order: 2
     color: "#FFD700"
+  Balance:
+    stored: StoredInt
+    display: true
+    order: 1
+    color: "#FDD017"
   InventoryData:
     stored: StoredItemContainer
     display: true
-    order: 2
+    order: 3
     color: "#6DA9E4"
   StockData:
     stored: StoredItemContainer
     display: true
-    order: 3
+    order: 4
     color: "#E4B86D"
   PetsData:
     stored: StoredPetsData

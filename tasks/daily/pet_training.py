@@ -248,12 +248,12 @@ class PetTrainingUI(BasePageUI):
                 if item.name != fee.name or item.quantity == 0:
                     continue
                 self.device.scroll_to(0, 0)
-                self.device.wait(0.3)
-                item.quantity -= 1
                 self.device.click(fee._pay_bb, nav=True)
+                item.quantity -= 1
                 logger.info(f"Paid item {fee.name} for training fee.")
                 self.config.stored.PendingTrainingFee.remove(fee)
                 self.config.stored.InventoryData.remove(item)
+                break
 
     def scan_training_time(self, academy: str) -> list[datetime]:
         if academy not in ACADEMY:

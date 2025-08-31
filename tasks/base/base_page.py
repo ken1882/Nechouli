@@ -1,6 +1,7 @@
 import os
 from module.base.base import ModuleBase
 from module.base.utils import str2int
+from module.config.utils import deep_get
 from module.logger import logger
 from datetime import datetime, timedelta
 from time import sleep
@@ -9,18 +10,34 @@ from playwright._impl._errors import TimeoutError
 from module.config.utils import get_server_next_update
 from module.exception import *
 from playwright._impl._errors import Error as PlaywrightError
+from threading import Thread
 
 from dotenv import load_dotenv
 load_dotenv()
 
 class BasePageUI(ModuleBase):
+    on_background: bool = False
 
     @property
     def page(self) -> Page:
-        return self.device.page
+        if getattr(self, '_page', None) is None:
+            return self.device.page
+        return self._page
 
     def run(self, **kwargs):
         self._kwargs = kwargs or {}
+        self.task_name = self.config.task.command
+        if deep_get(self.config.data, f'{self.task_name}.Scheduler.EnableBackground'):
+            if self.config.Optimization_WhenTaskQueueEmpty == 'close_game':
+                logger.critical("Cannot run background task when Optimization is set to `close game`")
+                raise RequestHumanTakeover
+            logger.info(f"Run task {self.task_name} in background mode")
+            self.config.cross_set(f'{self.task_name}.Scheduler.IsRunningBackground', True)
+            self.on_background = True
+            self._page = self.device.new_page()
+            Thread(target=self.run_background, daemon=True).start()
+            self.config.task_cancel()
+            return True
         try:
             ok = self.main()
             stime = self.config.ProfileSettings_TaskSoftTerminationTime
@@ -30,6 +47,7 @@ class BasePageUI(ModuleBase):
                 self.calc_next_run()
             elif ok == False:
                 self.calc_next_run('failed')
+            self.page.unroute_all()
         except (TimeoutError, PlaywrightError, InvisibleElement) as e:
             logger.error(f"Playwright error:")
             logger.exception(e)
@@ -39,11 +57,25 @@ class BasePageUI(ModuleBase):
         except Exception as e:
             raise e
         finally:
-            self.page.unroute_all()
             # sync cookies back to manual context
             if self.config.Playwright_Headless:
                 self.debug_screenshot()
                 self.device.browser.contexts[0].add_cookies(self.device.context.cookies())
+        return True
+
+    def update_background_status(self):
+        self.config.load()
+        return deep_get(self.config.data, f'{self.task_name}.Scheduler.IsRunningBackground', False)
+
+    def run_background(self):
+        self.main()
+        self.stop_background()
+        logger.info(f"Background task {self.task_name} exited")
+
+    def stop_background(self):
+        self.config.cross_set(f'{self.task_name}.Scheduler.IsRunningBackground', False)
+        self.on_background = False
+        self.page.close()
 
     def main(self):
         pass
@@ -165,7 +197,7 @@ class BasePageUI(ModuleBase):
             fname = f"{self.config.config_name}_snapshot.png"
         path = os.path.join('config', fname)
         self.page.screenshot(path=path)
-    
+
     def login_neopass(self):
         btn = self.device.wait_for_element('#neopass-method-login')
         self.device.click(btn)

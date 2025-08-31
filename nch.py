@@ -15,11 +15,6 @@ import os
 import time
 
 class Nechouli(AzurLaneAutoScript):
-    _background_task: dict[str, Thread] = {}
-
-    BACKGROUND_TASKS = [
-        "auction",
-    ]
 
     def __init__(self, config_name: str = 'nechouli'):
         super().__init__(config_name)
@@ -30,24 +25,6 @@ class Nechouli(AzurLaneAutoScript):
             super().loop()
         except Exception as e:
             logger.exception(e)
-
-    def run(self, command: str):
-        if command in self.BACKGROUND_TASKS:
-            self.run_background(command)
-            return True
-        super().run(command)
-
-    def run_background(self, command: str):
-        if command in self._background_task and self._background_task[command].is_alive():
-            logger.warning(f"Background task {command} is already running")
-            return
-        if not hasattr(self, command):
-            logger.error(f"Background task {command} not found")
-            return
-        t = Thread(target=getattr(self, command), daemon=True)
-        t.start()
-        self._background_task[command] = t
-        logger.info(f"Background task {command} started")
 
     def restart(self):
         from tasks.base.base_page import BasePageUI
@@ -299,12 +276,8 @@ class Nechouli(AzurLaneAutoScript):
 
     def auction(self):
         from tasks.utility.auction import AuctionUI
-        try:
-            AuctionUI(config=self.config, device=self.device).run()
-        except Exception as e:
-            logger.error(f"Auction background task failed: {e}")
-            logger.exception(e)
-            self._background_task.pop("auction", None)
+        AuctionUI(config=self.config, device=self.device).run()
+
 
 
 if __name__ == '__main__':

@@ -25,6 +25,9 @@ Chore:
     PetCares:
       - Scheduler
       - PetCares
+    BankInterest:
+      - Scheduler
+      - NeopianBank
     PetTraining:
       - Scheduler
       - PetTraining
@@ -40,9 +43,6 @@ Chore:
       - Scheduler
     AppleBobbing:
       - Scheduler
-    BankInterest:
-      - Scheduler
-      - NeopianBank
     ColtzansShrine:
       - Scheduler
     DailyPuzzle:

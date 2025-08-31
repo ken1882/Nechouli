@@ -19,10 +19,18 @@ class AuctionUI(BasePageUI):
         super().run()
 
     def parse_config(self):
+        self.targets = {}
         raw = self.config.Auction_BiddingConfig
         lines = [l.strip() for l in raw.splitlines() if not l.strip().startswith('#') and l.strip()]
+        for line in lines:
+            name, max_bid, count = line.split(':')
+            self.targets[name] = {
+                'max_bid': str2int(max_bid),
+                'count': str2int(count)
+            }
 
     def main(self):
+        self.parse_config()
         while self.config.Auction_IsRunningBackground:
             self.update_bidded()
 
