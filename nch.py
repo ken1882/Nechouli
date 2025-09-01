@@ -41,12 +41,11 @@ class Nechouli(AzurLaneAutoScript):
     def start(self):
         logger.info("Starting Nechouli")
         wt = 3 + ((os.getpid() % 97) / 800.0)
-        while self.is_concurrent_limit_reached():
-            wt = min(300+random.randint(0, 100), random.uniform(wt * 0.8, wt * 1.5))
+        dm.JN_CACHE_TTL = self.config.ProfileSettings_JellyNeoExpiry * 3600
+        while self.is_concurrent_limit_reached(start=True):
+            wt = min(300+random.randint(0, 100), random.uniform(wt * 0.9, wt * 1.5))
             logger.warning(f"Concurrent limit reached, waiting for {round(wt, 3)} seconds")
             time.sleep(wt)
-        dm.JN_CACHE_TTL = self.config.ProfileSettings_JellyNeoExpiry * 3600
-        self.device.start_browser()
         while True:
             try:
                 self.device.goto('https://www.neopets.com/questlog/')
@@ -73,8 +72,10 @@ class Nechouli(AzurLaneAutoScript):
         killed = kill_remote_browser(self.config.config_name)
         logger.info(f"Killed browser process: {killed}")
 
-    def is_concurrent_limit_reached(self):
+    def is_concurrent_limit_reached(self, start=False):
         if self.config.Optimization_MaxConcurrentInstance <= 0:
+            if start:
+                self.device.start_browser()
             return False
         logger.info("Checking running instances")
         msg = ''
@@ -94,10 +95,7 @@ class Nechouli(AzurLaneAutoScript):
             return max(tmin, min(tmax, t))
 
         instances = get_all_instance_addresses()
-        st = datetime.now()
         with dm.dlock(self.lock_file, timeout=_quickmath(len(instances))):
-            if (datetime.now() - st).total_seconds() > 1:
-                self.device.wait(3) # wait the previous started browser to start listening port
             for profile_name, addr in instances.items():
                 msg += f"{profile_name} ({addr})"
                 if check_connection(addr, timeout=0.1):
@@ -108,6 +106,8 @@ class Nechouli(AzurLaneAutoScript):
             logger.info(f"Running count: {len(addresses)}\n{msg}")
             if len(addresses) >= self.config.Optimization_MaxConcurrentInstance:
                 return True
+            elif start:
+                self.device.start_browser()
         return False
 
     def goto_main(self):
