@@ -166,7 +166,7 @@ class ShopWizardUI(BasePageUI):
             logger.warning("Shop Wizard blocked due to too many searches, will retry later")
             return True
         if "help you until you complete" in content:
-            logger.warning("You're on a fairy quest, you'll manually complete it!")
+            logger.warning("You're on a fairy quest, you have to manually complete it!")
             return True
         return False
 

@@ -49,7 +49,6 @@ def get_item_details_by_name(
     """
     item_name = item_name.lower()
     agent = agent or Agent
-    logger.info("Getting item details for %s (force=%s) (cached=%s)", item_name, force, dm.is_cached(item_name))
     if not force and dm.is_cached(item_name):
         return dm.ItemDatabase.get(item_name) or dm._redis_get_item(item_name)  # type: ignore[attr-defined]
 
@@ -111,9 +110,10 @@ def _parse_search_page(page: BS) -> dict:
     try:
         pn = page.select(".price-history-link")[0]
         ret["market_price"] = str2int(pn.text)
-        ret["price_timestamp"] = datetime.strptime(
-            pn.attrs["title"], "%B %d, %Y"
-        ).timestamp()
+        # ret["price_timestamp"] = datetime.strptime(
+        #     pn.attrs["title"], "%B %d, %Y"
+        # ).timestamp()
+        ret["price_timestamp"] = datetime.now().timestamp()
     except Exception:
         logger.debug("No price block – maybe NC item")
         ret["market_price"] = 999_999

@@ -28,6 +28,8 @@ class VoidsWithinUI(BasePageUI):
             err_popup = self.page.locator('h3', has_text='Error Occurred')
             back = self.page.locator('.popup-exit-icon')
             for j in joins.all():
+                if 'locked' in j.locator('../..').get_attribute('class'):
+                    continue
                 done = False
                 while True:
                     if err_popup.is_visible():
