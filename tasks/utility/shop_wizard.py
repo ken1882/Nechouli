@@ -14,7 +14,9 @@ class ShopWizardUI(BasePageUI):
             self.config.stored.ShopWizardRequests.is_empty()
             and self.config.ShopWizard_EnableActivePriceUpdate
         ):
-            self.add_price_update_items()
+            reqs = self.add_price_update_items()
+            if reqs:
+                self.config.stored.ShopWizardRequests.bulk_add(reqs)
         if self.config.stored.ShopWizardRequests.is_empty():
             logger.info("No requests to process, skipping Shop Wizard")
             return True
@@ -23,9 +25,9 @@ class ShopWizardUI(BasePageUI):
         return True
 
     def add_price_update_items(self):
-        added = 0
         added_names = set()
         now_ts = datetime.now().timestamp()
+        ret = []
         for i in self.config.stored.StockData.items+self.config.stored.InventoryData.items:
             item = jn.get_item_details_by_name(i.name)
             if item.get('market_price', 0) >= self.MAX_MARKET_PRICE:
@@ -33,13 +35,12 @@ class ShopWizardUI(BasePageUI):
                 continue
             if item.get("price_timestamp", 0) > now_ts - dm.JN_CACHE_TTL/2:
                 continue
-            self.config.stored.ShopWizardRequests.add(i.name, 'price_update', 0)
-            added += 1
+            ret.append((i.name, 'price_update', 0))
             added_names.add(i.name)
-            if added >= self.config.ShopWizard_PriceUpdateBatchSize:
+            if len(ret) >= self.config.ShopWizard_PriceUpdateBatchSize:
                 break
-        if added >= self.config.ShopWizard_PriceUpdateBatchSize:
-            return
+        if len(ret) >= self.config.ShopWizard_PriceUpdateBatchSize:
+            return ret
         # update expiring items in jn cache
         jn.load_cache()
         cache = sorted(dm.ItemDatabase.values(), key=lambda x: x.get('price_timestamp', 0))
@@ -51,11 +52,11 @@ class ShopWizardUI(BasePageUI):
                 break
             if item["name"] in added_names:
                 continue
-            self.config.stored.ShopWizardRequests.add(item["name"], 'price_update', 0)
-            added += 1
+            ret.append((item["name"], 'price_update', 0))
             added_names.add(item["name"])
-            if added >= self.config.ShopWizard_PriceUpdateBatchSize:
+            if len(ret) >= self.config.ShopWizard_PriceUpdateBatchSize:
                 break
+        return ret
 
     def process_requests(self):
         reqs = []
@@ -75,8 +76,7 @@ class ShopWizardUI(BasePageUI):
             if amount > 0:
                 reqs.append((name, src, amount))
             self.goto('https://www.neopets.com/shops/wizard.phtml')
-        for name, src, amount in reqs:
-            self.config.stored.ShopWizardRequests.add(name, src, amount)
+        self.config.stored.ShopWizardRequests.bulk_add(reqs)
 
     def _process_request(self, name: str, src: str, amount: int):
         if self.config.stored.InventoryData.is_full(amount):

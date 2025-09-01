@@ -49,7 +49,7 @@ def get_item_details_by_name(
     """
     item_name = item_name.lower()
     agent = agent or Agent
-
+    logger.info("Getting item details for %s (force=%s) (cached=%s)", item_name, force, dm.is_cached(item_name))
     if not force and dm.is_cached(item_name):
         return dm.ItemDatabase.get(item_name) or dm._redis_get_item(item_name)  # type: ignore[attr-defined]
 
@@ -72,14 +72,12 @@ def get_item_details_by_name(
     page = BS(response.content, "html.parser")
     data = _parse_search_page(page)
     if not data["id"]:
-        return data  # could not find any id
+        return data
 
-    # second request: details page
     detail_url = f"https://items.jellyneo.net/item/{data['id']}"
     res = agent.get(detail_url, timeout=10)
     doc = BS(res.content, "html.parser")
     _populate_from_detail_page(doc, data)
-
     dm.save_cache(data)
     return data
 

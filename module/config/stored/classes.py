@@ -268,6 +268,9 @@ class StoredShopWizardRequests(StoredList):
     def add(self, item_name: str, source: str, amount: int = 1):
         self.requests = self.requests + [f'{item_name}@{source}#{amount}']
 
+    def bulk_add(self, reqs: list[tuple[str, str, int]]):
+        self.requests = self.requests + [f'{item_name}@{source}#{amount}' for item_name, source, amount in reqs]
+
     def pop(self) -> str:
         """
         Returns:

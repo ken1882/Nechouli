@@ -30,6 +30,10 @@
       "name": "Pet Cares",
       "help": "Feeding pets and relative daily quests"
     },
+    "BankInterest": {
+      "name": "Bank Interest",
+      "help": "https://www.jellyneo.net/?go=bank"
+    },
     "PetTraining": {
       "name": "Training",
       "help": "https://www.jellyneo.net/?go=training_your_pet"
@@ -53,10 +57,6 @@
     "AppleBobbing": {
       "name": "Apple Bobbing",
       "help": "https://www.jellyneo.net/?go=applebobbing"
-    },
-    "BankInterest": {
-      "name": "Bank Interest",
-      "help": "https://www.jellyneo.net/?go=bank"
     },
     "ColtzansShrine": {
       "name": "Coltzan's Shrine",
@@ -338,6 +338,10 @@
     "ExtraChromiumArgs": {
       "name": "Extra Chromium Arguments",
       "help": "Additional command-line arguments to pass."
+    },
+    "DefaultTimeout": {
+      "name": "Playwright.DefaultTimeout.name",
+      "help": "Playwright.DefaultTimeout.help"
     }
   },
   "ProfileSettings": {

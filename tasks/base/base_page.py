@@ -10,6 +10,7 @@ from playwright._impl._errors import TimeoutError
 from module.config.utils import get_server_next_update
 from module.exception import *
 from playwright._impl._errors import Error as PlaywrightError
+from module.device.device import Device
 from threading import Thread
 
 from dotenv import load_dotenv
@@ -20,9 +21,7 @@ class BasePageUI(ModuleBase):
 
     @property
     def page(self) -> Page:
-        if getattr(self, '_page', None) is None:
-            return self.device.page
-        return self._page
+        return self.device.page
 
     def run(self, **kwargs):
         self._kwargs = kwargs or {}
@@ -34,7 +33,6 @@ class BasePageUI(ModuleBase):
             logger.info(f"Run task {self.task_name} in background mode")
             self.config.cross_set(f'{self.task_name}.Scheduler.IsRunningBackground', True)
             self.on_background = True
-            self._page = self.device.new_page()
             Thread(target=self.run_background, daemon=True).start()
             self.config.task_cancel()
             return True
@@ -68,7 +66,13 @@ class BasePageUI(ModuleBase):
         return deep_get(self.config.data, f'{self.task_name}.Scheduler.IsRunningBackground', False)
 
     def run_background(self):
-        self.main()
+        self.device = Device(self.config) # playwright cannot share threads
+        self.device.start_browser()
+        ok = self.main()
+        if ok:
+            self.calc_next_run()
+        elif ok == False:
+            self.calc_next_run('failed')
         self.stop_background()
         logger.info(f"Background task {self.task_name} exited")
 
@@ -76,6 +80,7 @@ class BasePageUI(ModuleBase):
         self.config.cross_set(f'{self.task_name}.Scheduler.IsRunningBackground', False)
         self.on_background = False
         self.page.close()
+        self.device.stop()
 
     def main(self):
         pass
@@ -100,6 +105,8 @@ class BasePageUI(ModuleBase):
         else:
             logger.warning(f'Unknown delay preset: {s}')
         self.config.task_delay(target=future)
+        if self.on_background:
+            self.config.task_enable()
 
     def on_failed_delay(self):
         future = datetime.now() + timedelta(hours=1)
@@ -121,7 +128,7 @@ class BasePageUI(ModuleBase):
             return True
         return False
 
-    def goto(self, url, timeout=30):
+    def goto(self, url, timeout=None):
         try:
             self.device.goto(url, self.page, timeout=timeout)
             while 'Maintenance Tunnels' in self.page.content():

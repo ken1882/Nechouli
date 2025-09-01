@@ -49,7 +49,7 @@ class Nechouli(AzurLaneAutoScript):
         self.device.start_browser()
         while True:
             try:
-                self.device.page.goto('https://www.neopets.com/questlog/')
+                self.device.goto('https://www.neopets.com/questlog/')
             except Exception as e:
                 logger.error(f"Failed to navigate to quest log: {e}")
                 self.device.respawn_page()
@@ -108,7 +108,7 @@ class Nechouli(AzurLaneAutoScript):
         return False
 
     def goto_main(self):
-        self.device.page.goto('https://www.neopets.com/home')
+        self.device.goto('https://www.neopets.com/home')
 
     def altador_council(self):
         from tasks.daily.altador_council import AltadorCouncilUI

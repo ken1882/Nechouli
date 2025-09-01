@@ -35,7 +35,7 @@ class Control(Connection):
 
     def wait_for_element(self,
                          *locators:list[str | Locator],
-                         timeout:float=60,
+                         timeout:float=None,
                          wait_interval:float=1,
                          condition:Callable=None,
                          gone:bool=False) -> Locator:
@@ -57,6 +57,8 @@ class Control(Connection):
                 condition = lambda x: x.count() > 0 and not x.is_visible()
             else:
                 condition = lambda x: x.count() > 0 and x.is_visible()
+        if not timeout:
+            timeout = self.config.Playwright_DefaultTimeout
         while timeout > 0:
             node = None
             for selector in locators:
@@ -171,7 +173,8 @@ class Control(Connection):
                 button=button,
                 modifiers=modifiers,
                 position={'x': mx, 'y': my},
-                delay=md
+                delay=md,
+                timeout=self.config.Playwright_DefaultTimeout*1000
             )
         else:
             if modifiers:
@@ -198,9 +201,17 @@ class Control(Connection):
         if nav:
             logger.info("Waiting for navigation")
         if nav == True:
-            self.page.wait_for_url('**')
+            self.page.wait_for_url(
+                '**',
+                timeout=self.config.Playwright_DefaultTimeout*1000,
+                wait_until='domcontentloaded',
+            )
         elif nav and type(nav) == str:
-            self.page.wait_for_url(nav)
+            self.page.wait_for_url(
+                nav,
+                timeout=self.config.Playwright_DefaultTimeout*1000,
+                wait_until='domcontentloaded',
+            )
         if wait > 0:
             self.wait(wait)
 

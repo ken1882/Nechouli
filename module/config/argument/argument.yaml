@@ -61,6 +61,7 @@ Playwright:
       --disable-features=IsolateOrigins,site-per-process
       --disable-infobars
       --window-size=1280,800
+  DefaultTimeout: 30
 ProfileSettings:
   MinNpKeep: 100000
   JellyNeoExpiry: 168

@@ -99,10 +99,12 @@ class PetTrainingUI(BasePageUI):
                 self.pay_training_fee(aca)
         if missings and self.config.PetTraining_BuyFeeFromPlayers:
             msg = "Buying missing items from players:\n"
+            reqs = []
             for item_name, amount in missings.items():
-                self.config.stored.ShopWizardRequests.add(item_name, 'training', amount)
+                reqs.append((item_name, 'training', amount))
                 msg += f"{item_name}: {amount}\n"
             logger.info(msg)
+            self.config.stored.ShopWizardRequests.bulk_add(reqs)
             self.config.task_call('ShopWizard')
             return False
         for academy, pets in aca_pets.items():

@@ -155,7 +155,7 @@ class Connection:
             )
             time.sleep(1)  # Give some time for the browser to start
             self.page = self.context.pages[0] if self.context.pages else self.new_page()
-            self.page.goto("about:blank")
+            self.goto("about:blank")
         else:
             address = self.config.Playwright_RemoteDebuggingAddress
             if not check_connection(address):
@@ -232,7 +232,7 @@ class Connection:
                 self.page = self.new_page()
             else:
                 self.page = self.context.pages[0] if self.context.pages else self.new_page()
-            self.page.goto("about:blank")
+            self.goto("about:blank")
         logger.info("Browser started.")
 
     def clean_redundant_pages(self, keeps:int=3):
@@ -241,11 +241,17 @@ class Connection:
                 continue
             p.close()
 
-    def goto(self, url, page=None, timeout=30):
+    def goto(self, url, page=None, timeout=None):
         if page is None:
             page = self.page
+        if not timeout:
+            timeout = self.config.Playwright_DefaultTimeout
         logger.info(f"Navigating to {url}")
-        page.goto(url, timeout=timeout*1000)
+        page.goto(
+            url,
+            timeout=timeout*1000,
+            wait_until='domcontentloaded'
+        )
 
     def respawn_page(self, depth=0):
         if depth > 3:
@@ -255,22 +261,29 @@ class Connection:
         wt = uniform(1, 2**depth)
         logger.info("Respawning page")
         try:
+            if not self.browser.contexts:
+                logger.warning("Contexts lost, restarting browser")
+                return self.start_browser()
             p = self.new_page()
             self.close_page()
             self.page = p
-            self.page.goto('https://www.neopets.com/questlog/')
+            self.goto('https://www.neopets.com/questlog/')
             return
-        except (TargetClosedError, PlaywrightError) as e:
-            logger.error(f"Playwright errored: {e}, restarting (depth={depth})")
+        except TargetClosedError as e:
+            logger.error(f"Target errored: {e}, restarting (depth={depth})")
             kill_remote_browser(self.config.config_name)
             self.start_browser()
             logger.info(f"Halt {3+wt//2} seconds for context load")
             self.wait(3+wt//2)
+        except PlaywrightError as e:
+            logger.error(f"Playwright errored: {e}, restarting (depth={depth})")
+            return self.respawn_page(depth+1)
         except Exception as e:
             logger.warning(
                 f"Failed to load questlog after respawn: {e} ({type(e)})\n"
                 f"Waiting for {wt} seconds (depth={depth})"
             )
+            logger.exception(e)
             self.wait(wt)
         return self.respawn_page(depth+1)
 

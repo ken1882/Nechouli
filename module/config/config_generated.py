@@ -43,6 +43,7 @@ class GeneratedConfig:
     Playwright_ExtensionDirectory = '$LOCALAPPDATA/Microsoft/Edge/User Data/Default/Extensions'
     Playwright_ExtensionNames = 'Ruffle\nAdGuard\n'
     Playwright_ExtraChromiumArgs = '--disable-features=IsolateOrigins,site-per-process\n--disable-infobars\n--window-size=1280,800\n'
+    Playwright_DefaultTimeout = 30
 
     # Group `ProfileSettings`
     ProfileSettings_MinNpKeep = 100000

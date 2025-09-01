@@ -4,7 +4,7 @@ from tasks.base.base_page import BasePageUI
 class ForgottenShoreUI(BasePageUI):
 
     def main(self):
-        self.page.goto('https://www.neopets.com/pirates/forgottenshore.phtml')
+        self.goto('https://www.neopets.com/pirates/forgottenshore.phtml')
         self.device.click('#shore_back')
         return True
 

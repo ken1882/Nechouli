@@ -465,6 +465,17 @@ class AzurLaneConfig(ConfigUpdater, ManualConfig, GeneratedConfig, ConfigWatcher
             logger.info(f"Task call: {task} (skipped because disabled by user)")
             return False
 
+    def task_enable(self, task=None):
+        if task is None:
+            task = self.task.command
+        if deep_get(self.data, keys=f"{task}.Scheduler.NextRun", default=None) is None:
+            raise ScriptError(f"Task to enable: `{task}` does not exist in user config")
+
+        logger.info(f"Task enable: {task}")
+        self.modified[f"{task}.Scheduler.Enable"] = True
+        if self.auto_update:
+            self.update()
+
     def task_cancel(self, task=None):
         """
         Cancel a task.

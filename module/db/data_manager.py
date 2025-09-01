@@ -122,7 +122,7 @@ def save_cache(item: Optional[dict] = None, *, to_file: bool = False) -> None:
         with DB_LOCK:
             ItemDatabase[item["name"].lower()] = item
 
-    if to_file:
+    if to_file or not _redis_enabled():
         with DB_LOCK, open(CACHE_FILE, "wb") as fh:
             fh.write(orjson.dumps(ItemDatabase, option=orjson.OPT_INDENT_2))
 

@@ -24,6 +24,7 @@ from tasks.utility import quick_stock
 from tasks.utility import safety_deposit_box
 from tasks.daily import pet_training
 from tasks.daily import battledome
+from threading import Thread
 
 BaseFlash = base_flash.BaseFlash
 BasePageUI = base_page.BasePageUI
@@ -75,8 +76,12 @@ self = BattleDomeUI(config, device)
 device.start_browser()
 device.disable_stuck_detection()
 device.screenshot_interval_set(0.1)
-
 self.config.bind('BattleDome')
+logger.info(f"Run task {self.task_name} in background mode")
+self.config.cross_set(f'{self.task_name}.Scheduler.IsRunningBackground', True)
+self.on_background = True
+Thread(target=self.run_background, daemon=True).start()
+
 self.goto('https://www.neopets.com/dome/fight.phtml')
 self.load_actions()
 

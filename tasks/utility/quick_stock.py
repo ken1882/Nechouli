@@ -146,6 +146,8 @@ class QuickStockUI(BasePageUI):
             viewport_height = 400
             viewport_y = 0
             cur_y = 100
+            item_names = [g.locator('td').first.text_content().strip() for g in goods]
+            jn.batch_search(set(item_names))
             for good in goods:
                 cur_y += row_height
                 if cur_y > viewport_y + viewport_height:

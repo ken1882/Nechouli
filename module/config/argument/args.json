@@ -56,6 +56,10 @@
       "ExtraChromiumArgs": {
         "type": "textarea",
         "value": "--disable-features=IsolateOrigins,site-per-process\n--disable-infobars\n--window-size=1280,800\n"
+      },
+      "DefaultTimeout": {
+        "type": "input",
+        "value": 30
       }
     },
     "Error": {
@@ -225,6 +229,51 @@
           "very full",
           "bloated"
         ]
+      }
+    }
+  },
+  "BankInterest": {
+    "Scheduler": {
+      "Enable": {
+        "type": "checkbox",
+        "value": false,
+        "option": [
+          true,
+          false
+        ]
+      },
+      "NextRun": {
+        "type": "datetime",
+        "value": "2020-01-01 00:00:00",
+        "validate": "datetime"
+      },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "Command": {
+        "type": "input",
+        "value": "BankInterest",
+        "display": "hide"
+      },
+      "ServerUpdate": {
+        "type": "input",
+        "value": "00:00",
+        "display": "hide"
+      }
+    },
+    "NeopianBank": {
+      "DepositThreshold": {
+        "type": "input",
+        "value": 1000000
+      },
+      "MaxDeposit": {
+        "type": "input",
+        "value": 500000
       }
     }
   },
@@ -535,51 +584,6 @@
         "type": "input",
         "value": "00:00",
         "display": "hide"
-      }
-    }
-  },
-  "BankInterest": {
-    "Scheduler": {
-      "Enable": {
-        "type": "checkbox",
-        "value": false,
-        "option": [
-          true,
-          false
-        ]
-      },
-      "NextRun": {
-        "type": "datetime",
-        "value": "2020-01-01 00:00:00",
-        "validate": "datetime"
-      },
-      "EnableBackground": {
-        "type": "checkbox",
-        "value": false
-      },
-      "IsRunningBackground": {
-        "type": "checkbox",
-        "value": false
-      },
-      "Command": {
-        "type": "input",
-        "value": "BankInterest",
-        "display": "hide"
-      },
-      "ServerUpdate": {
-        "type": "input",
-        "value": "00:00",
-        "display": "hide"
-      }
-    },
-    "NeopianBank": {
-      "DepositThreshold": {
-        "type": "input",
-        "value": 1000000
-      },
-      "MaxDeposit": {
-        "type": "input",
-        "value": 500000
       }
     }
   },

@@ -13,7 +13,8 @@
       "CustomUserAgent": null,
       "ExtensionDirectory": "$LOCALAPPDATA/Microsoft/Edge/User Data/Default/Extensions",
       "ExtensionNames": "Ruffle\nAdGuard\n",
-      "ExtraChromiumArgs": "--disable-features=IsolateOrigins,site-per-process\n--disable-infobars\n--window-size=1280,800\n"
+      "ExtraChromiumArgs": "--disable-features=IsolateOrigins,site-per-process\n--disable-infobars\n--window-size=1280,800\n",
+      "DefaultTimeout": 30
     },
     "Error": {
       "Restart": "game",
@@ -58,6 +59,20 @@
       "GroomBlackList": null,
       "MaxFeedValue": 1000,
       "MaxFeedLevel": "full up"
+    }
+  },
+  "BankInterest": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
+      "Command": "BankInterest",
+      "ServerUpdate": "00:00"
+    },
+    "NeopianBank": {
+      "DepositThreshold": 1000000,
+      "MaxDeposit": 500000
     }
   },
   "PetTraining": {
@@ -136,20 +151,6 @@
       "IsRunningBackground": false,
       "Command": "AppleBobbing",
       "ServerUpdate": "00:00"
-    }
-  },
-  "BankInterest": {
-    "Scheduler": {
-      "Enable": false,
-      "NextRun": "2020-01-01 00:00:00",
-      "EnableBackground": false,
-      "IsRunningBackground": false,
-      "Command": "BankInterest",
-      "ServerUpdate": "00:00"
-    },
-    "NeopianBank": {
-      "DepositThreshold": 1000000,
-      "MaxDeposit": 500000
     }
   },
   "ColtzansShrine": {
