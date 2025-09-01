@@ -9,7 +9,7 @@ from module.base.utils import (
 from module.db import data_manager as dm
 from module import hardware as hw
 from pathlib import Path
-from threading import Thread
+from datetime import datetime
 import random
 import os
 import time
@@ -94,7 +94,10 @@ class Nechouli(AzurLaneAutoScript):
             return max(tmin, min(tmax, t))
 
         instances = get_all_instance_addresses()
+        st = datetime.now()
         with dm.dlock(self.lock_file, timeout=_quickmath(len(instances))):
+            if (datetime.now() - st).total_seconds() > 1:
+                self.device.wait(3) # wait the previous started browser to start listening port
             for profile_name, addr in instances.items():
                 msg += f"{profile_name} ({addr})"
                 if check_connection(addr, timeout=0.1):
