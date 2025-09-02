@@ -186,10 +186,11 @@ class PetTrainingUI(BasePageUI):
             else:
                 td = img.locator('..')
                 tr = img.locator('..').locator('b')
-            fees.append(NeoItem(
-                name=tr.text_content().strip(),
-                _pay_bb=td.locator('input[type=submit][value="Pay"]').bounding_box(),
-            ))
+            for r in tr.all():
+                fees.append(NeoItem(
+                    name=r.text_content().strip(),
+                    _pay_bb=td.locator('input[type=submit][value="Pay"]').bounding_box(),
+                ))
         return fees
 
     def is_overstated(self, pet: Neopet) -> bool:
@@ -245,12 +246,16 @@ class PetTrainingUI(BasePageUI):
         self.goto(ACADEMY[academy]['url'])
         fees = self.scan_fee(academy)
         logger.info(f"Found {len(fees)} pending fees to pay.")
+        prev_paid = None
         for fee in fees:
             for item in self.config.stored.InventoryData:
                 if item.name != fee.name or item.quantity == 0:
                     continue
+                if prev_paid == fee._pay_bb:  # same course multiple price
+                    break
                 self.device.scroll_to(0, 0)
                 self.device.click(fee._pay_bb, nav=True)
+                prev_paid = fee._pay_bb
                 item.quantity -= 1
                 logger.info(f"Paid item {fee.name} for training fee.")
                 self.config.stored.PendingTrainingFee.remove(fee)

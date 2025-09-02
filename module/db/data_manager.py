@@ -82,35 +82,70 @@ def _redis_set_item(item: dict, ttl: int = 0) -> None:
 # ────────────────────────────────────────────────────────────────────────────────
 def load_item_cache(force_local: bool = False) -> dict:
     """
-    Hydrate the in-memory `Database` dict from Redis (preferred) or local JSON.
+    Hydrate the in-memory `ItemDatabase` dict from Redis (preferred) or local JSON,
+    deleting any cache entries whose `market_price` is None.
     """
-    global ItemDatabase  # noqa: PLW0603
+    global ItemDatabase                     # noqa: PLW0603
+    purged_redis, purged_file = 0, 0        # metrics
 
+    def _is_invalid(obj: dict) -> bool:
+        return obj.get("market_price") is None
+
+    # ───────────────────────────────── Redis path ──────────────────────────────
     if _redis_enabled() and not force_local:
-        logger.info("Loading cache from Redis...")
+        logger.info("Loading cache from Redis…")
         try:
             prefix, total, cursor = REDIS_JN_KEY_PREFIX, 0, 0
             while True:
-                cursor, keys = RedisConn.scan(cursor=cursor, match=f"{prefix}*", count=20_000)
+                cursor, keys = RedisConn.scan(
+                    cursor=cursor,
+                    match=f"{prefix}*",
+                    count=20_000
+                )
                 if keys:
                     values = RedisConn.mget(keys)
+                    pipe = RedisConn.pipeline()
                     for k, v in zip(keys, values):
-                        if v:
-                            ItemDatabase[k[len(prefix):]] = orjson.loads(v)
-                            total += 1
+                        if not v:
+                            continue
+                        obj = orjson.loads(v)
+                        if _is_invalid(obj):
+                            pipe.delete(k)        # purge bad entry
+                            purged_redis += 1
+                            continue
+                        ItemDatabase[k[len(prefix):]] = obj
+                        total += 1
+                    if pipe.command_stack:
+                        pipe.execute()
                 if cursor == 0:
                     break
-            logger.info("Redis warm-up complete (%d items)", total)
+            logger.info(
+                "Redis warm-up complete (%d items, %d purged)",
+                total, purged_redis
+            )
             return ItemDatabase
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:                 # noqa: BLE001
             logger.warning("Redis scan failed: %s", exc)
 
-    # Fallback – local JSON
+    # ──────────────────────────────── File fallback ────────────────────────────
     if os.path.exists(CACHE_FILE):
         logger.info("Loading item cache from %s", CACHE_FILE)
         with open(CACHE_FILE, "rb") as fh:
-            ItemDatabase = orjson.loads(fh.read())
-    logger.info("Loaded %d cached items", len(ItemDatabase))
+            raw = orjson.loads(fh.read())
+
+        # strip invalids and rewrite file only if we removed something
+        for key, obj in list(raw.items()):
+            if _is_invalid(obj):
+                raw.pop(key)
+                purged_file += 1
+
+        if purged_file:
+            with open(CACHE_FILE, "wb") as fh:
+                fh.write(orjson.dumps(raw))
+            logger.info("Purged %d stale items from cache file", purged_file)
+
+        ItemDatabase = raw
+    logger.info("Loaded %d cached items (file path)", len(ItemDatabase))
     return ItemDatabase
 
 def save_cache(item: Optional[dict] = None, *, to_file: bool = False) -> None:
@@ -135,8 +170,7 @@ def is_cached(iname: str) -> bool:
     obj = ItemDatabase.get(iname) or _redis_get_item(iname)
     if not obj:
         return False
-
-    if obj.get("rarity", 0) > 300:  # NC item, never refresh
+    elif obj.get("rarity", 0) > 300:  # NC item, never refresh
         return True
 
     ts = obj.get("price_timestamp")

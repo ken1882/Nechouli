@@ -16,7 +16,8 @@ class MeteorCrashSiteUI(BasePageUI):
             return True
         select.select_option(value='1')
         self.device.click('input[name="meteorsubmit"]', nav=True)
-        if any([s in self.page.content().lower() for s in ['try again later', 'gone']]):
+        content = self.page.content().lower()
+        if any([s in content for s in ['try again later', 'gone']]):
             logger.info("Gained nothing, will try again next hour")
             return False
         return True

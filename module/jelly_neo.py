@@ -109,13 +109,13 @@ def _parse_search_page(page: BS) -> dict:
 
     try:
         pn = page.select(".price-history-link")[0]
-        ret["market_price"] = str2int(pn.text)
+        ret["market_price"] = str2int(pn.text) or 0
         # ret["price_timestamp"] = datetime.strptime(
         #     pn.attrs["title"], "%B %d, %Y"
         # ).timestamp()
         ret["price_timestamp"] = datetime.now().timestamp()
     except Exception:
-        logger.debug("No price block – maybe NC item")
+        logger.debug("No price detected, maybe NC item")
         ret["market_price"] = 999_999
         ret["price_timestamp"] = datetime.now().timestamp()
 
