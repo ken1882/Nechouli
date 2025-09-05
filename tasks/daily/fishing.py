@@ -24,7 +24,7 @@ class FishingUI(BasePageUI):
         self.device.click('input[value="Reel In Your Line"]', nav=True)
 
     def calc_next_run(self, *args):
-        self.config.task_delay(minute=60*6)
+        self.config.task_delay(minute=self.config.Fishing_Interval)
 
 if __name__ == '__main__':
     self = FishingUI()
