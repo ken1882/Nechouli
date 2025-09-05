@@ -109,7 +109,9 @@ def _parse_search_page(page: BS) -> dict:
 
     try:
         pn = page.select(".price-history-link")[0]
-        ret["market_price"] = str2int(pn.text) or 0
+        ret["market_price"] = str2int(pn.text)
+        if not ret["market_price"]:
+            ret["market_price"] = 999_999
         # ret["price_timestamp"] = datetime.strptime(
         #     pn.attrs["title"], "%B %d, %Y"
         # ).timestamp()
