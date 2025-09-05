@@ -12,7 +12,11 @@ class DailyQuestUI(BasePageUI):
         if not self.do_quests():
             self.config.task_delay(minute=5)
             return False
-        self.claim_rewards()
+        try:
+            self.claim_rewards()
+        except Exception as e:
+            logger.error(f"Error while claiming rewards: {e}")
+            return False
         return True
 
     def claim_rewards(self):

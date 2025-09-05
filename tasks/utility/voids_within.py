@@ -31,6 +31,7 @@ class VoidsWithinUI(BasePageUI):
                 if 'locked' in j.locator('../..').get_attribute('class'):
                     continue
                 done = False
+                depth = 0
                 while True:
                     if err_popup.is_visible():
                         logger.error("Stopped due to error page")
@@ -44,8 +45,12 @@ class VoidsWithinUI(BasePageUI):
                         done = self.process_shift(j, do_send)
                         break
                     except Exception as e:
+                        depth += 1
                         logger.warning(f"Failed to process shift: {e}, retrying...")
                         self.device.wait(1)
+                        if depth > 10:
+                            logger.error("Stop task due unresolvable errors")
+                            return False
                 if done:
                     break
             if done:
