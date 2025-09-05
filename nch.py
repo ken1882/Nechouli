@@ -27,10 +27,8 @@ class Nechouli(AzurLaneAutoScript):
             logger.exception(e)
 
     def restart(self):
-        from tasks.base.base_page import BasePageUI
-        t = BasePageUI(config=self.config, device=self.device)
-        t.goto('https://www.neopets.com/questlog/')
-        t.calc_next_run()
+        self.stop()
+        self.start()
 
     @property
     def lock_file(self):
