@@ -89,7 +89,7 @@ def load_item_cache(force_local: bool = False) -> dict:
     purged_redis, purged_file = 0, 0        # metrics
 
     def _is_invalid(obj: dict) -> bool:
-        return obj.get("market_price") is None
+        return (obj.get("market_price") or 0) <= 0
 
     # ───────────────────────────────── Redis path ──────────────────────────────
     if _redis_enabled() and not force_local:

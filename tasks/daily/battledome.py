@@ -45,7 +45,7 @@ class BattleDomeUI(BasePageUI):
                     self.config.task_delay(target=future)
                     return None
             self.device.click('#bdplayagain')
-        logger.info("Stopped and canceled due to defeat")
+        logger.info("Stopped and canceled due to defeat or errored")
         self.config.task_cancel()
         return True
 
@@ -117,7 +117,9 @@ class BattleDomeUI(BasePageUI):
             if self.round > len(self.actions):
                 logger.info("No more actions configured, ending battle")
                 return False
-            self.select_action()
+            ok = self.select_action()
+            if not ok:
+                return False
             self.send_actions()
 
     def wait_and_start(self):
@@ -149,10 +151,15 @@ class BattleDomeUI(BasePageUI):
     def select_action(self):
         a1,a2,a3 = self.actions[self.round-1]
         equips = self.page.locator('#p1equipment')
+        depth = 0
         if a1 != 'none':
             while 'block' not in (equips.get_attribute('style') or ''):
                 self.device.click('#p1e1m')
                 self.device.wait(0.5)
+                depth += 1
+                if depth > 20:
+                    logger.error("Failed to open equipment panel")
+                    return False
             for ab in equips.locator('img').all():
                 name = ab.get_attribute('title').lower()
                 if a1 == name:
@@ -162,6 +169,10 @@ class BattleDomeUI(BasePageUI):
             while 'block' not in (equips.get_attribute('style') or ''):
                 self.device.click('#p1e2m')
                 self.device.wait(0.5)
+                depth += 1
+                if depth > 20:
+                    logger.error("Failed to open equipment panel")
+                    return False
             for ab in equips.locator('img').all():
                 name = ab.get_attribute('title').lower()
                 if a2 == name:
@@ -174,6 +185,7 @@ class BattleDomeUI(BasePageUI):
                 if a3 == name:
                     self.device.click(ab)
                     break
+        return True
 
     def send_actions(self):
         self.device.click('#fight')
