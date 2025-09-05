@@ -201,6 +201,10 @@
       "IsRunningBackground": false,
       "Command": "Fishing",
       "ServerUpdate": "00:00"
+    },
+    "Fishing": {
+      "SwapPets": true,
+      "Interval": 240
     }
   },
   "ForgottenShore": {

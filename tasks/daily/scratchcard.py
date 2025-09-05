@@ -18,7 +18,7 @@ class ScratchcardUI(BaseFlash, BasePageUI):
         loc = self.config.Scratchcard_Location
         self.goto(self.LocationUrlMap[loc])
         buy = self.page.locator('input[type="submit"]')
-        if buy.count() < 2:
+        if 'come back later' in self.page.content() or buy.count() < 2:
             logger.warning(f'Temprorarily closed')
             return False
         text = self.page.locator('.content').first.text_content().lower()

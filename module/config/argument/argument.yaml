@@ -192,6 +192,9 @@ Scratchcard:
     value: desert
     option: [ desert, snow, halloween ]
   UseCard: false
+Fishing:
+  SwapPets: true
+  Interval: 240
 
 HealingSpring:
   Interval: 30

@@ -760,6 +760,16 @@
         "value": "00:00",
         "display": "hide"
       }
+    },
+    "Fishing": {
+      "SwapPets": {
+        "type": "checkbox",
+        "value": true
+      },
+      "Interval": {
+        "type": "input",
+        "value": 240
+      }
     }
   },
   "ForgottenShore": {

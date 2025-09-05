@@ -94,6 +94,10 @@ class GeneratedConfig:
     Scratchcard_Location = 'desert'  # desert, snow, halloween
     Scratchcard_UseCard = False
 
+    # Group `Fishing`
+    Fishing_SwapPets = True
+    Fishing_Interval = 240
+
     # Group `HealingSpring`
     HealingSpring_Interval = 30
 

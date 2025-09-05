@@ -53,6 +53,7 @@ Chore:
       - Scheduler
     Fishing:
       - Scheduler
+      - Fishing
     ForgottenShore:
       - Scheduler
     FruitMachine:

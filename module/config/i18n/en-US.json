@@ -544,6 +544,20 @@
       "help": "Scratch all cards available"
     }
   },
+  "Fishing": {
+    "_info": {
+      "name": "Fishing",
+      "help": ""
+    },
+    "SwapPets": {
+      "name": "Swap Pets",
+      "help": "Swap all pets to pull the line instead only active pet"
+    },
+    "Interval": {
+      "name": "Interval",
+      "help": "Minutes to reel the line, each pet has random cooldown between 2 ~ 12 hours"
+    }
+  },
   "HealingSpring": {
     "_info": {
       "name": "Healing Spring",
