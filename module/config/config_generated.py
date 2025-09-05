@@ -75,6 +75,7 @@ class GeneratedConfig:
     Restocking_MaxShopStock = 5
     Restocking_MaxCost = 1000000
     Restocking_ImmediateProfit = 3500
+    Restocking_HuntRareItems = False
     Restocking_ShopList = '1,2,3,5,10,14,15,16,20,25,34,35,39,40,42,44,46,50,56,57,61,80,81,95,97,101,103'
     Restocking_BargainStrategyScript = "# purposes: list of shopkeeper's purposes\n# offers: list of your offers\n# depth: number of bargains made\npurposed = purposes[-1]\nlast_offer = offers[-1] if offers else 0\nif purposed > 100000 or depth > 5:\n  return purposed\nif len(purposes) > 2 and purposes[-2] == purposes[-3]:\n  return purposed\nif last_offer == 0:\n  return int(purposed * 0.4 // 10 * 10)\ndelta = purposed - last_offer\nstep  = 20\nif delta > 3000:\n  step = 1000\nelif delta > 1500:\n  step = 500\nelif delta > 300:\n  step = 100\nelif delta > 150:\n  step = 50\nret = max(1, min(purposed, last_offer + int(delta * 0.4 // step * step)))\nif ret == last_offer:\n    ret = int(purposed // 10 * 10)\nreturn ret\n"
 
@@ -88,6 +89,10 @@ class GeneratedConfig:
     QuickStock_ForceDepositList = 'Basic Gift Box\n'
     QuickStock_DepositBlacklist = None
     QuickStock_DonateNameList = 'Old Rotten Right Sandal\nOld Rotten Left Sandal\nOld Rotten Right Boot\nOld Rotten Left Boot\nOld Rotten Right Shoe\nOld Rotten Left Shoe\n'
+
+    # Group `Scratchcard`
+    Scratchcard_Location = 'desert'  # desert, snow, halloween
+    Scratchcard_UseCard = False
 
     # Group `HealingSpring`
     HealingSpring_Interval = 30

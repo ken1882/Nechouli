@@ -7,6 +7,7 @@ from functools import cached_property
 from module.logger import logger
 from module.device.connection import Connection
 from playwright.sync_api import Locator
+from typing import Union
 
 class Control(Connection):
 
@@ -216,8 +217,8 @@ class Control(Connection):
             self.wait(wait)
 
     def drag_to(self,
-            locator_a: Locator,
-            locator_b: Locator,
+            src: Union[Locator, tuple[int, int]],
+            dst: Union[Locator, tuple[int, int]],
             speed: int = 1000,
             shake: tuple[int] = (0, 15),
             point_random: tuple[int] = (-10, -10, 10, 10),
@@ -230,8 +231,8 @@ class Control(Connection):
         Drag an entity from a to b.
 
         Args:
-            locator_a (Locator): The entity to drag.
-            locator_b (Locator): The entity to drag to.
+            src (Union[Locator, tuple[int, int]]): The entity to drag.
+            dst (Union[Locator, tuple[int, int]]): The entity to drag to.
             speed (int): Speed of the drag.
             shake (tuple[int]): Shake range after the drag.
             point_random (tuple[int]): Random range to click around the target.
@@ -240,14 +241,21 @@ class Control(Connection):
             shake_duration (float): Duration of each shake.
             random_duration (tuple[int]): Random range to add to the duration.
         '''
-        locator_a.hover()
+        if type(src) is Locator:
+            src.hover()
+            ba = src.bounding_box()
+            ax = (ba['x'] + ba['width'] * 0.5)
+            ay = (ba['y'] + ba['height'] * 0.5)
+        else:
+            ax, ay = src
+            self.page.mouse.move(ax, ay)
         self.page.mouse.down()
-        ba = locator_a.bounding_box()
-        bb = locator_b.bounding_box()
-        ax = (ba['x'] + ba['width'] * 0.5)
-        ay = (ba['y'] + ba['height'] * 0.5)
-        bx = (bb['x'] + bb['width'] * 0.5)
-        by = (bb['y'] + bb['height'] * 0.5)
+        if type(dst) is Locator:
+            bb = dst.bounding_box()
+            bx = (bb['x'] + bb['width'] * 0.5)
+            by = (bb['y'] + bb['height'] * 0.5)
+        else:
+            bx, by = dst
         p1 = np.array((ax, ay)) - utils.random_rectangle_point(point_random)
         p2 = np.array((bx, by)) - utils.random_rectangle_point(point_random)
         distance = np.linalg.norm(p2 - p1)

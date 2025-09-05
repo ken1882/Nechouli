@@ -89,6 +89,8 @@ class RestockingUI(BasePageUI):
                 f"need at least {self.config.QuickStock_KeepInventorySlot+1} (by QuickStock setting)"
             )
             fulled = True
+        elif self.config.Restocking_HuntRareItems:
+            return False
         elif self.stock_free <= 1 and self.config.stored.DailyQuestRestockTimesLeft.value <= 0:
             logger.warning(f"Not enough shop stock space: only {self.stock_free} slot available")
             fulled = True
@@ -123,6 +125,11 @@ class RestockingUI(BasePageUI):
             if t.restock_price > self.config.Restocking_MaxCost:
                 logger.info(f"Item {t.name} exceeds max cost, skipping")
                 continue
+            elif self.stock_free <= 0 and self.config.Restocking_HuntRareItems:
+                if t.profit >= 10_000:
+                    logger.info(f"Hunting rare item {t.name} with profit {t.profit}")
+                else:
+                    continue
             elif t.profit < self.config.Restocking_MinProfit:
                 if (self.config.stored.DailyQuestRestockTimesLeft.value
                     and self.config.DailyQuest_PurchaseCheapItems

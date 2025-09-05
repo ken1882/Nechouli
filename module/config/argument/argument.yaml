@@ -120,6 +120,7 @@ Restocking:
   MaxShopStock: 5
   MaxCost: 1000000
   ImmediateProfit: 3500
+  HuntRareItems: false
   ShopList:
     type: textarea
     value: "1,2,3,5,10,14,15,16,20,25,34,35,39,40,42,44,46,50,56,57,61,80,81,95,97,101,103"
@@ -185,6 +186,12 @@ QuickStock:
       Old Rotten Left Boot
       Old Rotten Right Shoe
       Old Rotten Left Shoe
+Scratchcard:
+  Location:
+    type: select
+    value: desert
+    option: [ desert, snow, halloween ]
+  UseCard: false
 
 HealingSpring:
   Interval: 30

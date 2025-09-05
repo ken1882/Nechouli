@@ -97,6 +97,9 @@ Chore:
     StockMarket:
       - Scheduler
       - StockMarket
+    Scratchcard:
+      - Scheduler
+      - Scratchcard
     EssenceCollection:
       - Scheduler
 

@@ -78,6 +78,7 @@ class BasePageUI(ModuleBase):
 
     def stop_background(self):
         self.config.cross_set(f'{self.task_name}.Scheduler.IsRunningBackground', False)
+        self.config.task_enable()
         self.on_background = False
         self.page.close()
         self.device.stop()
@@ -105,8 +106,6 @@ class BasePageUI(ModuleBase):
         else:
             logger.warning(f'Unknown delay preset: {s}')
         self.config.task_delay(target=future)
-        if self.on_background:
-            self.config.task_enable()
 
     def on_failed_delay(self):
         future = datetime.now() + timedelta(hours=1)

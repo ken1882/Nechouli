@@ -162,6 +162,10 @@
       "name": "Stock Market",
       "help": "https://www.jellyneo.net/?go=neopian_stock_market"
     },
+    "Scratchcard": {
+      "name": "Scratchcard",
+      "help": "https://www.jellyneo.net/?go=scratchcards"
+    },
     "EssenceCollection": {
       "name": "Essence Collection",
       "help": "https://www.jellyneo.net/?go=the_void_within&id=essence_collection"
@@ -340,8 +344,8 @@
       "help": "Additional command-line arguments to pass."
     },
     "DefaultTimeout": {
-      "name": "Playwright.DefaultTimeout.name",
-      "help": "Playwright.DefaultTimeout.help"
+      "name": "Default Timeout",
+      "help": ""
     }
   },
   "ProfileSettings": {
@@ -468,6 +472,10 @@
       "name": "Immediate Profit",
       "help": "Bypass bargain if item's profit is above this value"
     },
+    "HuntRareItems": {
+      "name": "Hunt Rare Items",
+      "help": "Ignore shop stock limit and looking for items with 10k+ profit"
+    },
     "ShopList": {
       "name": "Shop List",
       "help": "List of shops to restock from, separated by comma.\nFor list of shops, see https://www.jellyneo.net/?go=shopsdirectory"
@@ -517,6 +525,23 @@
     "DonateNameList": {
       "name": "Donate Name List",
       "help": "Exact name of items to donate, separated by line."
+    }
+  },
+  "Scratchcard": {
+    "_info": {
+      "name": "Scratchcard",
+      "help": ""
+    },
+    "Location": {
+      "name": "Type",
+      "help": "",
+      "desert": "Lost Desert",
+      "snow": "Terror Mountain",
+      "halloween": "Haunted Woods"
+    },
+    "UseCard": {
+      "name": "Scratch the Card",
+      "help": "Scratch all cards available"
     }
   },
   "HealingSpring": {

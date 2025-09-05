@@ -281,6 +281,9 @@ class Nechouli(AzurLaneAutoScript):
         from tasks.utility.auction import AuctionUI
         AuctionUI(config=self.config, device=self.device).run()
 
+    def scratchcard(self):
+        from tasks.daily.scratchcard import ScratchcardUI
+        ScratchcardUI(config=self.config, device=self.device).run()
 
 
 if __name__ == '__main__':

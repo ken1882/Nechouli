@@ -6,11 +6,12 @@ class MeteorCrashSiteUI(BasePageUI):
     def main(self):
         self.goto('https://www.neopets.com/moon/meteor.phtml')
         btn = self.page.locator('input[value="Take a chance"]')
-        if not btn.count():
+        select = self.page.locator('select[name="pickstep"]')
+        if not btn.count() and not select.count():
             logger.info("Seems meteor reward gained today")
             return True
-        self.device.click(btn, nav=True)
-        select = self.page.locator('select[name="pickstep"]')
+        if btn.count():
+            self.device.click(btn, nav=True)
         if not select.count():
             logger.info("Seems meteor reward gained today")
             return True
