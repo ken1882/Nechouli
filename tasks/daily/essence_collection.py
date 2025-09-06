@@ -67,7 +67,7 @@ class EssenceCollectionUI(BasePageUI):
             nodes = self.device.page.locator('.tvw-essence')
             depth = 0
             while nodes.count():
-                node = nodes.nth(0)
+                node = sorted(nodes.all(), key=lambda x: x.bounding_box()['y'])[0]
                 self.claim_and_close(node)
                 depth += 1
                 if depth > 10:
