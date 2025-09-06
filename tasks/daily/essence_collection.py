@@ -68,7 +68,6 @@ class EssenceCollectionUI(BasePageUI):
             depth = 0
             while nodes.count():
                 node = nodes.nth(0)
-                self.device.scroll_to(0, 100)
                 self.claim_and_close(node)
                 depth += 1
                 if depth > 10:
