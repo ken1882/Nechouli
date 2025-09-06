@@ -41,10 +41,13 @@ class Nechouli(AzurLaneAutoScript):
         wt = 3 + ((os.getpid() % 97) / 800.0)
         dm.JN_CACHE_TTL = self.config.ProfileSettings_JellyNeoExpiry * 3600
         dm.load_item_cache()
-        while self.is_concurrent_limit_reached(start=True):
-            wt = min(300+random.randint(0, 100), random.uniform(wt * 0.9, wt * 1.5))
-            logger.warning(f"Concurrent limit reached, waiting for {round(wt, 3)} seconds")
-            time.sleep(wt)
+        if check_connection(self.config.Playwright_RemoteDebuggingAddress, timeout=0.3):
+            self.device.start_browser()
+        else:
+            while self.is_concurrent_limit_reached(start=True):
+                wt = min(300+random.randint(0, 100), random.uniform(wt * 0.9, wt * 1.5))
+                logger.warning(f"Concurrent limit reached, waiting for {round(wt, 3)} seconds")
+                time.sleep(wt)
         while True:
             try:
                 self.device.goto('https://www.neopets.com/questlog/')
