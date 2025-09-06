@@ -195,15 +195,16 @@ class Control(Connection):
             if cy > viewport_height:
                 dy = self.eval("window.scrollY")
                 self.scroll_to(0, cy - int(viewport_height * 0.5))
-                cy -= self.eval("window.scrollY") - dy
+                fy = self.eval("window.scrollY")
+                cy -= fy - dy
                 self.wait(0.3)
-                logger.info(f"Adjusted viewport at ({mx+x}, {my+y})")
+                logger.info(f"Adjusted viewport from {dy} -> {fy} at ({cx}, {cy})")
             if cy < 100:
                 dy = self.eval("window.scrollY")
                 self.scroll_to(0, 0)
                 cy += dy
                 self.wait(0.3)
-                logger.info(f"Adjusted viewport at ({mx+x}, {my+y})")
+                logger.info(f"Adjusted viewport from {dy} -> 0 at ({cx}, {cy})")
 
             self.page.mouse.click(cx, cy, button=button, delay=md)
         if nav:
