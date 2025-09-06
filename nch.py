@@ -27,8 +27,8 @@ class Nechouli(AzurLaneAutoScript):
             logger.exception(e)
 
     def restart(self):
-        self.stop()
-        self.start()
+        if not self.device.pw:
+            self.start()
 
     @property
     def lock_file(self):
@@ -68,6 +68,7 @@ class Nechouli(AzurLaneAutoScript):
 
     def stop(self):
         logger.info("Stopping Nechouli")
+        self.device.stop()
         killed = kill_remote_browser(self.config.config_name)
         logger.info(f"Killed browser process: {killed}")
 
