@@ -198,7 +198,7 @@ class Control(Connection):
                 cy -= self.eval("window.scrollY") - dy
                 self.wait(0.3)
                 logger.info(f"Adjusted viewport at ({mx+x}, {my+y})")
-            elif cy < 100:
+            if cy < 100:
                 dy = self.eval("window.scrollY")
                 self.scroll_to(0, 0)
                 cy += dy
