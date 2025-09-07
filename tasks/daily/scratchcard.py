@@ -46,7 +46,7 @@ class ScratchcardUI(BaseFlash, BasePageUI):
         self.device.scroll_to(0, 50)
         self.wait_for_button(assets.play, timeout=10, similarity=0.1)
         logger.info("Scratching the card...")
-        slots_x = [250, 310, 370]
+        slots_x = [250, 310, 400]
         slots_y = [100, 160, 260]
         loc = self.find_flash()
         for n in range(6):

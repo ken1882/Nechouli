@@ -19,10 +19,11 @@ class TrudysSurpriseUI(BasePageUI):
             return
         self.dismiss_popup()
         depth = 0
+        threshold = 0.5
         while True:
-            if assets.play.match_template_luma(self.device.screenshot(), 0.6, direct_match=1):
+            if assets.play.match_template_luma(self.device.screenshot(), threshold, direct_match=1):
                 break
-            elif assets.played.match_template_luma(self.device.screenshot(), 0.6, direct_match=1):
+            elif assets.played.match_template_luma(self.device.screenshot(), threshold, direct_match=1):
                 logger.info("Already played today")
                 return True
             self.device.wait(1)

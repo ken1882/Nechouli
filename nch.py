@@ -29,6 +29,7 @@ class Nechouli(AzurLaneAutoScript):
     def restart(self):
         if not self.device.pw:
             self.start()
+        return True
 
     @property
     def lock_file(self):
