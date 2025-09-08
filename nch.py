@@ -29,6 +29,8 @@ class Nechouli(AzurLaneAutoScript):
     def restart(self):
         if not self.device.pw:
             self.start()
+        if self.config.task.command == 'Restart':
+            self.config.task_delay(server_update=True)
         return True
 
     @property
