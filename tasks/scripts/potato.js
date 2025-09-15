@@ -18,13 +18,7 @@
             }
         });
 
-        // Calculate the delay based on the total count
-        const finalDelay = totalCount * 30;
-
-        // Ensure the overlay is updated after the calculated delay
-        setTimeout(() => {
-            updateOverlay(totalCount);
-        }, finalDelay);
+        updateOverlay(totalCount);
     }
 
     function updateOverlay(count) {

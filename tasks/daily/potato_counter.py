@@ -17,6 +17,7 @@ class PotatoCounterUI(BasePageUI):
                 logger.warning(f"Invalid potato count: {ans}, reloading page")
                 self.reload()
                 continue
+            self.device.wait(ans * 0.03)
             form = self.page.locator('form[action="potatocounter.phtml"]')
             form.locator('input[name="guess"]').fill(str(ans))
             self.device.click(form.locator('input[type="submit"]'), nav=True)

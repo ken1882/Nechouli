@@ -30,6 +30,14 @@ class Nechouli(AzurLaneAutoScript):
         if not self.device.pw:
             self.start()
         if self.config.task.command == 'Restart':
+            while True:
+                try:
+                    self.device.goto('https://www.neopets.com/questlog/')
+                except Exception as e:
+                    logger.error(f"Failed to navigate to quest log: {e}")
+                    self.device.respawn_page()
+                    continue
+                break
             self.config.task_delay(server_update=True)
         return True
 

@@ -213,7 +213,7 @@ ShopWizard:
 
 PetTraining:
   BuyFeeFromPlayers: false
-  TrainPriority: "str > def > hp > mov > lv"
+  TrainPriority: "str > hp > def > mov > lv"
   Config:
     type: textarea
     value: |

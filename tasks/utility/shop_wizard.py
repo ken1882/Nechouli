@@ -148,6 +148,7 @@ class ShopWizardUI(BasePageUI):
         if not good_id:
             logger.error(f"Failed to find good_id for {name} in {shop_link}")
             return 0
+        logger.info(f"Buying {name} (x{amount}) for {shop_link.split('=')[-1]} NP")
         good_id = good_id.split('=')[1]
         goods = self.page.locator(f'a[href*="obj_info_id={good_id}"]')
         brought = 0
