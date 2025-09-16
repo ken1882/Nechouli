@@ -242,17 +242,18 @@ class PetCaresUI(BasePageUI):
             return False
         weared_items = self.scan_wearables()
         if not weared_items:
-            return False
-        item_name = self.takeoff_item(weared_items[0])
-        if not item_name:
-            return False
-        if not self.save_customise():
-            return False
-        if not self.switch_closet():
-            return False
-        if not self.search_item(item_name):
-            return False
-        self.device.sleep(3) # probably long, depends on your network and closet size
+            self.switch_closet()
+        else:
+            item_name = self.takeoff_item(weared_items[0])
+            if not item_name:
+                return False
+            if not self.save_customise():
+                return False
+            if not self.switch_closet():
+                return False
+            if not self.search_item(item_name):
+                return False
+            self.device.sleep(3) # probably long, depends on your network and closet size
         available_items = self.scan_wearables()
         if not available_items:
             logger.warning("No available items found after customisation.")

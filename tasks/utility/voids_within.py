@@ -52,9 +52,7 @@ class VoidsWithinUI(BasePageUI):
                             logger.error("Stop task due unresolvable errors")
                             return False
                 if done:
-                    break
-            if done:
-                break
+                    continue
         if not do_send:
             logger.info("Delay task for to daily feed delay")
             self.config.task_delay(minute=60)
@@ -121,7 +119,10 @@ class VoidsWithinUI(BasePageUI):
             self.device.click(back)
             break
         else:
-            logger.info(f"All pets joined, exit")
+            logger.info(f"No available pet")
+            back = self.page.locator('button').filter(has_text='Actually, Nevermind')
+            self.device.click(back)
+            self.device.wait(1)
             return True
         return False
 

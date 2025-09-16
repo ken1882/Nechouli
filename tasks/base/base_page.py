@@ -116,6 +116,8 @@ class BasePageUI(ModuleBase):
         content = self.device.page.content().lower()
         if '/login/index.phtml' in self.device.page.url:
             return False
+        if 'login to neopets' in content:
+            return False
         if 'id="loginbutton"' in content:
             return False
         if 'forgot password?' in content:

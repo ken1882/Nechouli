@@ -25,6 +25,7 @@ class DailyQuestUI(BasePageUI):
         loading = self.page.locator('#QuestLogLoader')
         while loading.is_visible():
             self.device.wait(0.3)
+        self.device.wait_for_element('.ql-neopass-text')
         quests = self.page.locator('.questlog-quest')
         idx = 0
         while quests.count():
