@@ -22,6 +22,7 @@ class DailyQuestUI(BasePageUI):
     def claim_rewards(self):
         self.goto('https://www.neopets.com/questlog/')
         logger.info("Claiming daily quest rewards")
+        self.device.wait_for_element('#QuestLogLoader')
         loading = self.page.locator('#QuestLogLoader')
         while loading.is_visible():
             self.device.wait(0.3)
