@@ -84,12 +84,18 @@ class PetCaresUI(BasePageUI):
         if index < 0 or index >= len(self.pets):
             raise TaskError(f'Invalid pet index: {index}')
         self.selected_pet = self.pets[index]
+        x_cycle = []
         while True:
             bb = self.selected_pet.locator.bounding_box()
             logger.info("Visibility check: %s", bb)
             ww = self.device.eval('window.innerWidth')
             if 100 <= bb['x'] + bb['width'] and bb['x'] <= ww*0.8:
                 break
+            dup_x = [x for x in x_cycle if abs(x - bb['x']) < 1]
+            if len(dup_x) > 2 and abs(min(dup_x) - bb['x']) < 1:
+                logger.warning("Pet selection seems stuck, try to proceed.")
+                break
+            x_cycle.append(bb['x'])
             self.device.click('button[class="slick-next slick-arrow"]')
             self.device.wait(0.5)
         logger.info(f'Selected pet: {self.selected_pet.name}')

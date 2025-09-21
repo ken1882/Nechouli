@@ -39,8 +39,13 @@ RedisFactory = None
 if REDIS_CACHE_URL:
     import redis
     from redlock import RedLockFactory
-    RedisConn = redis.Redis.from_url(REDIS_CACHE_URL, decode_responses=True)
-    RedisFactory = RedLockFactory(connection_details=[{'url': REDIS_CACHE_URL}])
+    try:
+        RedisConn = redis.Redis.from_url(REDIS_CACHE_URL, decode_responses=True)
+        RedisFactory = RedLockFactory(connection_details=[{'url': REDIS_CACHE_URL}])
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Redis init failed: %s", exc)
+        RedisConn = None
+        RedisFactory = None
 
 
 def _redis_enabled() -> bool:
