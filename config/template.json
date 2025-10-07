@@ -86,7 +86,7 @@
     },
     "PetTraining": {
       "BuyFeeFromPlayers": false,
-      "TrainPriority": "str > def > hp > mov > lv",
+      "TrainPriority": "str > hp > def > mov > lv",
       "Config": "PetName:Academy:TargetLv:TargetStr:TargetDef:TargetMov:TargetHp\n",
       "PendingTrainingFee": {}
     }
@@ -423,6 +423,19 @@
       "SellProfitRatio": 20
     }
   },
+  "WishingWell": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
+      "Command": "WishingWell",
+      "ServerUpdate": "00:00"
+    },
+    "WishingWell": {
+      "Item": "Horace Stamp"
+    }
+  },
   "Scratchcard": {
     "Scheduler": {
       "Enable": false,
@@ -435,6 +448,34 @@
     "Scratchcard": {
       "Location": "desert",
       "UseCard": false
+    }
+  },
+  "AlmostAbandonedAttic": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
+      "Command": "AlmostAbandonedAttic",
+      "ServerUpdate": "00:00"
+    },
+    "AlmostAbandonedAttic": {
+      "PurchaseProfit": 10000,
+      "AaaPurchasedCount": {}
+    }
+  },
+  "IglooGarageSale": {
+    "Scheduler": {
+      "Enable": false,
+      "NextRun": "2020-01-01 00:00:00",
+      "EnableBackground": false,
+      "IsRunningBackground": false,
+      "Command": "IglooGarageSale",
+      "ServerUpdate": "00:00"
+    },
+    "IglooGarageSale": {
+      "PurchaseProfit": 5000,
+      "IgsPurchasedCount": {}
     }
   },
   "EssenceCollection": {
@@ -492,12 +533,14 @@
       "ActiveRestockInterval": 60,
       "EnableCaptchaDebug": false,
       "RestockPerShop": 5,
+      "MaxInSdb": 10,
       "MinProfit": 1000,
       "MaxShopStock": 5,
       "MaxCost": 1000000,
       "ImmediateProfit": 3500,
+      "HighValueProfit": 100000,
       "HuntRareItems": false,
-      "ShopList": "1,2,3,5,10,14,15,16,20,25,34,35,39,40,42,44,46,50,56,57,61,80,81,95,97,101,103",
+      "ShopList": "1,2,3,5,10,14,15,16,20,25,34,35,39,40,42,44,46,47,50,56,57,61,80,81,86,95,97,101,103,111",
       "BargainStrategyScript": "# purposes: list of shopkeeper's purposes\n# offers: list of your offers\n# depth: number of bargains made\npurposed = purposes[-1]\nlast_offer = offers[-1] if offers else 0\nif purposed > 100000 or depth > 5:\n  return purposed\nif len(purposes) > 2 and purposes[-2] == purposes[-3]:\n  return purposed\nif last_offer == 0:\n  return int(purposed * 0.4 // 10 * 10)\ndelta = purposed - last_offer\nstep  = 20\nif delta > 3000:\n  step = 1000\nelif delta > 1500:\n  step = 500\nelif delta > 300:\n  step = 100\nelif delta > 150:\n  step = 50\nret = max(1, min(purposed, last_offer + int(delta * 0.4 // step * step)))\nif ret == last_offer:\n    ret = int(purposed // 10 * 10)\nreturn ret\n"
     }
   },

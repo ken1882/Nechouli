@@ -162,9 +162,21 @@
       "name": "Stock Market",
       "help": "https://www.jellyneo.net/?go=neopian_stock_market"
     },
+    "WishingWell": {
+      "name": "Wishing Well",
+      "help": "https://www.jellyneo.net/?go=wishing_well"
+    },
     "Scratchcard": {
       "name": "Scratchcard",
       "help": "https://www.jellyneo.net/?go=scratchcards"
+    },
+    "AlmostAbandonedAttic": {
+      "name": "Task.AlmostAbandonedAttic.name",
+      "help": "Task.AlmostAbandonedAttic.help"
+    },
+    "IglooGarageSale": {
+      "name": "Task.IglooGarageSale.name",
+      "help": "Task.IglooGarageSale.help"
     },
     "EssenceCollection": {
       "name": "Essence Collection",
@@ -456,6 +468,10 @@
       "name": "Restock Per Shop",
       "help": "How many items to buy in each shop, ignored if no goods are available"
     },
+    "MaxInSdb": {
+      "name": "Item Max in SDB",
+      "help": "Skip item if more than this number is in your SDB\n(you need to run the task to scan your SDB first)"
+    },
     "MinProfit": {
       "name": "Min Profit",
       "help": "Minimum profit to buy the item"
@@ -471,6 +487,10 @@
     "ImmediateProfit": {
       "name": "Immediate Profit",
       "help": "Bypass bargain if item's profit is above this value"
+    },
+    "HighValueProfit": {
+      "name": "High Value Profit",
+      "help": "Profit threshold to buy the item for `Hunt Rare Items`"
     },
     "HuntRareItems": {
       "name": "Hunt Rare Items",
@@ -686,6 +706,44 @@
       "Donny": "Donny",
       "Valin": "Valin",
       "Giant Spectral Mutant Walein": "Giant Spectral Mutant Walein"
+    }
+  },
+  "WishingWell": {
+    "_info": {
+      "name": "",
+      "help": ""
+    },
+    "Item": {
+      "name": "Item name",
+      "help": "Exact item name wish for"
+    }
+  },
+  "AlmostAbandonedAttic": {
+    "_info": {
+      "name": "AlmostAbandonedAttic._info.name",
+      "help": "AlmostAbandonedAttic._info.help"
+    },
+    "PurchaseProfit": {
+      "name": "AlmostAbandonedAttic.PurchaseProfit.name",
+      "help": "AlmostAbandonedAttic.PurchaseProfit.help"
+    },
+    "AaaPurchasedCount": {
+      "name": "AlmostAbandonedAttic.AaaPurchasedCount.name",
+      "help": "AlmostAbandonedAttic.AaaPurchasedCount.help"
+    }
+  },
+  "IglooGarageSale": {
+    "_info": {
+      "name": "IglooGarageSale._info.name",
+      "help": "IglooGarageSale._info.help"
+    },
+    "PurchaseProfit": {
+      "name": "IglooGarageSale.PurchaseProfit.name",
+      "help": "IglooGarageSale.PurchaseProfit.help"
+    },
+    "IgsPurchasedCount": {
+      "name": "IglooGarageSale.IgsPurchasedCount.name",
+      "help": "IglooGarageSale.IgsPurchasedCount.help"
     }
   },
   "Auction": {

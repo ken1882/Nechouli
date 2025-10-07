@@ -98,9 +98,18 @@ Chore:
     StockMarket:
       - Scheduler
       - StockMarket
+    WishingWell:
+      - Scheduler
+      - WishingWell
     Scratchcard:
       - Scheduler
       - Scratchcard
+    AlmostAbandonedAttic:
+      - Scheduler
+      - AlmostAbandonedAttic
+    IglooGarageSale:
+      - Scheduler
+      - IglooGarageSale
     EssenceCollection:
       - Scheduler
 

@@ -272,15 +272,21 @@ class PetTrainingUI(BasePageUI):
         for t in self.page.locator('td', has_text='till course finishes').all():
             text = t.text_content().strip()
             segs = text.split(':')[-1].split(',')
+            ar = []
             finish_time = datetime.now()
-            logger.info(f"Training time left: {segs}")
-            for seg in segs:
-                if 'hr' in seg or 'hour' in seg:
-                    finish_time += timedelta(hours=str2int(seg))
-                elif 'min' in seg:
-                    finish_time += timedelta(minutes=str2int(seg))
-                elif 'sec' in seg:
-                    finish_time += timedelta(seconds=str2int(seg))
+            for s in reversed(segs):
+                if '\n' in s: # training fortune cookie
+                    ar.append(s.split('\n')[-1].strip())
+                    break
+                ar.append(s.strip())
+            logger.info(f"Training time left: {ar}")
+            for a in ar:
+                if 'hr' in a or 'hour' in a:
+                    finish_time += timedelta(hours=str2int(a))
+                elif 'min' in a:
+                    finish_time += timedelta(minutes=str2int(a))
+                elif 'sec' in a:
+                    finish_time += timedelta(seconds=str2int(a))
             if finish_time > datetime.now():
                 training_times.append(finish_time)
         return training_times

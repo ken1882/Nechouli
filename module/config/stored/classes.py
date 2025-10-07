@@ -291,3 +291,9 @@ class StoredPetsData(StoredList):
     @property
     def pets(self) -> list['Neopet']:
         return self.value
+
+class StoredAaaPurchaseCounter(StoredCounter):
+    FIXED_TOTAL = 5
+
+class StoredIgsPurchaseCounter(StoredCounter):
+    FIXED_TOTAL = 10

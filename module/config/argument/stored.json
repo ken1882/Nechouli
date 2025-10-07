@@ -99,6 +99,32 @@
     "order": 0,
     "color": "#777777"
   },
+  "AaaPurchasedCount": {
+    "name": "AaaPurchasedCount",
+    "path": "AlmostAbandonedAttic.AlmostAbandonedAttic.AaaPurchasedCount",
+    "i18n": "AlmostAbandonedAttic.AaaPurchasedCount.name",
+    "stored": "StoredAaaPurchaseCounter",
+    "attrs": {
+      "time": "2020-01-01 00:00:00",
+      "total": 5,
+      "value": 0
+    },
+    "order": 0,
+    "color": "#777777"
+  },
+  "IgsPurchasedCount": {
+    "name": "IgsPurchasedCount",
+    "path": "IglooGarageSale.IglooGarageSale.IgsPurchasedCount",
+    "i18n": "IglooGarageSale.IgsPurchasedCount.name",
+    "stored": "StoredIgsPurchaseCounter",
+    "attrs": {
+      "time": "2020-01-01 00:00:00",
+      "total": 10,
+      "value": 0
+    },
+    "order": 0,
+    "color": "#777777"
+  },
   "ShopWizardRequests": {
     "name": "ShopWizardRequests",
     "path": "ShopWizard.ShopWizard.ShopWizardRequests",

@@ -126,7 +126,7 @@ class RestockingUI(BasePageUI):
                 logger.info(f"Item {t.name} exceeds max cost, skipping")
                 continue
             elif self.stock_free <= 0 and self.config.Restocking_HuntRareItems:
-                if t.profit >= 10_000:
+                if t.profit >= self.config.Restocking_HighValueProfit:
                     logger.info(f"Hunting rare item {t.name} with profit {t.profit}")
                 else:
                     continue
@@ -138,11 +138,19 @@ class RestockingUI(BasePageUI):
                 else:
                     logger.info(f"Item {t.name} profit {t.profit} is less than minimum profit {self.config.Restocking_MinProfit}, skipping")
                     continue
-            else:
-                for stocked in self.config.stored.StockData:
-                    if stocked.name == t.name and stocked.quantity >= self.config.Restocking_MaxShopStock:
-                        logger.info(f"Item {t.name} already fully stocked in your shop, skipping")
-                        continue
+            flag = False
+            for stocked in self.config.stored.StockData:
+                if stocked.name == t.name and stocked.quantity >= self.config.Restocking_MaxShopStock:
+                    logger.info(f"Item {t.name} already fully stocked in your shop, skipping")
+                    flag = True
+                    continue
+            for item in self.config.stored.DepositData:
+                if item.name == t.name and item.quantity >= self.config.Restocking_MaxInSdb:
+                    logger.info(f"Item {t.name} already has {item.quantity} in SDB, skipping")
+                    flag = True
+                    continue
+            if flag:
+                continue
             self.target = t
             break
         if not self.target:

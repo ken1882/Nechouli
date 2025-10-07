@@ -1,8 +1,10 @@
 from module.config.stored.classes import (
+    StoredAaaPurchaseCounter,
     StoredBase,
     StoredCounter,
     StoredDailyQuestFeedCounter,
     StoredDailyQuestRestockCounter,
+    StoredIgsPurchaseCounter,
     StoredInt,
     StoredItemContainer,
     StoredList,
@@ -19,6 +21,8 @@ class StoredGenerated:
     PendingTrainingFee = StoredPendingTrainingFee("PetTraining.PetTraining.PendingTrainingFee")
     DailyQuestRestockTimesLeft = StoredDailyQuestRestockCounter("DailyQuest.DailyQuest.DailyQuestRestockTimesLeft")
     DailyQuestFeedTimesLeft = StoredDailyQuestFeedCounter("DailyQuest.DailyQuest.DailyQuestFeedTimesLeft")
+    AaaPurchasedCount = StoredAaaPurchaseCounter("AlmostAbandonedAttic.AlmostAbandonedAttic.AaaPurchasedCount")
+    IgsPurchasedCount = StoredIgsPurchaseCounter("IglooGarageSale.IglooGarageSale.IgsPurchasedCount")
     ShopWizardRequests = StoredShopWizardRequests("ShopWizard.ShopWizard.ShopWizardRequests")
     EarnedPlotPoints = StoredInt("VoidsWithin.VoidsWithin.EarnedPlotPoints")
     NeoPoints = StoredInt("InventoryTool.PlayerStorage.NeoPoints")

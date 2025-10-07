@@ -318,7 +318,7 @@
       },
       "TrainPriority": {
         "type": "input",
-        "value": "str > def > hp > mov > lv"
+        "value": "str > hp > def > mov > lv"
       },
       "Config": {
         "type": "textarea",
@@ -1519,6 +1519,47 @@
       }
     }
   },
+  "WishingWell": {
+    "Scheduler": {
+      "Enable": {
+        "type": "checkbox",
+        "value": false,
+        "option": [
+          true,
+          false
+        ]
+      },
+      "NextRun": {
+        "type": "datetime",
+        "value": "2020-01-01 00:00:00",
+        "validate": "datetime"
+      },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "Command": {
+        "type": "input",
+        "value": "WishingWell",
+        "display": "hide"
+      },
+      "ServerUpdate": {
+        "type": "input",
+        "value": "00:00",
+        "display": "hide"
+      }
+    },
+    "WishingWell": {
+      "Item": {
+        "type": "input",
+        "value": "Horace Stamp"
+      }
+    }
+  },
   "Scratchcard": {
     "Scheduler": {
       "Enable": {
@@ -1566,6 +1607,100 @@
       "UseCard": {
         "type": "checkbox",
         "value": false
+      }
+    }
+  },
+  "AlmostAbandonedAttic": {
+    "Scheduler": {
+      "Enable": {
+        "type": "checkbox",
+        "value": false,
+        "option": [
+          true,
+          false
+        ]
+      },
+      "NextRun": {
+        "type": "datetime",
+        "value": "2020-01-01 00:00:00",
+        "validate": "datetime"
+      },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "Command": {
+        "type": "input",
+        "value": "AlmostAbandonedAttic",
+        "display": "hide"
+      },
+      "ServerUpdate": {
+        "type": "input",
+        "value": "00:00",
+        "display": "hide"
+      }
+    },
+    "AlmostAbandonedAttic": {
+      "PurchaseProfit": {
+        "type": "input",
+        "value": 10000
+      },
+      "AaaPurchasedCount": {
+        "type": "stored",
+        "value": {},
+        "display": true,
+        "stored": "StoredAaaPurchaseCounter"
+      }
+    }
+  },
+  "IglooGarageSale": {
+    "Scheduler": {
+      "Enable": {
+        "type": "checkbox",
+        "value": false,
+        "option": [
+          true,
+          false
+        ]
+      },
+      "NextRun": {
+        "type": "datetime",
+        "value": "2020-01-01 00:00:00",
+        "validate": "datetime"
+      },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "Command": {
+        "type": "input",
+        "value": "IglooGarageSale",
+        "display": "hide"
+      },
+      "ServerUpdate": {
+        "type": "input",
+        "value": "00:00",
+        "display": "hide"
+      }
+    },
+    "IglooGarageSale": {
+      "PurchaseProfit": {
+        "type": "input",
+        "value": 5000
+      },
+      "IgsPurchasedCount": {
+        "type": "stored",
+        "value": {},
+        "display": true,
+        "stored": "StoredIgsPurchaseCounter"
       }
     }
   },
@@ -1763,6 +1898,10 @@
         "type": "input",
         "value": 5
       },
+      "MaxInSdb": {
+        "type": "input",
+        "value": 10
+      },
       "MinProfit": {
         "type": "input",
         "value": 1000
@@ -1779,13 +1918,17 @@
         "type": "input",
         "value": 3500
       },
+      "HighValueProfit": {
+        "type": "input",
+        "value": 100000
+      },
       "HuntRareItems": {
         "type": "checkbox",
         "value": false
       },
       "ShopList": {
         "type": "textarea",
-        "value": "1,2,3,5,10,14,15,16,20,25,34,35,39,40,42,44,46,50,56,57,61,80,81,95,97,101,103"
+        "value": "1,2,3,5,10,14,15,16,20,25,34,35,39,40,42,44,46,47,50,56,57,61,80,81,86,95,97,101,103,111"
       },
       "BargainStrategyScript": {
         "type": "textarea",

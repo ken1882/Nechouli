@@ -71,12 +71,14 @@ class GeneratedConfig:
     Restocking_ActiveRestockInterval = 60
     Restocking_EnableCaptchaDebug = False
     Restocking_RestockPerShop = 5
+    Restocking_MaxInSdb = 10
     Restocking_MinProfit = 1000
     Restocking_MaxShopStock = 5
     Restocking_MaxCost = 1000000
     Restocking_ImmediateProfit = 3500
+    Restocking_HighValueProfit = 100000
     Restocking_HuntRareItems = False
-    Restocking_ShopList = '1,2,3,5,10,14,15,16,20,25,34,35,39,40,42,44,46,50,56,57,61,80,81,95,97,101,103'
+    Restocking_ShopList = '1,2,3,5,10,14,15,16,20,25,34,35,39,40,42,44,46,47,50,56,57,61,80,81,86,95,97,101,103,111'
     Restocking_BargainStrategyScript = "# purposes: list of shopkeeper's purposes\n# offers: list of your offers\n# depth: number of bargains made\npurposed = purposes[-1]\nlast_offer = offers[-1] if offers else 0\nif purposed > 100000 or depth > 5:\n  return purposed\nif len(purposes) > 2 and purposes[-2] == purposes[-3]:\n  return purposed\nif last_offer == 0:\n  return int(purposed * 0.4 // 10 * 10)\ndelta = purposed - last_offer\nstep  = 20\nif delta > 3000:\n  step = 1000\nelif delta > 1500:\n  step = 500\nelif delta > 300:\n  step = 100\nelif delta > 150:\n  step = 50\nret = max(1, min(purposed, last_offer + int(delta * 0.4 // step * step)))\nif ret == last_offer:\n    ret = int(purposed // 10 * 10)\nreturn ret\n"
 
     # Group `QuickStock`
@@ -113,7 +115,7 @@ class GeneratedConfig:
 
     # Group `PetTraining`
     PetTraining_BuyFeeFromPlayers = False
-    PetTraining_TrainPriority = 'str > def > hp > mov > lv'
+    PetTraining_TrainPriority = 'str > hp > def > mov > lv'
     PetTraining_Config = 'PetName:Academy:TargetLv:TargetStr:TargetDef:TargetMov:TargetHp\n'
     PetTraining_PendingTrainingFee = {}
 
@@ -123,6 +125,17 @@ class GeneratedConfig:
     BattleDome_GrindNP = False
     BattleDome_CombatOrder = '# seperate turn by line, first valid line will be turn 1 and so on\n# format: item1,item2,ability (None for bypass)\nThe Omelette Sceptre,Downsize!,Meditate\nCursed Elixir of Neovia,Wand of the Dark Faerie,None\n'
     BattleDome_Opponent = 'Koi Warrior'  # Flaming Meerca, Count Von Roo, Harry the Mutant Moehog, Edna, Balthazar, Pant Devil, Evil Sloth Clone, Robo Grarrl, Tiki Tack Man, Chiazilla, Koi Warrior, Highland Chia, The Black Pteri, Chia Clown, Snow Faerie, Ryshu the Nimmo, The Snowager, Grarrg, Sabre-X, Punchbag Bob, Meuka, Tekkitu the Witch Doctor, Vira, Advisor Broo, Meerca Henchmen, Boochi, Giant Hungry Malevolent Chomby, Mootix Warrior, S750 Kreludan Defender Robot, Neopets v2, Donny, Valin, Giant Spectral Mutant Walein
+
+    # Group `WishingWell`
+    WishingWell_Item = 'Horace Stamp'
+
+    # Group `AlmostAbandonedAttic`
+    AlmostAbandonedAttic_PurchaseProfit = 10000
+    AlmostAbandonedAttic_AaaPurchasedCount = {}
+
+    # Group `IglooGarageSale`
+    IglooGarageSale_PurchaseProfit = 5000
+    IglooGarageSale_IgsPurchasedCount = {}
 
     # Group `Auction`
     Auction_MaxConcurrentBids = 10

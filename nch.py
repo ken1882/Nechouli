@@ -125,7 +125,7 @@ class Nechouli(AzurLaneAutoScript):
         return False
 
     def goto_main(self):
-        self.device.goto('https://www.neopets.com/home')
+        self.device.goto('about:blank')
 
     def altador_council(self):
         from tasks.daily.altador_council import AltadorCouncilUI
@@ -299,6 +299,17 @@ class Nechouli(AzurLaneAutoScript):
         from tasks.daily.scratchcard import ScratchcardUI
         ScratchcardUI(config=self.config, device=self.device).run()
 
+    def wishing_well(self):
+        from tasks.daily.wishing_well import WishingWellUI
+        WishingWellUI(config=self.config, device=self.device).run()
+
+    def almost_abandoned_attic(self):
+        from tasks.daily.almost_abandoned_attic import AlmostAbandonedAtticUI
+        AlmostAbandonedAtticUI(config=self.config, device=self.device).run()
+
+    def igloo_garage_sale(self):
+        from tasks.daily.igloo_garage_sale import IglooGarageSaleUI
+        IglooGarageSaleUI(config=self.config, device=self.device).run()
 
 if __name__ == '__main__':
     nch = Nechouli()
