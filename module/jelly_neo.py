@@ -77,6 +77,11 @@ def get_item_details_by_name(
     res = agent.get(detail_url, timeout=10)
     doc = BS(res.content, "html.parser")
     _populate_from_detail_page(doc, data)
+    if not data["market_price"]:
+        logger.warning("No price history for %s", data["name"])
+        data["market_price"] = 999_999
+        # set to expire after a day
+        data["price_timestamp"] = datetime.now().timestamp() - dm.JN_CACHE_TTL + 60*60*24
     dm.save_cache(data)
     return data
 
@@ -110,21 +115,18 @@ def _parse_search_page(page: BS) -> dict:
     try:
         pn = page.select(".price-history-link")[0]
         ret["market_price"] = str2int(pn.text)
-        if not ret["market_price"]:
-            ret["market_price"] = 999_999
-        # ret["price_timestamp"] = datetime.strptime(
-        #     pn.attrs["title"], "%B %d, %Y"
-        # ).timestamp()
-        ret["price_timestamp"] = datetime.now().timestamp()
     except Exception:
-        logger.debug("No price detected, maybe NC item")
-        ret["market_price"] = 999_999
-        ret["price_timestamp"] = datetime.now().timestamp()
+        logger.debug("No price detected")
+    ret["price_timestamp"] = datetime.now().timestamp()
 
     return ret
 
 
 def _populate_from_detail_page(doc: BS, ret: dict) -> None:
+    try:
+        ret["market_price"] = str2int(doc.select(".price-row")[0].text.split('NP')[0])
+    except Exception as e:
+        logger.warning("Failed to parse market price: %s", e)
     try:
         ret["name"] = doc.select("h1")[0].text.strip()
         grids = doc.select(".small-block-grid-2")[0].select(".text-center")

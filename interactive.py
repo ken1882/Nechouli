@@ -6,6 +6,7 @@ from tasks.base import base_page, base_flash
 from module.exception import TaskError
 from module.db.models import neopet, neoitem
 from module.db.data_map import *
+from module.db import data_manager as dm
 from module.base.utils import (
     ensure_time,
     str2int,

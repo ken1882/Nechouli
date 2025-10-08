@@ -20,9 +20,9 @@ class ManualConfig:
     > StockMarket > DailyPuzzle > FashionFever
     > PetCares > PetTraining > Scratchcard
     > VoidsWithin > EssenceCollection
-    > QuickStock
+    > QuickStock > ShopWizard
     > DailyQuest > Restocking
-    > ShopWizard > SafetyDepositBox
+    > SafetyDepositBox
     > BattleDome
     """
 
