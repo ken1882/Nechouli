@@ -52,8 +52,13 @@ class BankInterestUI(BasePageUI):
             logger.info(f"Depositing {deposit} NP")
             fields.nth(0).fill(str(deposit))
             self.device.click('input[value="Deposit"]')
+        depth = 0
         while True:
             self.device.wait(0.5)
+            depth += 1
+            if depth > 30:
+                logger.info(f"Waiting for deposit result timeout, assume ok")
+                break
             if not result_txt.is_visible():
                 continue
             if len(result_txt.text_content()) < 10:
