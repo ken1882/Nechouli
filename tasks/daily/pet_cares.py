@@ -159,15 +159,25 @@ class PetCaresUI(BasePageUI):
         self.device.wait(0.5)
         self.device.wait_for_element('#petCareUseItem').click()
         result_node = self.device.wait_for_element('#petCareResult')
+        depth = 0
         while self.is_node_loading(result_node):
             self.device.sleep(0.3)
             result_node = self.device.wait_for_element('#petCareResult')
+            depth += 1
+            if depth > 30:
+                logger.warning("Timeout waiting for item use result, proceed anyway.")
+                break
+        depth = 0
         result_text = result_node.inner_text()
         # chance loading text not appeared but stuck with last action result
         while result_text == self._last_action_result:
             self.device.wait(0.3)
             result_node = self.device.wait_for_element('#petCareResult')
             result_text = result_node.inner_text()
+            depth += 1
+            if depth > 30:
+                logger.warning("Timeout waiting for new item use result, proceed anyway.")
+                break
         self._last_action_result = result_text
         logger.info(f'Result after using {item.name}: {result_text}')
         return result_node
