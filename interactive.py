@@ -71,7 +71,7 @@ class TestUI(BaseFlash, BasePageUI):
     pass
 
 
-alas = Nechouli('nechouli2')
+alas = Nechouli('amamiya')
 config, device = alas.config, alas.device
 self = ScratchcardUI(config, device)
 
@@ -142,3 +142,8 @@ self.page.wait_for_url(
 )
 
 
+ranges = (
+    range(6, 7),
+    range(14, 15),
+    range(22, 23),
+)

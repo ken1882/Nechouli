@@ -33,13 +33,14 @@ class SnowagerUI(BasePageUI):
         candidates = []
         for r in self.ranges:
             candidate = future.replace(hour=r.start, minute=0, second=0)
-        # If we're already past or inside the awake window, push to next day.
+            # If we're already past or inside the awake window, push to next day.
             if candidate <= future:
                 candidate += timedelta(days=1)
             candidates.append(candidate)
         future = min(candidates)
         r = nst2localt(future)
-        next_run = datetime(r.year, r.month, r.day, r.hour, 0, randint(9, 59))
+        next_run = datetime(r.year, r.month, r.day, r.hour, r.minute, 0)
+        next_run += timedelta(seconds=randint(600, 900))
         self.config.task_delay(target=next_run)
 
 if __name__ == '__main__':

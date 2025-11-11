@@ -206,6 +206,7 @@ class BasePageUI(ModuleBase):
         self.page.screenshot(path=path)
 
     def login_neopass(self):
+        self.page.goto('https://www.neopets.com/login/')
         btn = self.device.wait_for_element('#neopass-method-login')
         self.device.click(btn)
         self.device.wait(1)
@@ -215,15 +216,14 @@ class BasePageUI(ModuleBase):
             if not cred:
                 raise RequestHumanTakeover("Neopass login failed: Missing credentials")
             email, *pwd = cred.split(':')
+            logger.info(f"Login with {email}")
             pwd = ':'.join(pwd)
             e = self.page.locator('input[name="email"]')
             self.device.click(e)
             e.fill(email)
-            print('filling email with', email)
             p = self.page.locator('input[name="password"]')
             self.device.click(p)
             p.fill(pwd)
-            print('filling pwd with', pwd)
             btn = self.page.locator('button[type="submit"]', has_text='Sign In')
             self.device.click(btn, nav=True)
             self.device.wait(3)
