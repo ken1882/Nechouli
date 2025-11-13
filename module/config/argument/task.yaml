@@ -112,6 +112,8 @@ Chore:
       - IglooGarageSale
     EssenceCollection:
       - Scheduler
+    WheelOfCelebration:
+      - Scheduler
 
 
 # ==================== Games ====================

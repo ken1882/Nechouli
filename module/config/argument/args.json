@@ -1739,6 +1739,41 @@
       }
     }
   },
+  "WheelOfCelebration": {
+    "Scheduler": {
+      "Enable": {
+        "type": "checkbox",
+        "value": false,
+        "option": [
+          true,
+          false
+        ]
+      },
+      "NextRun": {
+        "type": "datetime",
+        "value": "2020-01-01 00:00:00",
+        "validate": "datetime"
+      },
+      "EnableBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "IsRunningBackground": {
+        "type": "checkbox",
+        "value": false
+      },
+      "Command": {
+        "type": "input",
+        "value": "WheelOfCelebration",
+        "display": "hide"
+      },
+      "ServerUpdate": {
+        "type": "input",
+        "value": "00:00",
+        "display": "hide"
+      }
+    }
+  },
   "FashionFever": {
     "Scheduler": {
       "Enable": {
