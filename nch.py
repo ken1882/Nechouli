@@ -311,6 +311,10 @@ class Nechouli(AzurLaneAutoScript):
         from tasks.daily.igloo_garage_sale import IglooGarageSaleUI
         IglooGarageSaleUI(config=self.config, device=self.device).run()
 
+    def wheel_of_celebration(self):
+        from tasks.daily.wheel_of_celebration import WheelOfCelebrationUI
+        WheelOfCelebrationUI(config=self.config, device=self.device).run()
+
 if __name__ == '__main__':
     nch = Nechouli()
     nch.loop()
