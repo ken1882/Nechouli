@@ -17,7 +17,10 @@ class WheelOfCelebrationUI(BasePageUI):
         if btn.get_attribute('id') == 'watchAdButtonContainer':
             logger.info("Already played today")
             return True
-        self.device.click('#wheelButtonSpin')
+        self.device.wait_for_element('#spinContent')
+        while btn.is_visible():
+            self.device.click('#wheelButtonSpin')
+            self.device.wait(1)
         logger.info("Clicked spin button, waiting for result")
         while True:
             self.device.wait(1)
@@ -26,7 +29,7 @@ class WheelOfCelebrationUI(BasePageUI):
                 continue
             if 'click on the wheel' in result.first.text_content():
                 break
-        self.device.click('#wheelCanvas')
+        self.device.click('#wheelBottomBorder')
         return True
 
 if __name__ == '__main__':
