@@ -17,7 +17,6 @@
 
         if (node && node.parentElement === document.body) {
             node.remove();
-            console.log("🚨 Anti-Adblock alert removed.");
         }
     }
 

@@ -78,6 +78,10 @@ class DailyQuestUI(BasePageUI):
                 self.quests_queue.append({
                     'type': 'feed',
                 })
+            elif 'try on' in quest_content:
+                self.quests_queue.append({
+                    'type': 'nc'
+                })
         logger.info(f"Quest queue size: {len(self.quests_queue)}")
 
     def parse_wheel_quest(self, quest:Locator) -> dict:
@@ -116,7 +120,16 @@ class DailyQuestUI(BasePageUI):
                 self.config.stored.DailyQuestFeedTimesLeft.set(1)
                 self.config.task_delay(minute=60, task='PetCares')
                 return False
+            elif quest['type'] == 'nc':
+                self.do_nc_tryon()
         return True
+
+    def do_nc_tryon(self):
+        self.goto('https://ncmall.neopets.com/mall/search.phtml?type=search&text=dress&page=1&limit=24')
+        self.execute_script('remove_popups')
+        btn = self.device.wait_for_element('.link-tryon')
+        self.device.click(btn)
+        self.device.wait(3)
 
     def calc_next_run(self, *args):
         if self.config.stored.DailyQuestFeedTimesLeft.value > 0:
