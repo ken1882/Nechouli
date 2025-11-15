@@ -81,7 +81,10 @@ class QuickStockUI(BasePageUI):
                 continue
             available_acts = [act.get_attribute('value') for act in item._locator.locator('input').all()]
             if item.category in keep_dict and keep_dict[item.category] > 0:
-                if item.category == 'food' and item.market_price >= self.config.PetCares_MaxFeedValue:
+                if item.category == 'food' and (
+                    item.market_price >= self.config.PetCares_MaxFeedValue or
+                    not item.is_edible(self.config)
+                ):
                     if item.profit > self.config.QuickStock_RestockProfit and not no_stock:
                         item._act = 'stock'
                         self._stocked = True
