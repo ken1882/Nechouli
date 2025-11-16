@@ -71,7 +71,7 @@ class TestUI(BaseFlash, BasePageUI):
     pass
 
 
-alas = Nechouli('amamiya')
+alas = Nechouli('nechouli')
 config, device = alas.config, alas.device
 self = ScratchcardUI(config, device)
 

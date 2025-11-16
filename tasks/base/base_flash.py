@@ -31,9 +31,11 @@ class BaseFlash():
 
     def playable_count(self):
         try:
-            played = int(self.page.locator('.sent-cont').text_content().split()[-1].split('/')[0])
+            segs = self.page.locator('.sent-cont').text_content().split()[-1].split('/')
+            played = int(segs[0])
+            self.max_plays = int(segs[-1])
             self.played_times = played
-            logger.info(f"Played times: {played}")
+            logger.info(f"Played times: {played} / {self.max_plays}")
             return self.max_plays - played
         except Exception as err:
             logger.exception(f"Error getting playable count: {err}")

@@ -11,11 +11,8 @@ class SafetyDepositBoxUI(BasePageUI):
     PAGE_LIMIT: int = 30
 
     def main(self):
-        try:
-            self.goto("https://www.neopets.com/safetydeposit.phtml")
-            self.scan_all_item()
-        finally:
-            self.config.task_cancel()
+        self.goto("https://www.neopets.com/safetydeposit.phtml")
+        self.scan_all_item()
         return True
 
     def scan_all_item(self):
