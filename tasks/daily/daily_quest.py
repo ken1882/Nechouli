@@ -80,7 +80,11 @@ class DailyQuestUI(BasePageUI):
                 })
             elif 'try on' in quest_content:
                 self.quests_queue.append({
-                    'type': 'nc'
+                    'type': 'nc_tryon'
+                })
+            elif 'visit' in quest_content or 'popular' in quest_content:
+                self.quests_queue.append({
+                    'type': 'nc_visit'
                 })
         logger.info(f"Quest queue size: {len(self.quests_queue)}")
 
@@ -120,8 +124,11 @@ class DailyQuestUI(BasePageUI):
                 self.config.stored.DailyQuestFeedTimesLeft.set(1)
                 self.config.task_delay(minute=60, task='PetCares')
                 return False
-            elif quest['type'] == 'nc':
+            elif quest['type'] == 'nc_tryon':
                 self.do_nc_tryon()
+            elif quest['type'] == 'nc_visit':
+                self.goto('https://ncmall.neopets.com/mall/search.phtml?type=popular_items&cat=54&page=1&limit=24')
+                self.device.wait(3)
         return True
 
     def do_nc_tryon(self):
@@ -136,6 +143,9 @@ class DailyQuestUI(BasePageUI):
             return self.config.task_delay(minute=61)
         elif self.config.stored.DailyQuestRestockTimesLeft.value > 0:
             return self.config.task_delay(minute=10)
+        # has unfinished quests, check again after 1 hour
+        if self.page.locator('#QuestLogBonusAlert').get_attribute('class') != 'ql-bonus-check':
+            return self.config.task_delay(minute=60)
         super().calc_next_run(*args)
 
     def on_failed_delay(self):
