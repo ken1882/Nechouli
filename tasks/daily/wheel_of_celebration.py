@@ -8,7 +8,7 @@ class WheelOfCelebrationUI(BasePageUI):
 
     def main(self):
         curt = localt2nst(datetime.now())
-        if curt.month != 11 or curt.day > 22:
+        if curt.month != 11 or curt.day > 27:
             logger.info("Anniversary event is over")
             self.config.task_cancel()
             return True
