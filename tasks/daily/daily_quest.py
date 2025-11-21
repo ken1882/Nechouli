@@ -144,10 +144,8 @@ class DailyQuestUI(BasePageUI):
         elif self.config.stored.DailyQuestRestockTimesLeft.value > 0:
             return self.config.task_delay(minute=10)
         # has unfinished quests, check again after 1 hour
-        if (
-            la:=self.page.locator('#QuestLogBonusAlert').count() == 0 or
-            la.get_attribute('class') != 'ql-bonus-check'
-        ):
+        ql = self.page.locator('#QuestLogBonusAlert')
+        if ql.count() == 0 or ql.get_attribute('class') != 'ql-bonus-check':
             return self.config.task_delay(minute=60)
         super().calc_next_run(*args)
 
