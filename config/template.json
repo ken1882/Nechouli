@@ -581,9 +581,8 @@
       "ServerUpdate": "00:00"
     },
     "Auction": {
-      "MaxConcurrentBids": 10,
-      "PlaceBidUntilMinutesLeft": 5,
-      "BiddingConfig": "# ItemName:MaxBid:NumbersToBid\n"
+      "AuctionId": 0,
+      "Budget": 1000000
     }
   },
   "VoidsWithin": {

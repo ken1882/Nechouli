@@ -133,7 +133,6 @@ class DailyQuestUI(BasePageUI):
 
     def do_nc_tryon(self):
         self.goto('https://ncmall.neopets.com/mall/search.phtml?type=search&text=dress&page=1&limit=24')
-        self.execute_script('remove_popups')
         btn = self.device.wait_for_element('.link-tryon')
         self.device.click(btn)
         self.device.wait(3)

@@ -124,7 +124,7 @@ class GeneratedConfig:
     BattleDome_Difficulty = 'Easy'  # Easy, Normal, Hard
     BattleDome_GrindNP = False
     BattleDome_CombatOrder = '# seperate turn by line, first valid line will be turn 1 and so on\n# format: item1,item2,ability (None for bypass)\nThe Omelette Sceptre,Downsize!,Meditate\nCursed Elixir of Neovia,Wand of the Dark Faerie,None\n'
-    BattleDome_Opponent = 'Koi Warrior'  # Flaming Meerca, Count Von Roo, Harry the Mutant Moehog, Edna, Balthazar, Pant Devil, Evil Sloth Clone, Robo Grarrl, Tiki Tack Man, Chiazilla, Koi Warrior, Highland Chia, The Black Pteri, Chia Clown, Snow Faerie, Ryshu the Nimmo, The Snowager, Grarrg, Sabre-X, Punchbag Bob, Meuka, Tekkitu the Witch Doctor, Vira, Advisor Broo, Meerca Henchmen, Boochi, Giant Hungry Malevolent Chomby, Mootix Warrior, S750 Kreludan Defender Robot, Neopets v2, Donny, Valin, Giant Spectral Mutant Walein
+    BattleDome_Opponent = 'Koi Warrior'  # Advisor Broo, Balthazar, Boochi, Chia Clown, Chiazilla, Count Von Roo, Donny, Edna, Evil Sloth Clone, Eyrieki, Flaming Meerca, Giant Hungry Malevolent Chomby, Giant Spectral Mutant Walein, Grarrg, Harry the Mutant Moehog, Highland Chia, Koi Warrior, Meerca Henchmen, Meuka, Mootix Warrior, Neopets v2, Pant Devil, Punchbag Bob, Robo Grarrl, Ryshu the Nimmo, S750 Kreludan Defender Robot, Sabre-X, Snow Faerie, Tekkitu the Witch Doctor, The Black Pteri, The Snowager, Tiki Tack Man, Valin, Vira
 
     # Group `WishingWell`
     WishingWell_Item = 'Horace Stamp'
@@ -138,9 +138,8 @@ class GeneratedConfig:
     IglooGarageSale_IgsPurchasedCount = {}
 
     # Group `Auction`
-    Auction_MaxConcurrentBids = 10
-    Auction_PlaceBidUntilMinutesLeft = 5
-    Auction_BiddingConfig = '# ItemName:MaxBid:NumbersToBid\n'
+    Auction_AuctionId = 0
+    Auction_Budget = 1000000
 
     # Group `VoidsWithin`
     VoidsWithin_DelayForDailyFeed = True

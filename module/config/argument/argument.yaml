@@ -242,39 +242,40 @@ BattleDome:
     type: select
     value: "Koi Warrior"
     option:
-      - "Flaming Meerca"
-      - "Count Von Roo"
-      - "Harry the Mutant Moehog"
-      - "Edna"
-      - "Balthazar"
-      - "Pant Devil"
-      - "Evil Sloth Clone"
-      - "Robo Grarrl"
-      - "Tiki Tack Man"
-      - "Chiazilla"
-      - "Koi Warrior"
-      - "Highland Chia"
-      - "The Black Pteri"
-      - "Chia Clown"
-      - "Snow Faerie"
-      - "Ryshu the Nimmo"
-      - "The Snowager"
-      - "Grarrg"
-      - "Sabre-X"
-      - "Punchbag Bob"
-      - "Meuka"
-      - "Tekkitu the Witch Doctor"
-      - "Vira"
       - "Advisor Broo"
-      - "Meerca Henchmen"
+      - "Balthazar"
       - "Boochi"
-      - "Giant Hungry Malevolent Chomby"
-      - "Mootix Warrior"
-      - "S750 Kreludan Defender Robot"
-      - "Neopets v2"
+      - "Chia Clown"
+      - "Chiazilla"
+      - "Count Von Roo"
       - "Donny"
-      - "Valin"
+      - "Edna"
+      - "Evil Sloth Clone"
+      - "Eyrieki"
+      - "Flaming Meerca"
+      - "Giant Hungry Malevolent Chomby"
       - "Giant Spectral Mutant Walein"
+      - "Grarrg"
+      - "Harry the Mutant Moehog"
+      - "Highland Chia"
+      - "Koi Warrior"
+      - "Meerca Henchmen"
+      - "Meuka"
+      - "Mootix Warrior"
+      - "Neopets v2"
+      - "Pant Devil"
+      - "Punchbag Bob"
+      - "Robo Grarrl"
+      - "Ryshu the Nimmo"
+      - "S750 Kreludan Defender Robot"
+      - "Sabre-X"
+      - "Snow Faerie"
+      - "Tekkitu the Witch Doctor"
+      - "The Black Pteri"
+      - "The Snowager"
+      - "Tiki Tack Man"
+      - "Valin"
+      - "Vira"
 
 WishingWell:
   Item: "Horace Stamp"
@@ -292,12 +293,8 @@ IglooGarageSale:
     display: true
 
 Auction:
-  MaxConcurrentBids: 10
-  PlaceBidUntilMinutesLeft: 5
-  BiddingConfig:
-    type: textarea
-    value: |
-      # ItemName:MaxBid:NumbersToBid
+  AuctionId: 0
+  Budget: 1000000
 
 VoidsWithin:
   DelayForDailyFeed: true

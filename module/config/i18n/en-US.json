@@ -677,39 +677,40 @@
     "Opponent": {
       "name": "Opponent",
       "help": "",
-      "Flaming Meerca": "Flaming Meerca",
-      "Count Von Roo": "Count Von Roo",
-      "Harry the Mutant Moehog": "Harry the Mutant Moehog",
-      "Edna": "Edna",
-      "Balthazar": "Balthazar",
-      "Pant Devil": "Pant Devil",
-      "Evil Sloth Clone": "Evil Sloth Clone",
-      "Robo Grarrl": "Robo Grarrl",
-      "Tiki Tack Man": "Tiki Tack Man",
-      "Chiazilla": "Chiazilla",
-      "Koi Warrior": "Koi Warrior",
-      "Highland Chia": "Highland Chia",
-      "The Black Pteri": "The Black Pteri",
-      "Chia Clown": "Chia Clown",
-      "Snow Faerie": "Snow Faerie",
-      "Ryshu the Nimmo": "Ryshu the Nimmo",
-      "The Snowager": "The Snowager",
-      "Grarrg": "Grarrg",
-      "Sabre-X": "Sabre-X",
-      "Punchbag Bob": "Punchbag Bob",
-      "Meuka": "Meuka",
-      "Tekkitu the Witch Doctor": "Tekkitu the Witch Doctor",
-      "Vira": "Vira",
       "Advisor Broo": "Advisor Broo",
-      "Meerca Henchmen": "Meerca Henchmen",
+      "Balthazar": "Balthazar",
       "Boochi": "Boochi",
-      "Giant Hungry Malevolent Chomby": "Giant Hungry Malevolent Chomby",
-      "Mootix Warrior": "Mootix Warrior",
-      "S750 Kreludan Defender Robot": "S750 Kreludan Defender Robot",
-      "Neopets v2": "Neopets v2",
+      "Chia Clown": "Chia Clown",
+      "Chiazilla": "Chiazilla",
+      "Count Von Roo": "Count Von Roo",
       "Donny": "Donny",
+      "Edna": "Edna",
+      "Evil Sloth Clone": "Evil Sloth Clone",
+      "Eyrieki": "Eyrieki",
+      "Flaming Meerca": "Flaming Meerca",
+      "Giant Hungry Malevolent Chomby": "Giant Hungry Malevolent Chomby",
+      "Giant Spectral Mutant Walein": "Giant Spectral Mutant Walein",
+      "Grarrg": "Grarrg",
+      "Harry the Mutant Moehog": "Harry the Mutant Moehog",
+      "Highland Chia": "Highland Chia",
+      "Koi Warrior": "Koi Warrior",
+      "Meerca Henchmen": "Meerca Henchmen",
+      "Meuka": "Meuka",
+      "Mootix Warrior": "Mootix Warrior",
+      "Neopets v2": "Neopets v2",
+      "Pant Devil": "Pant Devil",
+      "Punchbag Bob": "Punchbag Bob",
+      "Robo Grarrl": "Robo Grarrl",
+      "Ryshu the Nimmo": "Ryshu the Nimmo",
+      "S750 Kreludan Defender Robot": "S750 Kreludan Defender Robot",
+      "Sabre-X": "Sabre-X",
+      "Snow Faerie": "Snow Faerie",
+      "Tekkitu the Witch Doctor": "Tekkitu the Witch Doctor",
+      "The Black Pteri": "The Black Pteri",
+      "The Snowager": "The Snowager",
+      "Tiki Tack Man": "Tiki Tack Man",
       "Valin": "Valin",
-      "Giant Spectral Mutant Walein": "Giant Spectral Mutant Walein"
+      "Vira": "Vira"
     }
   },
   "WishingWell": {
@@ -755,17 +756,13 @@
       "name": "Auction",
       "help": ""
     },
-    "MaxConcurrentBids": {
-      "name": "Max Concurrent Bids",
-      "help": "Maximum number of concurrent bids allowed, set to 0 for unlimited"
+    "AuctionId": {
+      "name": "Id",
+      "help": ""
     },
-    "PlaceBidUntilMinutesLeft": {
-      "name": "Bid Entry Time",
-      "help": "Start placing bids after the specified number of minutes left in the auction"
-    },
-    "BiddingConfig": {
-      "name": "Bidding Config",
-      "help": "Bidding configuration for auction, separated by line.\nFormat: `ItemName:MaxBid:NumbersToBid`"
+    "Budget": {
+      "name": "Budget",
+      "help": ""
     }
   },
   "VoidsWithin": {

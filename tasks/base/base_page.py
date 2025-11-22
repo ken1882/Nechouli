@@ -164,7 +164,9 @@ class BasePageUI(ModuleBase):
             self.goto('https://www.neopets.com/questlog/', timeout=timeout)
             return self.goto(url, timeout=timeout)
         try:
-            self.execute_script('remove_antiadb') # Remove annoying popup showing adblock detected
+            # Remove annoying popups
+            self.execute_script('remove_antiadb')
+            self.execute_script('remove_popups')
         except PlaywrightError:
             pass
 

@@ -4,19 +4,9 @@ from module.base.utils import str2int
 from module import jelly_neo as jn
 from module.db import data_manager as dm
 from module.db.models.neoitem import NeoItem
-from datetime import datetime
+from datetime import datetime, timedelta
 
 class AuctionUI(BasePageUI):
-
-    @property
-    def page(self):
-        if not hasattr(self, '_page') or self._page is None:
-            self._page = self.device.new_page()
-        return self._page
-
-    def run(self):
-        self.config.Auction_IsRunningBackground = True
-        super().run()
 
     def parse_config(self):
         self.targets = {}
@@ -29,14 +19,63 @@ class AuctionUI(BasePageUI):
                 'count': str2int(count)
             }
 
+    def is_holding_bid(self):
+        wfield = self.page.locator('b', has_text='When?').first
+        tbody = wfield.locator('../../..')
+        first_row = tbody.locator('tr').nth(1)
+        logger.info("Bid status: %s", first_row.text_content().strip())
+        my_username = self.page.locator('.user').first.text_content()
+        my_username = my_username.split(',')[1].split('|')[0].strip()
+        return my_username in first_row.text_content()
+
+    def get_time_left(self) -> int:
+        heading = self.page.locator('center').nth(1).text_content()[:35]
+        if '> 24 hours' in heading:
+            return 24*60
+        elif '8-24 hours' in heading:
+            return 8*60
+        elif '2-8 hours' in heading:
+            return 2*60
+        elif '30 min-2 hours' in heading:
+            return 30
+        elif '< 30 min' in heading:
+            return 1
+        return 0
+
     def main(self):
-        self.parse_config()
-        while self.config.Auction_IsRunningBackground:
-            self.update_bidded()
+        if not self.config.Auction_AuctionId:
+            logger.warning("No Auction IDs configured, cancelling task.")
+            self.config.task_cancel()
+            return
+        last_bidded = 0
+        self.goto(f'https://www.neopets.com/auctions.phtml?type=bids&auction_id={self.config.Auction_AuctionId}')
+        time_left = self.get_time_left()
+        logger.info("Time left in auction: %d minutes", time_left)
+        while time_left < 30:
+            field = self.page.locator('input[name="amount"]')
+            current_bid = str2int(field.get_attribute('value'))
+            last_bidded = current_bid + 5000
+            if last_bidded > self.config.Auction_Budget:
+                logger.info("Reached budget limit, stopping bidding.")
+                self.config.task_cancel()
+                return
+            logger.info("Placing bid of %d NP", last_bidded)
+            field.fill(str(last_bidded))
+            self.device.click('input[value="Place a Bid"]', nav=True)
+            self.goto(f'https://www.neopets.com/auctions.phtml?type=bids&auction_id={self.config.Auction_AuctionId}')
+            while self.is_holding_bid():
+                self.goto(f'https://www.neopets.com/auctions.phtml?type=bids&auction_id={self.config.Auction_AuctionId}')
+                time_left = self.get_time_left()
+                if time_left == 0:
+                    break
+            if time_left == 0:
+                self.config.task_cancel()
+                logger.info("Auction ended, stopping bidding.")
+                break
+        self.config.task_delay(minute=max(15, time_left // 2))
 
     def update_bidded(self):
         self.goto('https://www.neopets.com/auctions.phtml?type=leading')
-
 
 if __name__ == '__main__':
     self = AuctionUI()
