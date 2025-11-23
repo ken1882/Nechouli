@@ -29,7 +29,7 @@ class AuctionUI(BasePageUI):
         return my_username in first_row.text_content()
 
     def get_time_left(self) -> int:
-        heading = self.page.locator('center').nth(1).text_content()[:35]
+        heading = self.page.locator('center').nth(1).text_content()[:40]
         if '> 24 hours' in heading:
             return 24*60
         elif '8-24 hours' in heading:
@@ -53,6 +53,10 @@ class AuctionUI(BasePageUI):
         logger.info("Time left in auction: %d minutes", time_left)
         while time_left < 30:
             field = self.page.locator('input[name="amount"]')
+            if field.count() == 0:
+                logger.info("No bidding field found, auction may have ended.")
+                self.config.task_cancel()
+                return
             current_bid = str2int(field.get_attribute('value'))
             last_bidded = current_bid + 5000
             if last_bidded > self.config.Auction_Budget:

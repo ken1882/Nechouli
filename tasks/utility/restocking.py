@@ -13,6 +13,7 @@ from module import captcha
 import re
 import os
 from shutil import copy2
+from datetime import datetime, timedelta
 
 class RestockingUI(BasePageUI):
     goods: list[NeoItem]
@@ -20,6 +21,12 @@ class RestockingUI(BasePageUI):
     last_captcha_url: str
 
     def main(self):
+        if (
+            self.config.cross_get('Auction.Scheduler.Enable') and
+            self.config.cross_get('Auction.Scheduler.NextRun') - datetime.now() < timedelta(minutes=30)
+        ):
+            logger.info("Delaying restocking due to upcoming auction task")
+            return False
         self.check_inventory()
         self.check_stock()
         self.update_np()
