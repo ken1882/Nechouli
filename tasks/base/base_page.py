@@ -99,7 +99,7 @@ class BasePageUI(ModuleBase):
         elif s == 'daily':
             return self.config.task_delay(server_update=True)
         elif s == 'monthly':
-            future = get_server_next_update('00:00')
+            future = get_server_next_update('01:00')
             if future.month == now.month:
                 future = future + timedelta(days=31)
                 future = future.replace(day=1)

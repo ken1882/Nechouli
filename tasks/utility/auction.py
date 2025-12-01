@@ -5,6 +5,7 @@ from module import jelly_neo as jn
 from module.db import data_manager as dm
 from module.db.models.neoitem import NeoItem
 from datetime import datetime, timedelta
+from random import random
 
 class AuctionUI(BasePageUI):
 
@@ -68,8 +69,9 @@ class AuctionUI(BasePageUI):
             self.device.click('input[value="Place a Bid"]', nav=True)
             self.goto(f'https://www.neopets.com/auctions.phtml?type=bids&auction_id={self.config.Auction_AuctionId}')
             while self.is_holding_bid():
-                self.goto(f'https://www.neopets.com/auctions.phtml?type=bids&auction_id={self.config.Auction_AuctionId}')
+                self.goto(f'https://www.neopets.com/auctions.phtml?type=bids&auction_id={self.config.Auction_AuctionId}', timeout=5)
                 time_left = self.get_time_left()
+                self.device.wait(random()*3)
                 if time_left == 0:
                     break
             if time_left == 0:

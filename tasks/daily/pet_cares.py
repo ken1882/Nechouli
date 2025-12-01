@@ -314,8 +314,11 @@ class PetCaresUI(BasePageUI):
         self.device.click(save_btn)
         popup = self.device.wait_for_element('.npcma-align_center')
         self.device.sleep(2)
-        self.device.click(popup.locator('.npcma-icon-close'))
-        logger.info("Customisation saved successfully.")
+        if popup:
+            self.device.click(popup.locator('.npcma-icon-close'))
+            logger.info("Customisation saved successfully.")
+        else:
+            logger.info("Something went wrong, proceeding anyway.")
         return True
 
     def search_item(self, item_name: str) -> Locator:
