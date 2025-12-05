@@ -11,6 +11,7 @@ class LostInTheDarkUI(BasePageUI):
             btn = self.device.wait_for_element(
                 'input[value="Enter at Your Own Risk!"]',
                 'input[value="Right"]',
+                'input[value="Continue"]',
                 'input[value="Return to Haunted Woods"]',
             )
             if btn:
