@@ -315,6 +315,10 @@ class Nechouli(AzurLaneAutoScript):
         from tasks.daily.wheel_of_celebration import WheelOfCelebrationUI
         WheelOfCelebrationUI(config=self.config, device=self.device).run()
 
+    def lost_in_the_dark(self):
+        from tasks.daily.lost_in_the_dark import LostInTheDarkUI
+        LostInTheDarkUI(config=self.config, device=self.device).run()
+
 if __name__ == '__main__':
     nch = Nechouli()
     nch.loop()
