@@ -116,6 +116,8 @@ Chore:
       - Scheduler
     LostInTheDark:
       - Scheduler
+    AdventCalendar:
+      - Scheduler
 
 # ==================== Games ====================
 

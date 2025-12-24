@@ -319,6 +319,10 @@ class Nechouli(AzurLaneAutoScript):
         from tasks.daily.lost_in_the_dark import LostInTheDarkUI
         LostInTheDarkUI(config=self.config, device=self.device).run()
 
+    def advent_calendar(self):
+        from tasks.daily.advent_calendar import AdventCalendarUI
+        AdventCalendarUI(config=self.config, device=self.device).run()
+
 if __name__ == '__main__':
     nch = Nechouli()
     nch.loop()

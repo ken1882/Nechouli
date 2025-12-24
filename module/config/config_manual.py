@@ -17,7 +17,7 @@ class ManualConfig:
     > GiantOmelette > GraveDanger > GrumpyKing > WiseKing > LunarTemple
     > NeggCave > MeteorCrashSite > PotatoCounter > RichSlorg > QasalanExpellibox
     > TDMBGPOP > Tombola > TrudysSurprise > MoltaraQuarry > HealingSpring > MonthlyFreebies
-    > StockMarket > DailyPuzzle > FashionFever > LostInTheDark
+    > StockMarket > DailyPuzzle > FashionFever > LostInTheDark > AdventCalendar
     > PetCares > PetTraining > Scratchcard
     > WheelOfCelebration > VoidsWithin > EssenceCollection
     > QuickStock > ShopWizard
