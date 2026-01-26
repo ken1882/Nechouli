@@ -38,6 +38,19 @@ AgentPool: list[requests.Session] = [
 for sess in AgentPool:
     sess.headers.update(HTTP_HEADERS)
 
+def get_retry(agent, url, max_retries=5, backoff_factor=1):
+    depth = 0
+    while True:
+        try:
+            response = agent.get(url, timeout=10)
+            return response
+        except Exception as exc:  # noqa: BLE001
+            depth += 1
+            logger.warning("GET %s failed (%s) - retry %d", url, exc, depth)
+            if depth >= max_retries:
+                raise
+            sleep(backoff_factor * (2 ** (depth - 1)))
+
 # ─────────────────────────────  Core scraper  ─────────────────────────────────
 
 
@@ -54,27 +67,14 @@ def get_item_details_by_name(
 
     logger.info("Fetching item %s from Jellyneo...", item_name)
     url = f"https://items.jellyneo.net/search?name={quote(item_name)}&name_type=3"
-
-    # ─── simple retry loop ────────────────────────────────────────────────────
-    depth = 0
-    while True:
-        try:
-            response = agent.get(url, timeout=10)
-            break
-        except Exception as exc:  # noqa: BLE001
-            depth += 1
-            logger.warning("GET %s failed (%s) – retry %d", item_name, exc, depth)
-            if depth >= 3:
-                raise
-            sleep(2**depth)
-
+    response = get_retry(agent, url)
     page = BS(response.content, "html.parser")
     data = _parse_search_page(page)
     if not data["id"]:
         return data
 
     detail_url = f"https://items.jellyneo.net/item/{data['id']}"
-    res = agent.get(detail_url, timeout=10)
+    res = get_retry(agent, detail_url)
     doc = BS(res.content, "html.parser")
     _populate_from_detail_page(doc, data)
     if not data["market_price"]:
