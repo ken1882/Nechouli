@@ -335,6 +335,11 @@ class RestockingUI(BasePageUI):
         my += 5 # offset due seems failed one slighty higher than expected
         logger.info(f"Clicking captcha at {mx}, {my}")
         self.page.mouse.click(mx, my)
+        self.page.wait_for_url(
+            '**',
+            timeout=self.config.Playwright_DefaultTimeout*1000,
+            wait_until='domcontentloaded',
+        )
 
     def on_failed_delay(self):
         self.config.task_delay(minute=3)

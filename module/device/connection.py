@@ -109,6 +109,7 @@ class Connection:
                 if ext_name.startswith('__MSG_'):
                     ext_name = self.expand_locale(path, ext_name, manifest['default_locale'])
                 for name in deepcopy(load_ext_names):
+                    logger.info(f"Checking extension {ext_name} for {name}")
                     if name.lower() not in ext_name.lower():
                         continue
                     logger.info(f"Loading extension: {ext_name} {manifest['version']}")

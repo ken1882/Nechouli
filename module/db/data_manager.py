@@ -224,6 +224,10 @@ def file_lock(path, open_mode="r+b", exclusive=True, timeout=60):
         with _path_lock[path]:
             flags = portalocker.LOCK_EX if exclusive else portalocker.LOCK_SH
             try:
+                # Touch the file if it doesn't exist
+                if not os.path.exists(path) and 'w' not in open_mode:
+                    with open(path, 'wb') as fp:
+                        pass
                 with open(path, open_mode) as fp:
                     portalocker.lock(fp, flags)
                     try:
