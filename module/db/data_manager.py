@@ -1,6 +1,7 @@
 from module.logger import logger
 from module.db.models import base_model
 from module.base import utils
+from module import hardware as hw
 import module.db.models as models
 import struct
 import importlib
@@ -47,6 +48,10 @@ if REDIS_CACHE_URL:
         RedisConn = None
         RedisFactory = None
 
+def lock_file():
+    p = Path('.dm-lock-'+hw.hardware_hash()[::4])
+    p.touch(exist_ok=True)
+    return p
 
 def _redis_enabled() -> bool:
     return RedisConn is not None
@@ -159,11 +164,11 @@ def save_cache(item: Optional[dict] = None, *, to_file: bool = False) -> None:
     """
     if item:
         _redis_set_item(item)
-        with DB_LOCK:
+        with DB_LOCK: # redis guarantees multiprocess thread safety
             ItemDatabase[item["name"].lower()] = item
 
     if to_file or not _redis_enabled():
-        with DB_LOCK, open(CACHE_FILE, "wb") as fh:
+        with dlock(lock_file()), open(CACHE_FILE, "wb") as fh:
             fh.write(orjson.dumps(ItemDatabase, option=orjson.OPT_INDENT_2))
 
 
@@ -310,7 +315,6 @@ def global_get(key: str) -> Optional[str]:
         except orjson.JSONDecodeError:
             return None
     return data.get(key)
-
 
 
 class DataManager:
