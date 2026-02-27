@@ -178,18 +178,13 @@ class PetTrainingUI(BasePageUI):
     def scan_fee(self, academy):
         self.goto(ACADEMY[academy]['url'])
         fees = []
-        images = self.page.locator('.content >> img[src*="images.neopets.com/items/"]')
-        for img in images.all():
-            if academy == 'pirate':
-                tr = img.locator('../..')
-                td = tr.locator('../../..')
-            else:
-                td = img.locator('..')
-                tr = img.locator('..').locator('b')
+        sections = self.page.locator('input[type=submit][value="Pay"]')
+        for section in sections.all():
+            tr = section.locator('../../../../../.. >> b')
             for r in tr.all():
                 fees.append(NeoItem(
                     name=r.text_content().strip(),
-                    _pay_bb=td.locator('input[type=submit][value="Pay"]').bounding_box(),
+                    _pay_bb=section.bounding_box(),
                 ))
         return fees
 

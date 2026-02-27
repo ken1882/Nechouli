@@ -9,6 +9,7 @@ from urllib.parse import quote
 import requests
 from bs4 import BeautifulSoup as BS
 from module.base.utils import str2int
+from module.config.utils import deep_get
 from module.db import data_manager as dm
 from module.logger import logger
 
@@ -64,7 +65,10 @@ def get_item_details_by_name(
     agent = agent or Agent
     if not force and dm.is_cached(item_name):
         return dm.ItemDatabase.get(item_name) or dm._redis_get_item(item_name)  # type: ignore[attr-defined]
-
+    data = get_itemdb(item_name, agent=agent)
+    if data["id"]:
+        dm.save_cache(data)
+    return data
     logger.info("Fetching item %s from Jellyneo...", item_name)
     url = f"https://items.jellyneo.net/search?name={quote(item_name)}&name_type=3"
     response = get_retry(agent, url)
@@ -200,3 +204,38 @@ def update_item_market_price(item_name: str, price: int) -> bool:
 
 def load_cache() -> None:
     dm.load_item_cache()
+
+def get_itemdb(item_name: str, agent=None) -> dict:
+    global Agent
+    ret = _empty_item()
+    agent = agent or Agent
+    res = agent.get(f"https://itemdb.com.br/api/v1/search?skipStats=true&s={item_name}")
+    if res.status_code != 200:
+        return ret
+    result = next(
+        (item for item in res.json()['content'] if item["name"].lower() == item_name.lower()),
+        None
+    )
+    if not result:
+        return ret
+    ret["id"] = result["item_id"]
+    ret["description"] = result["description"]
+    ret["rarity"] = result["rarity"]
+    ret["market_price"] = deep_get(result, "price.value", 999999)
+    ret["category"] = result["category"]
+    ret["image"] = result["image"]
+    ret["price_timestamp"] = datetime.now().timestamp()
+    if deep_get(result, "useTypes.canEat") == 'true':
+        ret["effects"].append("edible")
+    if deep_get(result, "useTypes.canPlay") == 'true':
+        ret["effects"].append("playable")
+    if deep_get(result, "useTypes.canOpen") == 'true':
+        ret["effects"].append("openable")
+    if deep_get(result, "useTypes.canRead") == 'true':
+        ret["effects"].append("readable")
+    detail_page = agent.get(f"https://itemdb.com.br/item/{result['slug']}")
+    doc = BS(detail_page.content, "html.parser")
+    ret["restock_price"] = str2int(doc.find(string="Est. Val").parent.parent.text.split()[-2])
+    if doc.find('img', alt="Disease"):
+        ret["effects"].append("diseases")
+    return ret

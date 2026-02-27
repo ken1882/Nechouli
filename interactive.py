@@ -71,79 +71,108 @@ class TestUI(BaseFlash, BasePageUI):
     pass
 
 
-alas = Nechouli('nechouli')
+alas = Nechouli('nechouli2')
 config, device = alas.config, alas.device
-self = ScratchcardUI(config, device)
+self = PetTrainingUI(config, device)
 
 device.start_browser()
 device.disable_stuck_detection()
 device.screenshot_interval_set(0.1)
-self.config.bind('Scratchcard')
+self.config.bind('PetTraining')
 
 
-logger.info(f"Run task {self.task_name} in background mode")
-self.config.cross_set(f'{self.task_name}.Scheduler.IsRunningBackground', True)
-self.on_background = True
-Thread(target=self.run_background, daemon=True).start()
+ACADEMY = {
+    'pirate': {
+        'url': 'https://www.neopets.com/pirates/academy.phtml?type=status',
+        'max_level': 40,
+    },
+    'island': {
+        'url': 'https://www.neopets.com/island/training.phtml?type=status',
+        'max_level': 250,
+    },
+    'ninja': {
+        'url': 'https://www.neopets.com/island/fight_training.phtml?type=status',
+        'max_level': 9999,
+    }
+}
 
-self.goto('https://www.neopets.com/dome/fight.phtml')
-self.load_actions()
+ATTR_CONF_TABLE = {
+    'lv': 'level',
+    'str': 'strength',
+    'def': 'defense',
+    'mov': 'movement',
+    'hp': 'max_health',
+}
 
-def fight():
-    self.wait_for_turn()
-    self.parse_status()
-    w = self.determine_winner()
-    if w == True:
-        logger.info("Victory!")
-        self.collect_rewards()
-        self.device.click('#bdplayagain', nav=True)
-        return True
-    elif w == False:
-        logger.info("Defeated!")
-        return False
-    else:
-        pass
-    if self.round > len(self.actions):
-        logger.info("No more actions configured, ending battle")
-        return False
-    self.select_action()
-    self.send_actions()
-    self.wait_for_turn()
+ATTR_COURSE_TABLE = {
+    'lv': 'Level',
+    'str': 'Strength',
+    'def': 'Defence',
+    'mov': 'Agility',
+    'hp': 'Endurance',
+}
 
-self.wait_and_start()
-while not fight():
-    pass
+configs = self.config.PetTraining_Config.splitlines()
+aca_pets = {
+    'pirate': [],
+    'island': [],
+    'ninja': []
+}
+self.complete_times = []
 
-self.wait_and_start()
-
-cards = self.page.locator('img[alt="Click here to scratch this card"]')
-self.device.click(cards.first, nav=True)
-canvas = self.page.locator('#container')
-self.frame = ''
-
-slots_x = [250, 310, 400]
-slots_y = [100, 160, 260]
-loc = self.find_flash()
-for n in range(6):
-    for i in range(10):
-        for j in range(5):
-            sx = slots_x[n % 3] + i * 10
-            sy = slots_y[n // 3] + j * 10
-            sp = {'x': sx, 'y': sy}
-            tp = {'x': sx + 10, 'y': sy + 10}
-            loc.drag_to(loc, source_position=sp, target_position=tp)
-            loc.drag_to(loc, source_position=tp, target_position=sp)
-
-self.click((350, 380))
-self.page.wait_for_url(
-    '**',
-    timeout=self.config.Playwright_DefaultTimeout*1000,
-    wait_until='domcontentloaded',
-)
+for conf in configs:
+    pet_name, academy, target_lv, target_str, target_def, target_mov, target_hp = conf.split(':')
+    if academy not in ACADEMY:
+        logger.error(f'Unknown academy: {academy}')
+        continue
+    aca_pets[academy].append(Neopet(
+        name=pet_name,
+        level=int(target_lv),
+        max_health=int(target_hp),
+        strength=int(target_str),
+        defense=int(target_def),
+        movement=int(target_mov),
+    ))
 
 
-ranges = (
-    range(6, 7),
-    range(14, 15),
-    range(22, 23),
-)
+self.config.stored.PendingTrainingFee.clear()
+trained = []
+
+academy = 'island'
+pets = aca_pets[academy]
+
+self.goto(ACADEMY[academy]['url'])
+completed = self.page.locator('input[type=submit][value="Complete Course!"]')
+while completed.count():
+    logger.info("Completing course for %s academy", academy)
+    self.device.click(completed.first, nav=True)
+    self.goto(ACADEMY[academy]['url'])
+    completed = self.page.locator('input[type=submit][value="Complete Course!"]')
+
+self.scan_pets(pets, academy=academy)
+for pet in pets:
+    self.train_pet(pet, academy)
+
+fees = self.scan_fee(academy)
+if fees:
+    trained.append(academy)
+self.config.stored.PendingTrainingFee.add(*fees)
+
+missings = {}
+if self.config.stored.PendingTrainingFee:
+    missings = self.fetch_training_fee()
+    for aca in trained:
+        logger.info(f"Paying training fee for {aca} academy")
+        self.pay_training_fee(aca)
+if missings and self.config.PetTraining_BuyFeeFromPlayers:
+    msg = "Buying missing items from players:\n"
+    reqs = []
+    for item_name, amount in missings.items():
+        reqs.append((item_name, 'training', amount))
+        msg += f"{item_name}: {amount}\n"
+    logger.info(msg)
+    self.config.stored.ShopWizardRequests.bulk_add(reqs)
+    self.config.task_call('ShopWizard')
+
+for academy, pets in aca_pets.items():
+    self.complete_times += self.scan_training_time(academy)

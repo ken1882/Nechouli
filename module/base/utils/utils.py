@@ -11,6 +11,7 @@ import pytz, tzlocal
 from glob import glob
 from pathlib import Path
 from itertools import combinations
+from difflib import SequenceMatcher
 
 REGEX_NODE = re.compile(r'(-?[A-Za-z]+)(-?\d+)')
 
@@ -1387,3 +1388,7 @@ def lcs_multi(
             items, sim_threshold=sim_threshold, k=k,
             min_len=min_len, include_singletons=include_singletons
         )
+
+def diff_str(a: str, b: str) -> float:
+    """A simple string similarity metric based on Jaccard similarity of 3-grams."""
+    return jaccard_sim(a, b, k=3)
