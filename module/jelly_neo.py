@@ -219,6 +219,7 @@ def get_itemdb(item_name: str, agent=None) -> dict:
     if not result:
         return ret
     ret["id"] = result["item_id"]
+    ret["name"] = result["name"]
     ret["description"] = result["description"]
     ret["rarity"] = result["rarity"]
     ret["market_price"] = deep_get(result, "price.value", 999999)
