@@ -39,11 +39,11 @@ AgentPool: list[requests.Session] = [
 for sess in AgentPool:
     sess.headers.update(HTTP_HEADERS)
 
-def get_retry(agent, url, max_retries=5, backoff_factor=1):
+def get_retry(agent, url, max_retries=5, backoff_factor=1, timeout=10):
     depth = 0
     while True:
         try:
-            response = agent.get(url, timeout=10)
+            response = agent.get(url, timeout=timeout)
             return response
         except Exception as exc:  # noqa: BLE001
             depth += 1
@@ -56,7 +56,10 @@ def get_retry(agent, url, max_retries=5, backoff_factor=1):
 
 
 def get_item_details_by_name(
-    item_name: str, *, force: bool = False, agent: requests.Session | None = None
+    item_name: str, *,
+    force: bool = False,
+    agent: requests.Session | None = None,
+    timeout: int = 10
 ) -> dict:
     """
     Scrape item details; honour dm.is_cached unless `force=True`.
@@ -65,20 +68,20 @@ def get_item_details_by_name(
     agent = agent or Agent
     if not force and dm.is_cached(item_name):
         return dm.ItemDatabase.get(item_name) or dm._redis_get_item(item_name)  # type: ignore[attr-defined]
-    data = get_itemdb(item_name, agent=agent)
+    data = get_itemdb(item_name, agent=agent, timeout=timeout)
     if data["id"]:
         dm.save_cache(data)
     return data
     logger.info("Fetching item %s from Jellyneo...", item_name)
     url = f"https://items.jellyneo.net/search?name={quote(item_name)}&name_type=3"
-    response = get_retry(agent, url)
+    response = get_retry(agent, url, timeout=timeout)
     page = BS(response.content, "html.parser")
     data = _parse_search_page(page)
     if not data["id"]:
         return data
 
     detail_url = f"https://items.jellyneo.net/item/{data['id']}"
-    res = get_retry(agent, detail_url)
+    res = get_retry(agent, detail_url, timeout=timeout)
     doc = BS(res.content, "html.parser")
     _populate_from_detail_page(doc, data)
     if not data["market_price"]:
@@ -205,11 +208,15 @@ def update_item_market_price(item_name: str, price: int) -> bool:
 def load_cache() -> None:
     dm.load_item_cache()
 
-def get_itemdb(item_name: str, agent=None) -> dict:
+def get_itemdb(item_name: str, agent=None, timeout: int = 10) -> dict:
     global Agent
     ret = _empty_item()
     agent = agent or Agent
-    res = agent.get(f"https://itemdb.com.br/api/v1/search?skipStats=true&s={item_name}")
+    res = get_retry(
+        agent,
+        f"https://itemdb.com.br/api/v1/search?skipStats=true&s={item_name}",
+        timeout=timeout
+    )
     if res.status_code != 200:
         return ret
     result = next(
@@ -234,7 +241,7 @@ def get_itemdb(item_name: str, agent=None) -> dict:
         ret["effects"].append("openable")
     if deep_get(result, "useTypes.canRead") == 'true':
         ret["effects"].append("readable")
-    detail_page = agent.get(f"https://itemdb.com.br/item/{result['slug']}")
+    detail_page = get_retry(agent, f"https://itemdb.com.br/item/{result['slug']}", timeout=timeout)
     doc = BS(detail_page.content, "html.parser")
     ret["restock_price"] = str2int(doc.find(string="Est. Val").parent.parent.text.split()[-2])
     if doc.find('img', alt="Disease"):
