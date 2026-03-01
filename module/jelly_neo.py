@@ -229,7 +229,9 @@ def get_itemdb(item_name: str, agent=None, timeout: int = 10) -> dict:
     ret["name"] = result["name"]
     ret["description"] = result["description"]
     ret["rarity"] = result["rarity"]
-    ret["market_price"] = deep_get(result, "price.value", 999999)
+    ret["market_price"] = deep_get(result, "price.value")
+    if not ret["market_price"]:
+        ret["market_price"] = 999999
     ret["category"] = result["category"]
     ret["image"] = result["image"]
     ret["price_timestamp"] = datetime.now().timestamp()
