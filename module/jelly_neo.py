@@ -68,10 +68,15 @@ def get_item_details_by_name(
     agent = agent or Agent
     if not force and dm.is_cached(item_name):
         return dm.ItemDatabase.get(item_name) or dm._redis_get_item(item_name)  # type: ignore[attr-defined]
-    data = get_itemdb(item_name, agent=agent, timeout=timeout)
+    try:
+        data = get_itemdb(item_name, agent=agent, timeout=timeout)
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("get_itemdb failed for %s: %s", item_name, exc)
+        data = _empty_item()
     if data["id"]:
         dm.save_cache(data)
-    return data
+        return data
+    # fallback to Jellyneo if itemdb search fails
     logger.info("Fetching item %s from Jellyneo...", item_name)
     url = f"https://items.jellyneo.net/search?name={quote(item_name)}&name_type=3"
     response = get_retry(agent, url, timeout=timeout)

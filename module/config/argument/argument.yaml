@@ -276,6 +276,25 @@ BattleDome:
       - "Tiki Tack Man"
       - "Valin"
       - "Vira"
+  ObeliskOpponent:
+    type: select
+    value: "None"
+    option:
+      - "None"
+      - "Giant Spectral Mutant Walein"
+      - "Amateur Insider"
+      - "Grumpy Mummy"
+      - "Charming Subversive"
+      - "Zombie Hooligan"
+      - "Nefarious Plotter"
+      - "Ghostly Knight"
+      - "Unchained Monster"
+      - "Cunning Mastermind"
+      - "Lanie and Lillie"
+      - "The Duchess"
+  ObeliskTimesLeft:
+    stored: StoredInt
+    display: true
 
 WishingWell:
   Item: "Horace Stamp"

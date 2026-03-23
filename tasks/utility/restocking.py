@@ -215,6 +215,7 @@ class RestockingUI(BasePageUI):
         return sorted(ret, key=lambda x: x.profit, reverse=True)
 
     def haggle(self, offers=None, purposes=None, depth=0):
+        self.run_default_scripts()
         offers = offers or []
         purposes = purposes or []
         if 'SOLD OUT' in self.page.content():

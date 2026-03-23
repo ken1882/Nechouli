@@ -138,23 +138,32 @@ def load_item_cache(force_local: bool = False) -> dict:
             logger.warning("Redis scan failed: %s", exc)
 
     # ──────────────────────────────── File fallback ────────────────────────────
-    if os.path.exists(CACHE_FILE):
-        logger.info("Loading item cache from %s", CACHE_FILE)
-        with open(CACHE_FILE, "rb") as fh:
-            raw = orjson.loads(fh.read())
+    depth = 3
+    while depth > 0:
+        depth -= 1
+        try:
+            if os.path.exists(CACHE_FILE):
+                logger.info("Loading item cache from %s", CACHE_FILE)
+                with open(CACHE_FILE, "rb") as fh:
+                    raw = orjson.loads(fh.read())
 
-        # strip invalids and rewrite file only if we removed something
-        for key, obj in list(raw.items()):
-            if _is_invalid(obj):
-                raw.pop(key)
-                purged_file += 1
+                # strip invalids and rewrite file only if we removed something
+                for key, obj in list(raw.items()):
+                    if _is_invalid(obj):
+                        raw.pop(key)
+                        purged_file += 1
 
-        if purged_file:
-            with open(CACHE_FILE, "wb") as fh:
-                fh.write(orjson.dumps(raw))
-            logger.info("Purged %d stale items from cache file", purged_file)
+                if purged_file:
+                    with open(CACHE_FILE, "wb") as fh:
+                        fh.write(orjson.dumps(raw))
+                    logger.info("Purged %d stale items from cache file", purged_file)
 
-        ItemDatabase = raw
+                ItemDatabase = raw
+                break
+        except Exception as exc:
+            logger.warning("Failed to load cache file (attempts left: %d): %s", depth-1, exc)
+            ItemDatabase = {}
+            sleep(random.uniform(0.5, 2))
     logger.info("Loaded %d cached items (file path)", len(ItemDatabase))
     return ItemDatabase
 

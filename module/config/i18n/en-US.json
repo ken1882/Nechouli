@@ -719,6 +719,26 @@
       "Tiki Tack Man": "Tiki Tack Man",
       "Valin": "Valin",
       "Vira": "Vira"
+    },
+    "ObeliskOpponent": {
+      "name": "Obelisk Opponent",
+      "help": "",
+      "None": "None",
+      "Giant Spectral Mutant Walein": "Giant Spectral Mutant Walein",
+      "Amateur Insider": "Amateur Insider",
+      "Grumpy Mummy": "Grumpy Mummy",
+      "Charming Subversive": "Charming Subversive",
+      "Zombie Hooligan": "Zombie Hooligan",
+      "Nefarious Plotter": "Nefarious Plotter",
+      "Ghostly Knight": "Ghostly Knight",
+      "Unchained Monster": "Unchained Monster",
+      "Cunning Mastermind": "Cunning Mastermind",
+      "Lanie and Lillie": "Lanie and Lillie",
+      "The Duchess": "The Duchess"
+    },
+    "ObeliskTimesLeft": {
+      "name": "Obelisk Challenges Times Left Today",
+      "help": "Resets 0 if no faction selected"
     }
   },
   "WishingWell": {

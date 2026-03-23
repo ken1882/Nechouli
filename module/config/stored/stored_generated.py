@@ -21,6 +21,7 @@ class StoredGenerated:
     PendingTrainingFee = StoredPendingTrainingFee("PetTraining.PetTraining.PendingTrainingFee")
     DailyQuestRestockTimesLeft = StoredDailyQuestRestockCounter("DailyQuest.DailyQuest.DailyQuestRestockTimesLeft")
     DailyQuestFeedTimesLeft = StoredDailyQuestFeedCounter("DailyQuest.DailyQuest.DailyQuestFeedTimesLeft")
+    ObeliskTimesLeft = StoredInt("BattleDome.BattleDome.ObeliskTimesLeft")
     AaaPurchasedCount = StoredAaaPurchaseCounter("AlmostAbandonedAttic.AlmostAbandonedAttic.AaaPurchasedCount")
     IgsPurchasedCount = StoredIgsPurchaseCounter("IglooGarageSale.IglooGarageSale.IgsPurchasedCount")
     ShopWizardRequests = StoredShopWizardRequests("ShopWizard.ShopWizard.ShopWizardRequests")

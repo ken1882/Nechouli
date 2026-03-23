@@ -99,6 +99,18 @@
     "order": 0,
     "color": "#777777"
   },
+  "ObeliskTimesLeft": {
+    "name": "ObeliskTimesLeft",
+    "path": "BattleDome.BattleDome.ObeliskTimesLeft",
+    "i18n": "BattleDome.ObeliskTimesLeft.name",
+    "stored": "StoredInt",
+    "attrs": {
+      "time": "2020-01-01 00:00:00",
+      "value": 0
+    },
+    "order": 0,
+    "color": "#777777"
+  },
   "AaaPurchasedCount": {
     "name": "AaaPurchasedCount",
     "path": "AlmostAbandonedAttic.AlmostAbandonedAttic.AaaPurchasedCount",

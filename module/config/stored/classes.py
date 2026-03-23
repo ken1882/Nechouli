@@ -129,6 +129,216 @@ class StoredInt(StoredBase):
     def set(self, value: int):
         self.value = value
 
+    # Representation methods
+    def __repr__(self):
+        return f"StoredInt({self.value})"
+
+    def __str__(self):
+        return str(self.value)
+
+    def __int__(self):
+        return self.value
+
+    def __float__(self):
+        return float(self.value)
+
+    def __bool__(self):
+        return bool(self.value)
+
+    # Comparison operators
+    def __eq__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        return self.value == other_val
+
+    def __ne__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        return self.value != other_val
+
+    def __lt__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        return self.value < other_val
+
+    def __le__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        return self.value <= other_val
+
+    def __gt__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        return self.value > other_val
+
+    def __ge__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        return self.value >= other_val
+
+    # Arithmetic operators (return new StoredInt)
+    def __add__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        return StoredInt(self.value + other_val)
+
+    def __radd__(self, other):
+        return StoredInt(other + self.value)
+
+    def __sub__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        return StoredInt(self.value - other_val)
+
+    def __rsub__(self, other):
+        return StoredInt(other - self.value)
+
+    def __mul__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        return StoredInt(self.value * other_val)
+
+    def __rmul__(self, other):
+        return StoredInt(other * self.value)
+
+    def __truediv__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        return StoredInt(int(self.value / other_val))
+
+    def __rtruediv__(self, other):
+        return StoredInt(int(other / self.value))
+
+    def __floordiv__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        return StoredInt(self.value // other_val)
+
+    def __rfloordiv__(self, other):
+        return StoredInt(other // self.value)
+
+    def __mod__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        return StoredInt(self.value % other_val)
+
+    def __rmod__(self, other):
+        return StoredInt(other % self.value)
+
+    def __pow__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        return StoredInt(self.value ** other_val)
+
+    def __rpow__(self, other):
+        return StoredInt(other ** self.value)
+
+    # In-place arithmetic operators (modify self.value)
+    def __iadd__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        self.value += other_val
+        return self
+
+    def __isub__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        self.value -= other_val
+        return self
+
+    def __imul__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        self.value *= other_val
+        return self
+
+    def __itruediv__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        self.value = int(self.value / other_val)
+        return self
+
+    def __ifloordiv__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        self.value //= other_val
+        return self
+
+    def __imod__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        self.value %= other_val
+        return self
+
+    def __ipow__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        self.value **= other_val
+        return self
+
+    # Unary operators
+    def __neg__(self):
+        return StoredInt(-self.value)
+
+    def __pos__(self):
+        return StoredInt(+self.value)
+
+    def __abs__(self):
+        return StoredInt(abs(self.value))
+
+    def __invert__(self):
+        return StoredInt(~self.value)
+
+    # Bitwise operators
+    def __and__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        return StoredInt(self.value & other_val)
+
+    def __rand__(self, other):
+        return StoredInt(other & self.value)
+
+    def __or__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        return StoredInt(self.value | other_val)
+
+    def __ror__(self, other):
+        return StoredInt(other | self.value)
+
+    def __xor__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        return StoredInt(self.value ^ other_val)
+
+    def __rxor__(self, other):
+        return StoredInt(other ^ self.value)
+
+    def __lshift__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        return StoredInt(self.value << other_val)
+
+    def __rlshift__(self, other):
+        return StoredInt(other << self.value)
+
+    def __rshift__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        return StoredInt(self.value >> other_val)
+
+    def __rrshift__(self, other):
+        return StoredInt(other >> self.value)
+
+    # In-place bitwise operators
+    def __iand__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        self.value &= other_val
+        return self
+
+    def __ior__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        self.value |= other_val
+        return self
+
+    def __ixor__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        self.value ^= other_val
+        return self
+
+    def __ilshift__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        self.value <<= other_val
+        return self
+
+    def __irshift__(self, other):
+        other_val = other.value if isinstance(other, StoredInt) else other
+        self.value >>= other_val
+        return self
+
+    # Conversion methods
+    def __index__(self):
+        """Allows StoredInt to be used in slicing and other index contexts"""
+        return self.value
+
+    def __hash__(self):
+        return hash(self.value)
+
 
 class StoredCounter(StoredBase):
     value = 0
