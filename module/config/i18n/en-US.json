@@ -720,21 +720,9 @@
       "Valin": "Valin",
       "Vira": "Vira"
     },
-    "ObeliskOpponent": {
-      "name": "Obelisk Opponent",
-      "help": "",
-      "None": "None",
-      "Giant Spectral Mutant Walein": "Giant Spectral Mutant Walein",
-      "Amateur Insider": "Amateur Insider",
-      "Grumpy Mummy": "Grumpy Mummy",
-      "Charming Subversive": "Charming Subversive",
-      "Zombie Hooligan": "Zombie Hooligan",
-      "Nefarious Plotter": "Nefarious Plotter",
-      "Ghostly Knight": "Ghostly Knight",
-      "Unchained Monster": "Unchained Monster",
-      "Cunning Mastermind": "Cunning Mastermind",
-      "Lanie and Lillie": "Lanie and Lillie",
-      "The Duchess": "The Duchess"
+    "ObeliskOpponentPriorityList": {
+      "name": "Obelisk Opponent Priority List",
+      "help": "Default is tier 4,3,2,1,5 of each faction per line, strongest is T5"
     },
     "ObeliskTimesLeft": {
       "name": "Obelisk Challenges Times Left Today",

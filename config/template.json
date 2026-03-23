@@ -121,7 +121,7 @@
       "GrindNP": false,
       "CombatOrder": "# seperate turn by line, first valid line will be turn 1 and so on\n# format: item1,item2,ability (None for bypass)\nThe Omelette Sceptre,Downsize!,Meditate\nCursed Elixir of Neovia,Wand of the Dark Faerie,None\n",
       "Opponent": "Koi Warrior",
-      "ObeliskOpponent": "None",
+      "ObeliskOpponentPriorityList": "Grumpy Mummy > Brutal Mercenary > Licensed Conjurer > Genius Inventor > Charming Subversive > Midnight Smuggler >\nLanie and Lillie > Commander Flint > Master Wizard > Professor Lambert > Cunning Mastermind > Petty Pilferer >\nUnchained Monster > Rent-a-Brute > Minor Warlock > Smug Philosopher > Nefarious Plotter > Roadside Bandit >\nZombie Hooligan > Unyielding Sentinel > Rasala the Bright > Stalwart Explorer > The Duchess > Shady Prowle >\nGhostly Knight > Back Alley Bruiser > Hedgewitch > Assistant Scientist > Amateur Insider > Kanrik, Master Thief\n",
       "ObeliskTimesLeft": {}
     }
   },

@@ -15,10 +15,6 @@ class BattleDomeUI(BasePageUI):
         self.check_obelisk()
         self.goto('https://www.neopets.com/dome/fight.phtml')
         self.device.scroll_to(0, 350)
-        if self.obelisk_on and self.config.BattleDome_ObeliskOpponent and \
-            self.config.BattleDome_ObeliskOpponent != 'None' \
-            and self.config.stored.ObeliskTimesLeft == None:
-            self.config.stored.ObeliskTimesLeft = 10
         if not self.is_in_battle():
             if not self.select_pet():
                 logger.error("Failed to select pet")
@@ -34,14 +30,6 @@ class BattleDomeUI(BasePageUI):
                 return True
             won = self.process_battle()
             self.collect_rewards()
-            if self.config.stored.ObeliskTimesLeft:
-                self.config.stored.ObeliskTimesLeft -= 1
-                if self.config.stored.ObeliskTimesLeft <= 0:
-                    self.config.stored.ObeliskTimesLeft = 0
-                    logger.info(f"Obelisk daily cleared")
-                    future = datetime.now() + timedelta(minutes=5)
-                    self.config.task_delay(target=future)
-                    return None
             if 'item limit' in self.page.content() and not self.config.BattleDome_GrindNP:
                 logger.info("Daily item limit reached, stopping")
                 return True
@@ -97,12 +85,18 @@ class BattleDomeUI(BasePageUI):
     def select_opponent(self):
         tou = self.DIFFICULTY_MAP.get(self.config.BattleDome_Difficulty, 1)
         oppo = None
-        if (self.config.stored.ObeliskTimesLeft or 0) > 0:
-            tou = 2
-            oppo = self.config.BattleDome_ObeliskOpponent
-        if not oppo or oppo == 'None':
+        oppo_list = [
+            o.strip()
+            for o in self.config.BattleDome_ObeliskOpponentPriorityList.split('\n') if o.strip()
+        ]
+        for o in oppo_list:
+            if self.page.locator('#npcTable').locator('td', has_text=o).count():
+                oppo = o
+                tou  = 2 # normal difficulty for obelisk challenge
+                break
+        if not oppo:
             oppo = self.config.BattleDome_Opponent
-        logger.info(f"Selected opponent: {oppo} at difficulty {tou} (obelisk times left: {self.config.stored.ObeliskTimesLeft})")
+        logger.info(f"Selected opponent: {oppo} at difficulty {tou}")
         row = self.page.locator('#npcTable').locator('td', has_text=oppo).locator('..')
         self.device.click(row.locator(f'.tough{tou}'))
 
@@ -238,6 +232,9 @@ class BattleDomeUI(BasePageUI):
             ok = self.device.wait_for_element('.obeliskButtonYes')
             if ok:
                 self.device.click(ok)
+        if 'the battle ends in' in self.page.content().lower():
+            self.obelisk_on = True
+            logger.info("Obelisk challenge available today")
 
 
 if __name__ == '__main__':

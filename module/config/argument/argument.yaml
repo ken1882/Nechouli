@@ -276,22 +276,14 @@ BattleDome:
       - "Tiki Tack Man"
       - "Valin"
       - "Vira"
-  ObeliskOpponent:
-    type: select
-    value: "None"
-    option:
-      - "None"
-      - "Giant Spectral Mutant Walein"
-      - "Amateur Insider"
-      - "Grumpy Mummy"
-      - "Charming Subversive"
-      - "Zombie Hooligan"
-      - "Nefarious Plotter"
-      - "Ghostly Knight"
-      - "Unchained Monster"
-      - "Cunning Mastermind"
-      - "Lanie and Lillie"
-      - "The Duchess"
+  ObeliskOpponentPriorityList:
+    type: textarea
+    value: |
+      Grumpy Mummy > Brutal Mercenary > Licensed Conjurer > Genius Inventor > Charming Subversive > Midnight Smuggler >
+      Lanie and Lillie > Commander Flint > Master Wizard > Professor Lambert > Cunning Mastermind > Petty Pilferer >
+      Unchained Monster > Rent-a-Brute > Minor Warlock > Smug Philosopher > Nefarious Plotter > Roadside Bandit >
+      Zombie Hooligan > Unyielding Sentinel > Rasala the Bright > Stalwart Explorer > The Duchess > Shady Prowle >
+      Ghostly Knight > Back Alley Bruiser > Hedgewitch > Assistant Scientist > Amateur Insider > Kanrik, Master Thief
   ObeliskTimesLeft:
     stored: StoredInt
     display: true
