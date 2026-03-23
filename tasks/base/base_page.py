@@ -216,6 +216,7 @@ class BasePageUI(ModuleBase):
         self.device.click(btn)
         self.device.wait(1)
         self.device.click('.signin-btn', nav=True)
+        self.device.temporary_disconnect()
         if not self.is_logged_in():
             cred = os.getenv(f'NEOPASS_CRED_{self.config.config_name}')
             if not cred:

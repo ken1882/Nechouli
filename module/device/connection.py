@@ -302,3 +302,15 @@ class Connection:
         if self.config.Playwright_AutoAcceptDialog:
             page.on('dialog', lambda dialog: dialog.accept())
         return page
+
+    def temporary_disconnect(self, second=10):
+        # temporarily disconnect pw connection to bypass cloudflare check
+        logger.info(f"Temporarily disconnecting for {second} seconds to bypass Cloudflare check")
+        self.browser.close()
+        self.context = None
+        self.page = None
+        time.sleep(second)
+        address = self.config.Playwright_RemoteDebuggingAddress
+        self.browser = self.pw.chromium.connect_over_cdp(f"http://{address}")
+        self.context = self.browser.contexts[0]
+        self.page = self.context.pages[0]
