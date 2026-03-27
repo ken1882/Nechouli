@@ -10,8 +10,7 @@ class NeggCaveUI(BasePageUI):
             return True
         html = self.device.eval("document.documentElement.outerHTML").replace('\\', '')
         self.goto('https://thedailyneopets.com/articles/negg-solver/')
-        script = f"document.getElementById('PageSourceBox').value = `{html}`"
-        self.device.eval(script)
+        self.page.locator('#PageSourceBox').fill(html)
         self.device.wait(1)
         answer = []
         while len(answer) < 1:

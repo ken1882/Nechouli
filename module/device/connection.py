@@ -70,7 +70,7 @@ class Connection:
         if not os.path.exists(locale_path):
             logger.warning(f"Locale file not found: {locale_path}")
             return key
-        with open(locale_path, 'r') as f:
+        with open(locale_path, 'r', encoding='utf-8') as f:
             vocab = json.load(f)
         r = re.match(r'__MSG_(\w+)__', key)
         if not r:
@@ -103,7 +103,7 @@ class Connection:
             if not os.path.exists(os.path.join(path, 'manifest.json')):
                 logger.warning(f"Manifest file not found in {path}")
                 continue
-            with open(os.path.join(path, 'manifest.json'), 'r') as f:
+            with open(os.path.join(path, 'manifest.json'), 'r', encoding='utf-8') as f:
                 manifest = json.load(f)
                 ext_name = manifest['name']
                 if ext_name.startswith('__MSG_'):
