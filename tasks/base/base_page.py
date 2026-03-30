@@ -163,30 +163,7 @@ class BasePageUI(ModuleBase):
             # quest won't start if not visited
             self.goto('https://www.neopets.com/questlog/', timeout=timeout)
             return self.goto(url, timeout=timeout)
-        self.run_default_scripts()
-
-    def execute_script(self, script_name):
-        path = os.path.join('tasks', 'scripts', f'{script_name}.js')
-        if not os.path.exists(path):
-            logger.error(f"Script {script_name} not found at {path}.")
-            return
-        try:
-            with open(path, 'r', encoding='utf-8') as f:
-                script_content = f.read()
-            result = self.device.eval(script_content)
-            logger.info(f"Script {script_name} executed successfully.")
-            return result
-        except Exception as e:
-            logger.exception(f"Failed to execute script {script_name}: {e}")
-            return
-
-    def run_default_scripts(self):
-        try:
-            # Remove annoying popups
-            self.execute_script('remove_antiadb')
-            self.execute_script('remove_popups')
-        except PlaywrightError:
-            pass
+        self.device.run_default_scripts()
 
     def reload(self):
         return self.goto(self.page.url)

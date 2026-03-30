@@ -11,7 +11,7 @@ class LunarTempleUI(BasePageUI):
             node.click()
             break
         self.device.sleep(3)
-        self.execute_script('lunar_temple')
+        self.device.execute_script('lunar_temple')
         self.device.sleep(3)
         try: # eats js navigation
             self.reload()

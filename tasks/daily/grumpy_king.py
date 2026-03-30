@@ -10,7 +10,7 @@ class GrumpyKingUI(BasePageUI):
         if 'outtolunch.gif' in self.page.content():
             logger.info("Grumpy King is unavailable, return after 1 hour")
             return False
-        self.execute_script('king_autofill')
+        self.device.execute_script('king_autofill')
         self.device.click('button[type="submit"]', nav=True)
         return True
 

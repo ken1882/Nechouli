@@ -1,3 +1,4 @@
+import os
 import numpy as np
 from typing import Callable
 from random import randint
@@ -223,6 +224,8 @@ class Control(Connection):
             )
         if wait > 0:
             self.wait(wait)
+        if nav:
+            self.run_default_scripts()
 
     def drag_to(self,
             src: Union[Locator, tuple[int, int]],
@@ -299,6 +302,29 @@ class Control(Connection):
         for _ in range(delta):
             ret += randint(10, 50) / 500.0
         return ret
+
+    def execute_script(self, script_name):
+        path = os.path.join('tasks', 'scripts', f'{script_name}.js')
+        if not os.path.exists(path):
+            logger.error(f"Script {script_name} not found at {path}.")
+            return
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                script_content = f.read()
+            result = self.eval(script_content)
+            logger.info(f"Script {script_name} executed successfully.")
+            return result
+        except Exception as e:
+            logger.exception(f"Failed to execute script {script_name}: {e}")
+            return
+
+    def run_default_scripts(self):
+        try:
+            # Remove annoying popups
+            self.execute_script('remove_antiadb')
+            self.execute_script('remove_popups')
+        except Exception:
+            pass
 
     def eval(self, js_script: str, retries=10):
         depth = 0

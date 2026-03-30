@@ -139,6 +139,7 @@ class BattleDomeUI(BasePageUI):
     def wait_and_start(self):
         btn = self.device.wait_for_element('#start')
         self.device.click(btn)
+        self.device.run_default_scripts()
 
     def parse_status(self):
         self.round = str2int(self.page.locator('#flround').text_content())

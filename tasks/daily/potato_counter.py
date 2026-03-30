@@ -10,7 +10,7 @@ class PotatoCounterUI(BasePageUI):
             if 'you can only' in self.page.content():
                 logger.info("Max potato count reached, ending task")
                 return True
-            self.execute_script('potato')
+            self.device.execute_script('potato')
             hint = self.device.wait_for_element('#potato-counter-overlay').text_content()
             ans = str2int(hint) or 0
             if ans <= 0 or ans > 99:
