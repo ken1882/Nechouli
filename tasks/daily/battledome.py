@@ -25,15 +25,19 @@ class BattleDomeUI(BasePageUI):
             self.device.click('#bdFightStep3FightButton', nav=True)
         self.load_actions()
         won = True
+        additional_times = 10 if self.obelisk_on else 0
         while won:
             if self.on_background and not self.update_background_status():
                 return True
             won = self.process_battle()
             self.collect_rewards()
-            if 'item limit' in self.page.content() and not self.config.BattleDome_GrindNP:
+            if additional_times > 0:
+                additional_times -= 1
+                logger.info(f"Obelisk opponent - {additional_times} times left")
+            elif 'item limit' in self.page.content() and not self.config.BattleDome_GrindNP:
                 logger.info("Daily item limit reached, stopping")
                 return True
-            if 'NP limit' in self.page.content():
+            elif 'NP limit' in self.page.content():
                 logger.info("Daily NP limit reached, stopping")
                 return True
             self.config.load()
@@ -87,7 +91,7 @@ class BattleDomeUI(BasePageUI):
         oppo = None
         oppo_list = [
             o.strip()
-            for o in self.config.BattleDome_ObeliskOpponentPriorityList.split('\n') if o.strip()
+            for o in self.config.BattleDome_ObeliskOpponentPriorityList.split('>') if o.strip()
         ]
         for o in oppo_list:
             if self.page.locator('#npcTable').locator('td', has_text=o).count():
@@ -233,7 +237,7 @@ class BattleDomeUI(BasePageUI):
             ok = self.device.wait_for_element('.obeliskButtonYes')
             if ok:
                 self.device.click(ok)
-        if 'the battle ends in' in self.page.content().lower():
+        if 'under attack' in self.page.content().lower():
             self.obelisk_on = True
             logger.info("Obelisk challenge available today")
 

@@ -76,6 +76,8 @@ def get_item_details_by_name(
     if data["id"]:
         dm.save_cache(data)
         return data
+    else:
+        logger.info(f"Item {item_name} not found in itemdb (got {data}), trying Jellyneo...")
     # fallback to Jellyneo if itemdb search fails
     logger.info("Fetching item %s from Jellyneo...", item_name)
     url = f"https://items.jellyneo.net/search?name={quote(item_name)}&name_type=3"

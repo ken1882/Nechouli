@@ -78,7 +78,7 @@ self = PetTrainingUI(config, device)
 device.start_browser()
 device.disable_stuck_detection()
 device.screenshot_interval_set(0.1)
-self.config.bind('PetTraining')
+self.config.bind('QuickStock')
 
 
 ACADEMY = {

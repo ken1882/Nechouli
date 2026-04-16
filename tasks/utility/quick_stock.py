@@ -15,9 +15,12 @@ class QuickStockUI(BasePageUI):
         self.goto("https://www.neopets.com/market.phtml?type=your")
         used, free = self.get_stock_capacity()
         self.free_stocks = free
-        self.goto('https://www.neopets.com/quickstock.phtml')
-        self.scan_all_items()
-        self.process_actions()
+        while 1:
+            self.goto('https://www.neopets.com/quickstock.phtml')
+            self.scan_all_items()
+            cont = self.process_actions()
+            if not cont:
+                break
         self.update_inventory_data()
         if self._stocked and free:
             self.update_stock_price()
@@ -27,7 +30,8 @@ class QuickStockUI(BasePageUI):
 
     def scan_all_items(self):
         self.items = []
-        nodes = self.page.locator('form > table > tbody > tr')
+        # nodes = self.page.locator('form > table > tbody > tr')
+        nodes = self.page.locator('.np-table-row')
         for node in nodes.all()[:-1]:
             available_acts = node.locator('input')
             if not available_acts.count():
@@ -98,6 +102,7 @@ class QuickStockUI(BasePageUI):
                 self._stocked = True
             elif 'closet' in available_acts:
                 item._act = 'closet'
+        should_continue = not all(item._act in ['keep'] for item in self.items)
         row_height = 22
         viewport_height = 400
         viewport_y = 0
@@ -120,9 +125,10 @@ class QuickStockUI(BasePageUI):
                 viewport_y = cur_y
                 self.device.scroll_to(0, viewport_y)
         self.page.on("dialog", lambda dialog: dialog.accept())
-        btn = self.page.locator('input[type=submit][value="Submit"]')
+        btn = self.page.locator('button[type=submit]')
         self.device.scroll_to(loc=btn)
         self.device.click(btn)
+        return should_continue
 
     def get_stock_capacity(self):
         stock_text = self.page.locator('center').first.text_content().split(':')
