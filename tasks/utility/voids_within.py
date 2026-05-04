@@ -4,6 +4,15 @@ from module.base.utils import str2int
 
 class VoidsWithinUI(BasePageUI):
 
+    def handle_popup(self):
+        back = self.page.locator('.popup-exit-icon')
+        for btn in back.all():
+            if not btn.is_visible():
+                continue
+            logger.info("Dismiss popup")
+            self.device.click(btn)
+            self.device.wait(0.3)
+
     def main(self):
         self.goto('https://www.neopets.com/hospital/volunteer.phtml', timeout=180)
         done = False
@@ -16,7 +25,7 @@ class VoidsWithinUI(BasePageUI):
             "https://www.neopets.com/hospital/volunteer.phtml",
             lambda route: route.fulfill(status=204)
         )
-        for i in [5, 4, 3, 2, 1]:
+        for i in [4, 2, 3, 1]:
             pane = self.page.locator(f'#Act{i}Pane')
             btn = self.page.locator(f'#Act{i}PaneBtn')
             if 'minimize' in pane.get_attribute('class'):
@@ -26,7 +35,6 @@ class VoidsWithinUI(BasePageUI):
                     self.device.wait(0.5)
             joins = pane.locator('button[id*="VolunteerButton"]')
             err_popup = self.page.locator('h3', has_text='Error Occurred')
-            back = self.page.locator('.popup-exit-icon')
             for j in joins.all():
                 if 'locked' in j.locator('../..').get_attribute('class'):
                     continue
@@ -36,11 +44,7 @@ class VoidsWithinUI(BasePageUI):
                     if err_popup.is_visible():
                         logger.error("Stopped due to error page")
                         return False
-                    for btn in back.all():
-                        if not btn.is_visible():
-                            continue
-                        self.device.click(btn)
-                        self.device.wait(0.3)
+                    self.handle_popup()
                     try:
                         done = self.process_shift(j, do_send)
                         break
@@ -65,11 +69,12 @@ class VoidsWithinUI(BasePageUI):
     def process_shift(self, shift, send=True):
         if shift.text_content() == 'Cancel':
             return False
-        if shift.text_content() == 'Complete':
+        if any(s in shift.text_content() for s in ['Complete', 'Collect']):
             self.device.click(shift)
             back = self.device.wait_for_element('.popup-exit-icon')
             self.device.click(back)
             self.device.wait(0.5)
+            self.handle_popup()
         if not send:
             return False
         self.device.click(shift)

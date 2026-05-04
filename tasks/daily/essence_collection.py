@@ -61,7 +61,7 @@ class EssenceCollectionUI(BasePageUI):
             st = datetime.now()
             while loader.count() and loader.is_visible():
                 self.device.wait(0.3)
-                if st + timedelta(seconds=10) < datetime.now():
+                if st + timedelta(seconds=30) < datetime.now():
                     logger.error("Map loading timeout, retry later")
                     return False
             self.device.wait(3) # random js lag
