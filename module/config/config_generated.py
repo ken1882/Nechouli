@@ -122,10 +122,12 @@ class GeneratedConfig:
     # Group `BattleDome`
     BattleDome_PetName = 'FightingPetName'
     BattleDome_Difficulty = 'Easy'  # Easy, Normal, Hard
-    BattleDome_GrindNP = False
     BattleDome_CombatOrder = '# seperate turn by line, first valid line will be turn 1 and so on\n# format: item1,item2,ability (None for bypass)\nThe Omelette Sceptre,Downsize!,Meditate\nCursed Elixir of Neovia,Wand of the Dark Faerie,None\n'
     BattleDome_Opponent = 'Koi Warrior'  # Advisor Broo, Balthazar, Boochi, Chia Clown, Chiazilla, Count Von Roo, Donny, Edna, Evil Sloth Clone, Eyrieki, Flaming Meerca, Giant Hungry Malevolent Chomby, Giant Spectral Mutant Walein, Grarrg, Harry the Mutant Moehog, Highland Chia, Koi Warrior, Meerca Henchmen, Meuka, Mootix Warrior, Neopets v2, Pant Devil, Punchbag Bob, Robo Grarrl, Ryshu the Nimmo, S750 Kreludan Defender Robot, Sabre-X, Snow Faerie, Tekkitu the Witch Doctor, The Black Pteri, The Snowager, Tiki Tack Man, Valin, Vira
     BattleDome_ObeliskOpponentPriorityList = 'Grumpy Mummy > Brutal Mercenary > Licensed Conjurer > Genius Inventor > Charming Subversive > Midnight Smuggler >\nLanie and Lillie > Commander Flint > Master Wizard > Professor Lambert > Cunning Mastermind > Petty Pilferer >\nUnchained Monster > Rent-a-Brute > Minor Warlock > Smug Philosopher > Nefarious Plotter > Roadside Bandit >\nZombie Hooligan > Unyielding Sentinel > Rasala the Bright > Stalwart Explorer > The Duchess > Shady Prowle >\nGhostly Knight > Back Alley Bruiser > Hedgewitch > Assistant Scientist > Amateur Insider > Kanrik, Master Thief\n'
+    BattleDome_VoidsWithinEnabled = False
+    BattleDome_VoidsWithinDifficulty = 'Easy'  # Easy, Normal, Hard
+    BattleDome_VoidsWithinStage = '1-1'  # 1-1, 1-2, 2-1, 2-2, 2-3, 3-1, 3-2, 3-3, 4-1, 4-2
     BattleDome_ObeliskTimesLeft = {}
 
     # Group `WishingWell`

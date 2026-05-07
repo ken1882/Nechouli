@@ -674,10 +674,6 @@
       "Normal": "Normal",
       "Hard": "Hard"
     },
-    "GrindNP": {
-      "name": "Grind NP",
-      "help": "Whether to grind Neopoints in the Battledome, uncheck for items only"
-    },
     "CombatOrder": {
       "name": "Combat Order",
       "help": "Actions to use in combat of each turn"
@@ -723,6 +719,31 @@
     "ObeliskOpponentPriorityList": {
       "name": "Obelisk Opponent Priority List",
       "help": "Default is tier 4,3,2,1,5 of each faction per line, strongest is T5"
+    },
+    "VoidsWithinEnabled": {
+      "name": "Enable Voids Within",
+      "help": "Enable or disable the Voids Within feature in the Battledome"
+    },
+    "VoidsWithinDifficulty": {
+      "name": "Voids Within Difficulty",
+      "help": "",
+      "Easy": "Easy",
+      "Normal": "Normal",
+      "Hard": "Hard"
+    },
+    "VoidsWithinStage": {
+      "name": "Voids Within Stage",
+      "help": "Select the stage for the Voids Within challenge, format is {Act}-{Fight}",
+      "1-1": "1-1",
+      "1-2": "1-2",
+      "2-1": "2-1",
+      "2-2": "2-2",
+      "2-3": "2-3",
+      "3-1": "3-1",
+      "3-2": "3-2",
+      "3-3": "3-3",
+      "4-1": "4-1",
+      "4-2": "4-2"
     },
     "ObeliskTimesLeft": {
       "name": "Obelisk Challenges Times Left Today",

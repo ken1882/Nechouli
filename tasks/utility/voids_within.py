@@ -100,6 +100,10 @@ class VoidsWithinUI(BasePageUI):
                 continue
             if not p.locator('img').first.get_attribute('src'):
                 continue
+            pname = p.locator('.vc-name').text_content()
+            if any(b in pname for b in bans):
+                logger.info(f"Pet {pname} is in dispatch blacklist, skipping")
+                continue
             depth = 0
             while 'selected' not in p.get_attribute('class'):
                 self.device.click(p)
@@ -108,14 +112,10 @@ class VoidsWithinUI(BasePageUI):
                     flag_sent = True
                     break
                 depth += 1
-                if depth > 20:
+                if depth > 10:
                     flag_sent = True
                     logger.warning(f"Pet {p.text_content()} is not selectable, skipping")
                     break
-            pname = p.locator('.vc-name').text_content()
-            if pname in bans:
-                logger.info(f"Pet {pname} is in dispatch blacklist, skipping")
-                continue
             if flag_sent:
                 continue
             send = self.page.locator('button').filter(has_text='Join Volunteer Team')

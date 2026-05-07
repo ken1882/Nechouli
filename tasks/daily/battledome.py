@@ -13,32 +13,34 @@ class BattleDomeUI(BasePageUI):
     def main(self):
         self.obelisk_on = False
         self.check_obelisk()
+        self.vwm_on = self.config.BattleDome_VoidsWithinEnabled and not self.obelisk_on
         self.goto('https://www.neopets.com/dome/fight.phtml')
         self.device.scroll_to(0, 350)
         if not self.is_in_battle():
-            if not self.select_pet():
-                logger.error("Failed to select pet")
-                return False
-            cont = self.device.wait_for_element('.nextStep')
-            self.device.click(cont)
-            self.select_opponent()
-            self.device.click('#bdFightStep3FightButton', nav=True)
+            if self.vwm_on:
+                self.select_vwn()
+            else:
+                if not self.select_pet():
+                    logger.error("Failed to select pet")
+                    return False
+                cont = self.device.wait_for_element('.nextStep')
+                self.device.click(cont)
+                self.select_opponent()
+                self.device.click('#bdFightStep3FightButton', nav=True)
         self.load_actions()
         won = True
-        additional_times = 10 if self.obelisk_on else 0
         while won:
             if self.on_background and not self.update_background_status():
                 return True
             won = self.process_battle()
             self.collect_rewards()
-            if additional_times > 0:
-                additional_times -= 1
-                logger.info(f"Obelisk opponent - {additional_times} times left")
-            elif 'item limit' in self.page.content() and not self.config.BattleDome_GrindNP:
-                logger.info("Daily item limit reached, stopping")
-                return True
-            elif 'NP limit' in self.page.content():
-                logger.info("Daily NP limit reached, stopping")
+            item_grinded = 'reached the item limit' in self.page.content().lower()
+            np_grinded = 'reached the np limit' in self.page.content().lower()
+            if self.config.stored.ObeliskTimesLeft > 0:
+                self.config.stored.ObeliskTimesLeft -= 1
+                logger.info(f"Obelisk opponent - {self.config.stored.ObeliskTimesLeft} times left")
+            elif item_grinded and np_grinded:
+                logger.info("Daily limit reached, stopping")
                 return True
             self.config.load()
             if not self.on_background:
@@ -238,9 +240,39 @@ class BattleDomeUI(BasePageUI):
             if ok:
                 self.device.click(ok)
         if 'under attack' in self.page.content().lower():
-            self.obelisk_on = True
+            ct, st = datetime.now(), self.config.stored.ObeliskTimesLeft.time
+            if not st or (ct.month != st.month and ct.day != st.day):
+                self.config.stored.ObeliskTimesLeft.value = 10
+            self.obelisk_on = self.config.stored.ObeliskTimesLeft.value > 0
             logger.info("Obelisk challenge available today")
 
+    def select_vwn(self):
+        self.goto('https://www.neopets.com/dome/barracks.phtml')
+        act_id, fight_id = self.config.BattleDome_VoidsWithinStage.split('-')
+        self.device.click(f'div[data-actid="{act_id}"][data-fightid="{fight_id}"]')
+        btn = self.device.wait_for_element('button[onclick="rb.goToStepTwo()"]')
+        self.device.click(btn)
+        self.device.wait(2)
+        fighter = self.config.BattleDome_PetName
+        pets = self.page.locator('.petThumbContainer')
+        if not pets.count():
+            logger.error("No pets found!")
+            return False
+        for pet in pets.all():
+            name = pet.get_attribute('data-name')
+            hidden = pet.locator('..').get_attribute('aria-hidden') or ''
+            if name != fighter or hidden == 'true':
+                continue
+            self.device.click(pet)
+            break
+        else:
+            logger.error(f"Failed to find pet {fighter} for Voids Within challenge")
+            return False
+        next_btn = self.page.locator('#BattleContinueButton')
+        if 'disabled' in next_btn.get_attribute('class'):
+            logger.error(f"Pet {fighter} is unable to fight in Voids Within challenge!")
+            return False
+        self.device.click(next_btn)
 
 if __name__ == '__main__':
     self = BattleDomeUI()

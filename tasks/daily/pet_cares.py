@@ -85,19 +85,18 @@ class PetCaresUI(BasePageUI):
             raise TaskError(f'Invalid pet index: {index}')
         self.selected_pet = self.pets[index]
         x_cycle = []
+        viewable = self.page.locator('.slick-list').bounding_box()
         while True:
             bb = self.selected_pet.locator.bounding_box()
             logger.info("Visibility check: %s", bb)
-            ww = self.device.eval('window.innerWidth')
-            if 100 <= bb['x'] + bb['width'] and bb['x'] <= ww*0.8:
+            if bb['x'] + bb['width']*0.95 < viewable['x']:
+                self.device.click('button[class="slick-prev slick-arrow"]')
+            elif bb['x'] > viewable['x'] + viewable['width']*0.95:
+                self.device.click('button[class="slick-next slick-arrow"]')
+            else:
                 break
-            dup_x = [x for x in x_cycle if abs(x - bb['x']) < 1]
-            if len(dup_x) > 2 and abs(min(dup_x) - bb['x']) < 1:
-                logger.warning("Pet selection seems stuck, try to proceed.")
-                break
-            x_cycle.append(bb['x'])
-            self.device.click('button[class="slick-next slick-arrow"]')
             self.device.wait(0.5)
+            x_cycle.append(bb['x'])
         logger.info(f'Selected pet: {self.selected_pet.name}')
         self.selected_pet.locator.click()
 
@@ -265,8 +264,9 @@ class PetCaresUI(BasePageUI):
                 return False
             if not self.save_customise():
                 return False
-            if not self.switch_closet():
-                return False
+            self.page.reload()
+            self.device.wait_for_element('#npcma_loader')
+            self.device.wait_for_element('#npcma_loader', gone=True)
             if not self.search_item(item_name):
                 return False
             self.device.sleep(3) # probably long, depends on your network and closet size
