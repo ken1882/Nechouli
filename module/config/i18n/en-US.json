@@ -733,7 +733,7 @@
     },
     "VoidsWithinStage": {
       "name": "Voids Within Stage",
-      "help": "Select the stage for the Voids Within challenge, format is {Act}-{Fight}",
+      "help": "Select the stage for the Voids Within challenge, format is [Act]-[Fight]",
       "1-1": "1-1",
       "1-2": "1-2",
       "2-1": "2-1",
