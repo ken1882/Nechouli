@@ -14,6 +14,7 @@ def handle_item_container(kwargs, stored):
 HANDLE_TABLE = {
     'StockData': handle_item_container,
     'InventoryData': handle_item_container,
+    'ClosetData': handle_item_container,
 }
 
 def can_handle(name: str) -> bool:

@@ -845,6 +845,10 @@
       "name": "Shop Stock",
       "help": ""
     },
+    "ClosetData": {
+      "name": "Closet",
+      "help": ""
+    },
     "PetsData": {
       "name": "Pets Data",
       "help": ""

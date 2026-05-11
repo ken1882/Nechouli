@@ -156,6 +156,7 @@ class GeneratedConfig:
     PlayerStorage_Balance = {}
     PlayerStorage_InventoryData = {}
     PlayerStorage_StockData = {}
+    PlayerStorage_ClosetData = {}
     PlayerStorage_PetsData = {}
 
     # Group `SafetyDepositBox`

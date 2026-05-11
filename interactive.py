@@ -73,12 +73,12 @@ class TestUI(BaseFlash, BasePageUI):
 
 alas = Nechouli('nechouli2')
 config, device = alas.config, alas.device
-self = PetTrainingUI(config, device)
+self = QuickStockUI(config, device)
 
 device.start_browser()
 device.disable_stuck_detection()
 device.screenshot_interval_set(0.1)
-self.config.bind('BattleDome')
+self.config.bind('QuickStock')
 
 
 ACADEMY = {

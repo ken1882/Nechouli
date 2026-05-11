@@ -357,6 +357,11 @@ PlayerStorage:
     display: true
     order: 4
     color: "#E4B86D"
+  ClosetData:
+    stored: StoredItemContainer
+    display: true
+    order: 5
+    color: "#B86DE4"
   PetsData:
     stored: StoredPetsData
 

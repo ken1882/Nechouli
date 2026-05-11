@@ -61,6 +61,19 @@
     "order": 4,
     "color": "#E4B86D"
   },
+  "ClosetData": {
+    "name": "ClosetData",
+    "path": "InventoryTool.PlayerStorage.ClosetData",
+    "i18n": "PlayerStorage.ClosetData.name",
+    "stored": "StoredItemContainer",
+    "attrs": {
+      "time": "2020-01-01 00:00:00",
+      "capacity": 50,
+      "value": []
+    },
+    "order": 5,
+    "color": "#B86DE4"
+  },
   "PendingTrainingFee": {
     "name": "PendingTrainingFee",
     "path": "PetTraining.PetTraining.PendingTrainingFee",

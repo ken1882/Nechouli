@@ -2271,6 +2271,14 @@
         "order": 4,
         "color": "#E4B86D"
       },
+      "ClosetData": {
+        "type": "stored",
+        "value": {},
+        "display": true,
+        "stored": "StoredItemContainer",
+        "order": 5,
+        "color": "#B86DE4"
+      },
       "PetsData": {
         "type": "stored",
         "value": {},

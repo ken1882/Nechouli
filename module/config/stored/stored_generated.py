@@ -30,5 +30,6 @@ class StoredGenerated:
     Balance = StoredInt("InventoryTool.PlayerStorage.Balance")
     InventoryData = StoredItemContainer("InventoryTool.PlayerStorage.InventoryData")
     StockData = StoredItemContainer("InventoryTool.PlayerStorage.StockData")
+    ClosetData = StoredItemContainer("InventoryTool.PlayerStorage.ClosetData")
     PetsData = StoredPetsData("InventoryTool.PlayerStorage.PetsData")
     DepositData = StoredItemContainer("SafetyDepositBox.SafetyDepositBox.DepositData")

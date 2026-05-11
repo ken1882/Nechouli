@@ -206,6 +206,7 @@ def handle_list(kwargs, value: list):
 HANDLE_TABLE = {
     "InventoryTool_PlayerStorage_InventoryData": handle_inventory,
     "InventoryTool_PlayerStorage_StockData": handle_inventory,
+    "InventoryTool_PlayerStorage_ClosetData": handle_inventory,
     "SafetyDepositBox_SafetyDepositBox_DepositData": handle_deposit,
 }
 

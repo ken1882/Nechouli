@@ -11,6 +11,7 @@ class QuickStockUI(BasePageUI):
 
     def main(self):
         self.items = []
+        self.closet = []
         self._stocked = False
         self.goto("https://www.neopets.com/market.phtml?type=your")
         used, free = self.get_stock_capacity()
@@ -21,6 +22,7 @@ class QuickStockUI(BasePageUI):
             cont = self.process_actions()
             if not cont:
                 break
+        self.update_closet_data()
         self.update_inventory_data()
         if self._stocked and free:
             self.update_stock_price()
@@ -101,7 +103,12 @@ class QuickStockUI(BasePageUI):
                 item._act = 'stock'
                 self._stocked = True
             elif 'closet' in available_acts:
-                item._act = 'closet'
+                existed = next((i for i in self.closet if i.name == item.name), None)
+                if existed and existed.quantity < 5:
+                    item._act = 'closet'
+                    existed.quantity += 1
+                else:
+                    item._act = 'deposit'
         should_continue = not all(item._act in ['keep'] for item in self.items)
         row_height = 22
         viewport_height = 400
@@ -232,6 +239,40 @@ class QuickStockUI(BasePageUI):
         self.page.locator('input[name="amount"]').fill(str(money))
         self.device.click('input[type="submit"][value="Withdraw"]', nav=True)
 
+    def update_closet_data(self):
+        self.goto('https://www.neopets.com/closet.phtml')
+        sel = self.device.wait_for_element('.closet-dropdown--perpage')
+        if not sel:
+            return
+        sel.select_option('90')
+        def wait_for_load():
+            self.device.wait_for_element('.closet-loading')
+            self.device.wait_for_element('.closet-pagination')
+
+        items: list[NeoItem] = []
+        cur_index = 1
+        while True:
+            wait_for_load()
+            for item in self.page.locator('.closet-grid-item').all():
+                name = item.locator('.closet-item-name').text_content().strip()
+                num  = str2int(item.locator('.closet-grid-item-qty').text_content())
+                items.append(NeoItem(
+                    name=name,
+                    quantity=num,
+                    image=item.locator('img').get_attribute('src'),
+                ))
+            next_btn = self.page.locator('.closet-pagination-btn')
+            if cur_index+2 >= next_btn.count():
+                break
+            cur_index += 1
+            self.device.click(next_btn.nth(cur_index))
+        jn.batch_search(set(item.name for item in items))
+        for item in items:
+            item.update_jn()
+        logger.info(f"Found {len(items)} items in closet")
+        self.closet = items
+        self.config.stored.ClosetData.set(items)
+
     # def calc_next_run(self, *args):
     #     future = get_server_next_update('02:00')
     #     self.config.task_delay(target=future)
@@ -240,3 +281,4 @@ class QuickStockUI(BasePageUI):
 
 if __name__ == '__main__':
     self = QuickStockUI()
+
