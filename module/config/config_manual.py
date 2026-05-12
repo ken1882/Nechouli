@@ -11,7 +11,7 @@ class ManualConfig:
     SCHEDULER_PRIORITY = """
     Restart
     > Auction > WishingWell
-    > DesertedTomb > Snowager > FaerieCrossword
+    > DesertedTomb > Snowager > FaerieCrossword > QuickStock
     > AltadorCouncil > AnchorManagement > AppleBobbing > BankInterest > ColtzansShrine
     > Fishing > ForgottenShore > FruitMachine > GiantJelly
     > GiantOmelette > GraveDanger > GrumpyKing > WiseKing > LunarTemple
@@ -20,7 +20,7 @@ class ManualConfig:
     > StockMarket > DailyPuzzle > FashionFever > LostInTheDark > AdventCalendar
     > PetCares > PetTraining > Scratchcard
     > WheelOfCelebration > VoidsWithin > EssenceCollection
-    > QuickStock > ShopWizard
+    > ShopWizard
     > DailyQuest > Restocking
     > SafetyDepositBox
     > BattleDome

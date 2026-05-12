@@ -32,13 +32,16 @@ class QuickStockUI(BasePageUI):
 
     def scan_all_items(self):
         self.items = []
+        while 'Loading items...' in self.page.locator('#quickstock-app').text_content():
+            logger.info("Waiting for items to load...")
+            self.device.wait(3)
         # nodes = self.page.locator('form > table > tbody > tr')
         nodes = self.page.locator('.np-table-row')
         for node in nodes.all()[:-1]:
             available_acts = node.locator('input')
             if not available_acts.count():
                 continue
-            item_name = node.locator('td').first.text_content().strip()
+            item_name = node.locator('td').first.text_content().split('×')[0].strip()
             if item_name.lower() == 'check all':
                 break
             item = NeoItem(name=item_name, _locator=node, quantity=1, _act='deposit')
@@ -241,6 +244,15 @@ class QuickStockUI(BasePageUI):
 
     def update_closet_data(self):
         self.goto('https://www.neopets.com/closet.phtml')
+        if 'Loading items...' in self.page.locator('#closet_app').text_content():
+            logger.info("Waiting for closet items to load...")
+            self.device.wait(3)
+        loc_empty = self.page.locator('.closet-empty-title')
+        if loc_empty.count() and loc_empty.first.is_visible():
+            logger.info("Closet is empty")
+            self.closet = []
+            self.config.stored.ClosetData.set([])
+            return
         sel = self.device.wait_for_element('.closet-dropdown--perpage')
         if not sel:
             return
