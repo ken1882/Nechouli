@@ -369,7 +369,7 @@
     },
     "DefaultTimeout": {
       "name": "Default Timeout",
-      "help": ""
+      "help": "In seconds, change this according to your internet condition"
     }
   },
   "ProfileSettings": {

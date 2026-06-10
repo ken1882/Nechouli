@@ -73,7 +73,7 @@ class TestUI(BaseFlash, BasePageUI):
 
 alas = Nechouli('nechouli2')
 config, device = alas.config, alas.device
-self = QuickStockUI(config, device)
+self = SafetyDepositBoxUI(config, device)
 
 device.start_browser()
 device.disable_stuck_detection()

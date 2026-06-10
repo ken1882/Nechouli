@@ -142,7 +142,7 @@ class Control(Connection):
             x, y = target
         elif type(target) is str:
             loc = self.page.locator(target)
-        elif type(target) is Locator:
+        elif isinstance(target, Locator):
             loc = target
         if type(point_random) == int:
             point_random = (-point_random, -point_random, point_random, point_random)
@@ -208,6 +208,7 @@ class Control(Connection):
                 logger.info(f"Adjusted viewport from {dy} -> 0 at ({cx}, {cy})")
 
             self.page.mouse.click(cx, cy, button=button, delay=md)
+        self.handle_control_check(target)
         if nav:
             logger.info("Waiting for navigation")
         if nav == True:
@@ -252,7 +253,7 @@ class Control(Connection):
             shake_duration (float): Duration of each shake.
             random_duration (tuple[int]): Random range to add to the duration.
         '''
-        if type(src) is Locator:
+        if isinstance(src, Locator):
             src.hover()
             ba = src.bounding_box()
             ax = (ba['x'] + ba['width'] * 0.5)
@@ -261,7 +262,7 @@ class Control(Connection):
             ax, ay = src
             self.page.mouse.move(ax, ay)
         self.page.mouse.down()
-        if type(dst) is Locator:
+        if isinstance(dst, Locator):
             bb = dst.bounding_box()
             bx = (bb['x'] + bb['width'] * 0.5)
             by = (bb['y'] + bb['height'] * 0.5)

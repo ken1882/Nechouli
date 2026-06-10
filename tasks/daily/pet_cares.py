@@ -79,6 +79,7 @@ class PetCaresUI(BasePageUI):
             return
         self.selected_pet = None
         self.device.click((10, 200)) # just click somewhere to unselect
+        self.device.click_record_clear()
 
     def select_pet(self, index):
         if index < 0 or index >= len(self.pets):

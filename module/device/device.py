@@ -1,6 +1,4 @@
-import asyncio
 import collections
-import itertools
 import numpy as np
 from playwright.sync_api import Locator
 from lxml import etree
@@ -52,7 +50,7 @@ class Device(Control, Screenshot):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
+        self.package = None
         self.screenshot_interval_set()
 
         # Early init
@@ -115,7 +113,20 @@ class Device(Control, Screenshot):
         self.click_record_check()
 
     def click_record_add(self, button):
-        self.click_record.append(str(button))
+        self.click_record.append(self.click_record_key(button))
+
+    @staticmethod
+    def click_record_key(button):
+        if isinstance(button, Locator):
+            selector = getattr(button, '_selector', None)
+            if selector:
+                return f'Locator({selector})'
+        elif isinstance(button, dict) and 'x' in button and 'y' in button:
+            return f"Point({int(button['x'])},{int(button['y'])})"
+        elif isinstance(button, tuple) and len(button) >= 2:
+            return f'Point({int(button[0])},{int(button[1])})'
+
+        return str(button)
 
     def click_record_clear(self):
         self.click_record.clear()
@@ -133,7 +144,7 @@ class Device(Control, Screenshot):
         removed = 0
         for _ in range(self.click_record.maxlen):
             try:
-                self.click_record.remove(str(button))
+                self.click_record.remove(self.click_record_key(button))
                 removed += 1
             except ValueError:
                 # Value not in queue
@@ -146,20 +157,17 @@ class Device(Control, Screenshot):
         Raises:
             GameTooManyClickError:
         """
-        first15 = itertools.islice(self.click_record, 0, 15)
-        count = collections.Counter(first15).most_common(2)
-        if count[0][1] >= 12:
-            # Allow more clicks in Ruan Mei event
-            if 'CHOOSE_OPTION_CONFIRM' in self.click_record and 'BLESSING_CONFIRM' in self.click_record:
-                count = collections.Counter(self.click_record).most_common(2)
-                if count[0][0] == 'BLESSING_CONFIRM' and count[0][1] < 25:
-                    return
+        latest30 = list(self.click_record)[-30:]
+        count = collections.Counter(latest30).most_common(2)
+        if not count:
+            return
+        if count[0][1] >= 30:
             show_function_call()
             logger.warning(f'Too many click for a button: {count[0][0]}')
             logger.warning(f'History click: {[str(prev) for prev in self.click_record]}')
             self.click_record_clear()
             raise GameTooManyClickError(f'Too many click for a button: {count[0][0]}')
-        if len(count) >= 2 and count[0][1] >= 6 and count[1][1] >= 6:
+        if len(count) >= 2 and count[0][1] >= 15 and count[1][1] >= 15:
             show_function_call()
             logger.warning(f'Too many click between 2 buttons: {count[0][0]}, {count[1][0]}')
             logger.warning(f'History click: {[str(prev) for prev in self.click_record]}')

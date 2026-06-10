@@ -5,7 +5,7 @@ from module.logger import logger
 from module.webui.setting import State
 
 
-def func(ev: threading.Event):
+def func(ev, stop_ev=None):
     import argparse
     import asyncio
     import sys
@@ -64,7 +64,17 @@ def func(ev: threading.Event):
         from module.logger.logger import console_hdlr
         logger.removeHandler(console_hdlr)
 
-    uvicorn.run("module.webui.app:app", host=host, port=port, factory=True)
+    config = uvicorn.Config("module.webui.app:app", host=host, port=port, factory=True)
+    server = uvicorn.Server(config)
+
+    if stop_ev is not None:
+        def wait_for_stop():
+            stop_ev.wait()
+            server.should_exit = True
+
+        threading.Thread(target=wait_for_stop, daemon=True).start()
+
+    server.run()
 
 
 if __name__ == "__main__":
@@ -72,20 +82,36 @@ if __name__ == "__main__":
         should_exit = False
         while not should_exit:
             event = Event()
-            process = Process(target=func, args=(event,))
+            stop_event = Event()
+            process = Process(target=func, args=(event, stop_event))
             process.start()
-            while not should_exit:
-                try:
-                    b = event.wait(1)
-                except KeyboardInterrupt:
-                    should_exit = True
-                    break
-                if b:
-                    process.kill()
-                    break
-                elif process.is_alive():
-                    continue
-                else:
-                    should_exit = True
+            try:
+                while not should_exit:
+                    try:
+                        b = event.wait(1)
+                    except KeyboardInterrupt:
+                        logger.info("Keyboard interrupt received, stopping web service")
+                        should_exit = True
+                        break
+                    if b:
+                        stop_event.set()
+                        break
+                    elif process.is_alive():
+                        continue
+                    else:
+                        should_exit = True
+            finally:
+                if process.is_alive():
+                    stop_event.set()
+                    process.join(timeout=10)
+                if process.is_alive():
+                    process.terminate()
+                    process.join(timeout=5)
+                    if process.is_alive():
+                        process.kill()
+                process.join(timeout=1)
     else:
-        func(None)
+        try:
+            func(None)
+        except KeyboardInterrupt:
+            logger.info("Keyboard interrupt received, stopping web service")

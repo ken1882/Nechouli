@@ -256,11 +256,16 @@ class QuickStockUI(BasePageUI):
         sel = self.device.wait_for_element('.closet-dropdown--perpage')
         if not sel:
             return
-        sel.select_option('90')
+        stat_segs = self.page.locator('.closet-stats-bar').first.text_content().split(':')
+        item_count = str2int(stat_segs[1])
+        total_count = str2int(stat_segs[-1])
+        logger.info(f"Close items: {item_count}, total: {total_count}")
         def wait_for_load():
             self.device.wait_for_element('.closet-loading')
-            self.device.wait_for_element('.closet-pagination')
+            if item_count > 90:
+                self.device.wait_for_element('.closet-pagination')
 
+        sel.select_option('90')
         items: list[NeoItem] = []
         cur_index = 1
         while True:
