@@ -117,6 +117,7 @@ class AlasGUI(Frame):
     ALAS_ARGS: Dict[str, Dict[str, Dict[str, Dict[str, str]]]]
     ALAS_STORED: Dict[str, Dict[str, Dict[str, str]]]
     theme = "default"
+    _logger_text_handler = None
 
     def initial(self) -> None:
         self.ALAS_MENU = read_file(filepath_args("menu", self.alas_mod))
@@ -134,6 +135,7 @@ class AlasGUI(Frame):
         self.alas_mod = "alas"
         self.alas_config = AzurLaneConfig("template")
         self.alas_config_hidden = set()
+        self._config_watcher_initialized = False
         self.initial()
 
     @use_scope("aside", clear=True)
@@ -502,9 +504,12 @@ class AlasGUI(Frame):
         self.task_handler.add(switch_killer.g(), 1, True)
         self.task_handler.add(switch_log_scroll.g(), 1, True)
         self.task_handler.add(self.alas_update_overview_task, 3, True)
-        self.task_handler.add(log.put_log(self.alas), 0.25, True)
+        self.task_handler.add(log.put_log(self.alas), 1, True)
 
     def _init_alas_config_watcher(self) -> None:
+        if self._config_watcher_initialized:
+            return
+
         def put_queue(path, value):
             self.modified_config_queue.put({"name": path, "value": value})
 
@@ -512,13 +517,17 @@ class AlasGUI(Frame):
             pin_on_change(
                 name="_".join(path), onchange=partial(put_queue, ".".join(path))
             )
+        self._config_watcher_initialized = True
         logger.info("Init config watcher done.")
 
     def _inject_logger_listener(self):
+        if AlasGUI._logger_text_handler is not None:
+            logger.removeHandler(AlasGUI._logger_text_handler)
         log_capture = io.StringIO()
         text_handler = StreamHandler(log_capture)
         text_handler.setFormatter(Formatter('%(asctime)s.%(msecs)03d │ %(message)s', '%H:%M:%S'))
         logger.addHandler(text_handler)
+        AlasGUI._logger_text_handler = text_handler
         self._logger_renderer = LoggerRenderer(log_capture)
 
     def _alas_thread_update_config(self) -> None:
@@ -648,7 +657,6 @@ class AlasGUI(Frame):
     def alas_update_overview_task(self) -> None:
         if not self.visible:
             return
-        print("Reload overview")
         self.alas_config.load()
         self.alas_config.get_next_task()
 
@@ -839,7 +847,7 @@ class AlasGUI(Frame):
 
         self.task_handler.add(switch_scheduler.g(), 1, True)
         self.task_handler.add(switch_log_scroll.g(), 1, True)
-        self.task_handler.add(log.put_log(self.alas), 0.25, True)
+        self.task_handler.add(log.put_log(self.alas), 1, True)
 
     @use_scope("menu", clear=True)
     def dev_set_menu(self) -> None:
@@ -1128,22 +1136,20 @@ class AlasGUI(Frame):
             nonlocal log
             lr = self._logger_renderer
             lr.read()
-            if lr.counter >= lr.renderables_max_length * 2:
-                lr.last_index = len(lr.renderables)
+            idx = len(lr.renderables)
+            version = lr.version
+            if idx < lr.last_index or version != lr.counter:
                 html = "".join(map(log.render, lr.renderables[:]))
                 log.reset()
                 log.extend(html)
-                lr.counter = lr.last_index
-            idx = len(lr.renderables)
-            if idx < lr.last_index:
-                lr.last_index -= lr.renderables_reduce_length
-            if idx != lr.last_index:
+                lr.last_index = idx
+                lr.counter = version
+            elif idx != lr.last_index:
                 html = "".join(map(log.render, lr.renderables[lr.last_index:idx]))
                 log.extend(html)
-                lr.counter += idx - lr.last_index
                 lr.last_index = idx
         self.task_handler.add(switch_log_scroll.g(), 1, True)
-        self.task_handler.add(_render_logger, 0.25, True)
+        self.task_handler.add(_render_logger, 1, True)
 
     def kill_remote_browser(self):
         killed = kill_remote_browser(self.alas_config.config_name)
@@ -1389,9 +1395,6 @@ class AlasGUI(Frame):
 
         aside = get_localstorage("aside")
         self.show()
-
-        # init config watcher
-        self._init_alas_config_watcher()
 
         # save config
         _thread_save_config = threading.Thread(target=self._alas_thread_update_config)

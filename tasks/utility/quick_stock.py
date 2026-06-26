@@ -72,7 +72,7 @@ class QuickStockUI(BasePageUI):
         deposit_list = [l.strip().lower() for l in (self.config.QuickStock_ForceDepositList or '').split('\n') if l.strip()]
         no_stock = self._kwargs.get('no_stock', False)
         for item in self.items:
-            item.profit = item.market_price - item.restock_price
+            item.profit = (item.market_price or 0) - (item.restock_price or 0)
             if (
                 any(re.search(regex, item.name, re.I) for regex in deposit_list)
                 or item.profit >= self.config.QuickStock_DepositValue
@@ -298,4 +298,3 @@ class QuickStockUI(BasePageUI):
 
 if __name__ == '__main__':
     self = QuickStockUI()
-

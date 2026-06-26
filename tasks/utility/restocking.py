@@ -68,12 +68,33 @@ class RestockingUI(BasePageUI):
 
     def check_inventory(self):
         self.goto('https://www.neopets.com/inventory.phtml')
-        line = self.page.locator('.inv-total-count').text_content().strip()
-        r = re.search(r"(\d+) / (\d+)", line)
         self.inventory_free = 0
-        if r:
-            cur, total = r.groups()
-            self.inventory_free = int(total) - int(cur)
+        for _ in range(10):
+            count = self.page.locator('.inv-total-count')
+            if count.count():
+                line = count.first.text_content().strip()
+                r = re.search(r"(\d+) / (\d+)", line)
+                if r:
+                    cur, total = r.groups()
+                    self.inventory_free = int(total) - int(cur)
+                    return
+
+            inv_display = self.page.locator('#invDisplay')
+            if inv_display.count():
+                text = inv_display.first.text_content(timeout=1000) or ''
+                if 'inventory is empty' in text.lower():
+                    self.inventory_free = 50
+                    logger.info("Inventory is empty, assuming 50 free slots")
+                    return
+                items = inv_display.locator('[data-itemname], .item-img, .item-name')
+                used = items.count()
+                if used:
+                    self.inventory_free = max(0, 50 - used)
+                    logger.info(f"Inventory count fallback: {used}/50")
+                    return
+            self.device.wait(0.5)
+
+        logger.warning("Failed to parse inventory count, assuming no free slots")
 
     def check_stock(self):
         self.goto("https://www.neopets.com/market.phtml?type=your")
@@ -247,11 +268,13 @@ class RestockingUI(BasePageUI):
         new_offers.append(bargain_price)
         logger.info(f"Making offer with {bargain_price} NP")
         self.device.input_number('input[name=current_offer]', bargain_price)
-        try:
-            self.solve_captcha()
-        except ScriptError as e:
-            logger.error(f"Captcha solving failed: {e}")
-            return False
+        # Captcha is removed for now
+        # try:
+        #     self.solve_captcha()
+        # except ScriptError as e:
+        #     logger.error(f"Captcha solving failed: {e}")
+        #     return False
+        self.device.click('input[type=submit][value="Haggle!"]', nav=True)
         while True:
             try:
                 if 'accept your offer' in self.page.content():

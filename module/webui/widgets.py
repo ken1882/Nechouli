@@ -193,19 +193,23 @@ class RichLog:
         try:
             while True:
                 last_idx = len(pm.renderables)
+                last_version = pm.renderables_version
                 html = "".join(map(self.render, pm.renderables[:]))
                 self.reset()
                 self.extend(html)
-                counter = last_idx
-                while counter < pm.renderables_max_length * 2:
+                while True:
                     yield
                     idx = len(pm.renderables)
-                    if idx < last_idx:
-                        last_idx -= pm.renderables_reduce_length
-                    if idx != last_idx:
+                    version = pm.renderables_version
+                    if idx < last_idx or version != last_version:
+                        html = "".join(map(self.render, pm.renderables[:]))
+                        self.reset()
+                        self.extend(html)
+                        last_idx = idx
+                        last_version = version
+                    elif idx != last_idx:
                         html = "".join(map(self.render, pm.renderables[last_idx:idx]))
                         self.extend(html)
-                        counter += idx - last_idx
                         last_idx = idx
         except SessionException:
             pass
@@ -269,11 +273,12 @@ class BinarySwitchButton(Switch):
 class LoggerRenderer:
     def __init__(self, buffer: StringIO):
         self.renderables = []
-        self.renderables_max_length = 400
-        self.renderables_reduce_length = 80
+        self.renderables_max_length = 500
+        self.renderables_reduce_length = 100
         self.buffer = buffer
         self.last_index = 0
         self.counter = 0
+        self.version = 0
 
     def read(self) -> List[str]:
         self.buffer.seek(0)
@@ -282,7 +287,8 @@ class LoggerRenderer:
         self.buffer.seek(0)
         self.renderables.extend(lines)
         if len(self.renderables) > self.renderables_max_length:
-            self.renderables = self.renderables[self.renderables_reduce_length :]
+            self.renderables = self.renderables[-self.renderables_max_length :]
+            self.version += 1
         return copy.deepcopy(self.renderables)
 
 # aside buttons

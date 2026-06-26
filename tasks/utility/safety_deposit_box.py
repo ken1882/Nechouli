@@ -32,6 +32,7 @@ class SafetyDepositBoxUI(BasePageUI):
             if n_page.count() and n_page.get_attribute('max') != n_page.input_value():
                 self.device.click('.sdb-pagination-next')
                 self._wait_for_load()
+                self.device.click_record_clear()
             else:
                 break
 

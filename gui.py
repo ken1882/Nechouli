@@ -1,6 +1,7 @@
 import threading
 from multiprocessing import Event, Process
 
+from module.base.utils import kill_process_tree
 from module.logger import logger
 from module.webui.setting import State
 
@@ -8,6 +9,7 @@ from module.webui.setting import State
 def func(ev, stop_ev=None):
     import argparse
     import asyncio
+    import signal
     import sys
 
     import uvicorn
@@ -67,6 +69,15 @@ def func(ev, stop_ev=None):
     config = uvicorn.Config("module.webui.app:app", host=host, port=port, factory=True)
     server = uvicorn.Server(config)
 
+    def request_exit(*_):
+        logger.info("Shutdown signal received, stopping web service")
+        server.should_exit = True
+        if stop_ev is not None:
+            stop_ev.set()
+
+    signal.signal(signal.SIGINT, request_exit)
+    signal.signal(signal.SIGTERM, request_exit)
+
     if stop_ev is not None:
         def wait_for_stop():
             stop_ev.wait()
@@ -74,7 +85,34 @@ def func(ev, stop_ev=None):
 
         threading.Thread(target=wait_for_stop, daemon=True).start()
 
-    server.run()
+    try:
+        server.run()
+    finally:
+        try:
+            from module.webui.app import clearup
+            clearup()
+        except Exception as e:
+            logger.exception(e)
+
+
+def stop_process(process, stop_event=None):
+    if process is None:
+        return
+    if stop_event is not None:
+        stop_event.set()
+    try:
+        if process.is_alive():
+            process.join(timeout=10)
+    except KeyboardInterrupt:
+        logger.info("Second keyboard interrupt received, force killing web service")
+    finally:
+        if process.is_alive():
+            kill_process_tree(process.pid, grace=1)
+            process.kill()
+        try:
+            process.join(timeout=1)
+        except KeyboardInterrupt:
+            logger.info("Keyboard interrupt during forced shutdown, exiting")
 
 
 if __name__ == "__main__":
@@ -101,15 +139,7 @@ if __name__ == "__main__":
                     else:
                         should_exit = True
             finally:
-                if process.is_alive():
-                    stop_event.set()
-                    process.join(timeout=10)
-                if process.is_alive():
-                    process.terminate()
-                    process.join(timeout=5)
-                    if process.is_alive():
-                        process.kill()
-                process.join(timeout=1)
+                stop_process(process, stop_event)
     else:
         try:
             func(None)

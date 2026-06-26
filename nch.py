@@ -6,6 +6,7 @@ from module.base.utils import (
     get_all_instance_addresses,
     check_connection
 )
+import module.jelly_neo as jn
 from module.db import data_manager as dm
 from module import hardware as hw
 from pathlib import Path
@@ -18,6 +19,11 @@ class Nechouli(AzurLaneAutoScript):
 
     def __init__(self, config_name: str = 'nechouli'):
         super().__init__(config_name)
+
+    def setup(self):
+        self.device.goto('https://itemdb.com.br/')
+        jn.update_agent_headers_from_page(self.device.page)
+        self.device.goto('https://www.neopets.com/questlog/')
 
     def loop(self):
         self.start()
@@ -32,7 +38,7 @@ class Nechouli(AzurLaneAutoScript):
         if self.config.task.command == 'Restart':
             while True:
                 try:
-                    self.device.goto('https://www.neopets.com/questlog/')
+                    self.setup()
                 except Exception as e:
                     logger.error(f"Failed to navigate to quest log: {e}")
                     self.device.respawn_page()
@@ -61,7 +67,7 @@ class Nechouli(AzurLaneAutoScript):
                 time.sleep(wt)
         while True:
             try:
-                self.device.goto('https://www.neopets.com/questlog/')
+                self.setup()
             except Exception as e:
                 logger.error(f"Failed to navigate to quest log: {e}")
                 self.device.respawn_page()

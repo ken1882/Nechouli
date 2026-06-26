@@ -184,8 +184,12 @@ class BasePageUI(ModuleBase):
     def debug_screenshot(self, fname=''):
         if not fname:
             fname = f"{self.config.config_name}_snapshot.png"
-        path = os.path.join('config', fname)
-        self.page.screenshot(path=path)
+        path = os.path.abspath(os.path.join('config', fname))
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        try:
+            self.page.screenshot(path=path)
+        except OSError as e:
+            logger.warning(f"Failed to save debug screenshot to {path}: {e}")
 
     def login_neopass(self):
         self.page.goto('https://www.neopets.com/login/')

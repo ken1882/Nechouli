@@ -6,15 +6,16 @@ from multiprocessing import Process
 from typing import Dict, List, Union
 
 import inflection
-from filelock import FileLock
+from filelock import FileLock, Timeout
 from rich.console import Console, ConsoleRenderable
 
 from module.config.utils import filepath_config
+from module.logger.logger import WEB_LOG_WRAP_WIDTH
 from module.logger import logger, set_file_logger, set_func_logger
 from module.webui.fake import get_config_mod, mod_instance
 from module.webui.setting import State
 from module.webui.submodule.utils import get_available_func
-from module.base.utils import kill_remote_browser
+from module.base.utils import kill_process_tree, kill_remote_browser
 
 class ProcessManager:
     _processes: Dict[str, "ProcessManager"] = {}
@@ -23,8 +24,10 @@ class ProcessManager:
         self.config_name = config_name
         self._renderable_queue: queue.Queue[ConsoleRenderable] = State.manager.Queue()
         self.renderables: List[ConsoleRenderable] = []
-        self.renderables_max_length = 400
-        self.renderables_reduce_length = 80
+        self.renderable_line_counts: List[int] = []
+        self.renderables_version = 0
+        self.renderables_max_length = 500
+        self.renderables_reduce_length = 100
         self._process: Process = None
         self.thd_log_queue_handler: threading.Thread = None
         logger.info(f"ProcessManager created: {config_name}")
@@ -52,24 +55,33 @@ class ProcessManager:
         ):
             return
         self.thd_log_queue_handler = threading.Thread(
-            target=self._thread_log_queue_handler
+            target=self._thread_log_queue_handler,
+            daemon=True,
         )
         self.thd_log_queue_handler.start()
 
     def stop(self) -> None:
         lock = FileLock(f"{filepath_config(self.config_name)}.lock")
-        with lock:
+        try:
+            lock.acquire(timeout=2)
+        except Timeout:
+            logger.warning(f"Timeout waiting for process lock: {self.config_name}")
+        try:
             if self.alive:
-                self._process.kill()
-                self.renderables.append(
+                kill_process_tree(self._process.pid, grace=5)
+                kill_remote_browser(self.config_name)
+                self._append_renderable(
                     f"[{self.config_name}] exited. Reason: Manual stop\n"
                 )
-            if self.thd_log_queue_handler is not None:
-                self.thd_log_queue_handler.join(timeout=1)
-                if self.thd_log_queue_handler.is_alive():
-                    logger.warning(
-                        "Log queue handler thread does not stop within 1 seconds"
-                    )
+        finally:
+            if lock.is_locked:
+                lock.release()
+        if self.thd_log_queue_handler is not None:
+            self.thd_log_queue_handler.join(timeout=1)
+            if self.thd_log_queue_handler.is_alive():
+                logger.warning(
+                    "Log queue handler thread does not stop within 1 seconds"
+                )
         logger.info(f"[{self.config_name}] exited")
 
     def _thread_log_queue_handler(self) -> None:
@@ -78,10 +90,65 @@ class ProcessManager:
                 log = self._renderable_queue.get(timeout=1)
             except queue.Empty:
                 continue
-            self.renderables.append(log)
-            if len(self.renderables) > self.renderables_max_length:
-                self.renderables = self.renderables[self.renderables_reduce_length :]
+            self._append_renderable(log)
         logger.info("End of log queue handler loop")
+
+    def _append_renderable(self, renderable: ConsoleRenderable) -> None:
+        renderable, line_count = self._limit_renderable_lines(renderable)
+        self.renderables.append(renderable)
+        self.renderable_line_counts.append(line_count)
+        self._trim_renderables()
+
+    def _limit_renderable_lines(self, renderable: ConsoleRenderable) -> tuple[ConsoleRenderable, int]:
+        if isinstance(renderable, str):
+            return self._limit_string_lines(renderable)
+
+        lines = self._renderable_to_lines(renderable)
+        if len(lines) <= self.renderables_max_length:
+            return renderable, max(1, len(lines))
+
+        lines = lines[-self.renderables_max_length:]
+        self.renderables_version += 1
+        return "\n".join(lines) + "\n", self.renderables_max_length
+
+    def _limit_string_lines(self, text: str) -> tuple[str, int]:
+        chunks = []
+        truncated = False
+
+        for line in reversed(text.splitlines() or [""]):
+            line_chunks = [
+                line[max(0, end - WEB_LOG_WRAP_WIDTH):end]
+                for end in range(len(line), 0, -WEB_LOG_WRAP_WIDTH)
+            ] or [""]
+            for chunk in line_chunks:
+                chunks.append(chunk)
+                if len(chunks) >= self.renderables_max_length:
+                    truncated = True
+                    break
+            if truncated:
+                break
+
+        chunks.reverse()
+        line_count = max(1, len(chunks))
+        wrapped = "\n".join(chunks) + "\n"
+        if truncated or wrapped != text:
+            self.renderables_version += 1
+            return wrapped, line_count
+        return text, line_count
+
+    @staticmethod
+    def _renderable_to_lines(renderable: ConsoleRenderable) -> List[str]:
+        console = Console(no_color=True, force_terminal=False, width=80)
+        with console.capture() as capture:
+            console.print(renderable)
+        return capture.get().splitlines()
+
+    def _trim_renderables(self) -> None:
+        total_lines = sum(self.renderable_line_counts)
+        while total_lines > self.renderables_max_length and len(self.renderables) > 1:
+            total_lines -= self.renderable_line_counts.pop(0)
+            self.renderables.pop(0)
+            self.renderables_version += 1
 
     @property
     def alive(self) -> bool:

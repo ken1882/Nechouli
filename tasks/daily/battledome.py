@@ -53,6 +53,7 @@ class BattleDomeUI(BasePageUI):
                     self.config.task_delay(target=future)
                     return None
             self.device.click('#bdplayagain')
+            self.device.run_default_scripts()
         logger.info("Stopped and canceled due to defeat or errored")
         self.config.task_cancel()
         return True
@@ -143,6 +144,7 @@ class BattleDomeUI(BasePageUI):
             self.send_actions()
 
     def wait_and_start(self):
+        self.device.run_default_scripts()
         btn = self.device.wait_for_element('#start')
         self.device.click(btn)
         self.device.run_default_scripts()

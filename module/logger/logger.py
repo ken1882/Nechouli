@@ -15,9 +15,32 @@ from rich.traceback import Traceback
 sys.stdout.reconfigure(encoding='utf-8')
 sys.stderr.reconfigure(encoding='utf-8')
 
+WEB_LOG_MAX_LINES = 500
+WEB_LOG_WRAP_WIDTH = 80
+
 
 def empty_function(*args, **kwargs):
     pass
+
+
+def clamp_web_log_text(text: str) -> str:
+    max_lines = WEB_LOG_MAX_LINES
+    width = WEB_LOG_WRAP_WIDTH
+    kept = []
+
+    for line in reversed(str(text).splitlines() or [""]):
+        chunks = [
+            line[max(0, end - width):end]
+            for end in range(len(line), 0, -width)
+        ] or [""]
+        for chunk in chunks:
+            kept.append(chunk)
+            if len(kept) >= max_lines:
+                kept.reverse()
+                return "\n".join(kept)
+
+    kept.reverse()
+    return "\n".join(kept)
 
 
 # cnocr will set root logger in cnocr.utils
@@ -75,6 +98,7 @@ class RichRenderableHandler(RichHandler):
                         record, formatter.datefmt)
                 message = formatter.formatMessage(record)
 
+        message = clamp_web_log_text(message)
         message_renderable = self.render_message(record, message)
         log_renderable = self.render(
             record=record, traceback=traceback, message_renderable=message_renderable

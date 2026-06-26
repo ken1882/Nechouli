@@ -34,6 +34,9 @@ class VoidsWithinUI(BasePageUI):
                     self.device.click(btn)
                     self.device.wait(0.5)
             joins = pane.locator('button[id*="VolunteerButton"]')
+            if not joins.count():
+                logger.warning("No shifts found, quitting")
+                return True
             err_popup = self.page.locator('h3', has_text='Error Occurred')
             for j in joins.all():
                 if 'locked' in j.locator('../..').get_attribute('class'):
