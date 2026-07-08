@@ -141,12 +141,12 @@ class QuickStockUI(BasePageUI):
         return should_continue
 
     def get_stock_capacity(self):
-        stock_text = self.page.locator('center').first.text_content().split(':')
-        if len(stock_text) < 3:
+        stats = self.page.locator('.market-your-headerbar__stats b')
+        if stats.count() < 2:
             logger.warning("Failed to parse stock capacity")
             self.config.stored.StockData.capacity = 0
             return 0, 0
-        used, free = str2int(stock_text[-2]), str2int(stock_text[-1])
+        used, free = str2int(stats.nth(0).text_content()), str2int(stats.nth(1).text_content())
         logger.info(f"Stock capacity: {used+free} ({used}/{free})")
         self.config.stored.StockData.capacity = used + free
         return used, free
@@ -154,37 +154,30 @@ class QuickStockUI(BasePageUI):
     def update_stock_price(self):
         self.goto("https://www.neopets.com/market.phtml?type=your")
         stocked_data = []
-        self.device.scroll_to(0, 100)
+        page = 1
         while True:
-            rows = self.page.locator('form[action] > table > tbody > tr')
-            if rows.count() < 3:
-                logger.warning("No stocked items in your shop")
+            rows = self.page.locator('#market-your-form .np-table-row')
+            if not rows.count():
+                if page == 1:
+                    logger.warning("No stocked items in your shop")
                 break
-            goods = rows.all()[1:-1]
-            row_height = 80
-            viewport_height = 400
-            viewport_y = 0
-            cur_y = 100
-            item_names = [g.locator('td').first.text_content().strip() for g in goods]
+            has_next = self.page.locator('a.mkt-pagination-next').count() > 0
+            goods = rows.all()
+            item_names = [g.locator('.market-your-item__name').text_content().strip() for g in goods]
             jn.batch_search(set(item_names))
+            changed = False
             for good in goods:
-                cur_y += row_height
-                if cur_y > viewport_y + viewport_height:
-                    viewport_y = cur_y
-                    self.device.scroll_to(0, viewport_y)
-                cells = good.locator('td')
-                name = cells.first.text_content().strip()
+                name = good.locator('.market-your-item__name').text_content().strip()
                 item = NeoItem(name=name)
                 item.update_jn()
-                item.quantity = str2int(cells.nth(2).text_content().strip())
-                stocked_data.append(item)
+                item.quantity = str2int(good.locator('.market-your-item__stock-mobile').text_content())
                 item_data = jn.get_item_details_by_name(name)
                 price = self.evaluate_price_strategy(item_data)
-                old_price = 0
-                input = cells.nth(4).locator('input')
                 item.stocked_price = price
+                stocked_data.append(item)
+                input = good.locator('input[name^="cost_"]')
                 try:
-                    old_price = str2int(input.get_attribute('value'))
+                    old_price = str2int(good.locator('input[name^="oldcost_"]').get_attribute('value'))
                 except Exception as e:
                     logger.error(f"Failed to parse old price for {name}: {e}")
                     continue
@@ -192,15 +185,15 @@ class QuickStockUI(BasePageUI):
                     continue
                 logger.info(f"Setting price for {name} to {price}")
                 input.fill(str(price))
-            upd_btn = self.page.locator('input[type=submit][value="Update"]')
-            self.device.click(upd_btn, nav=True)
-            next_page = self.page.locator('input[name=subbynext]')
-            if not next_page.count():
+                changed = True
+            if changed:
+                upd_btn = self.device.wait_for_element('#market-your-update:not([disabled])')
+                if upd_btn:
+                    self.device.click(upd_btn, nav=True)
+            if not has_next:
                 break
-            disabled = type(next_page.first.get_attribute('disabled')) is str
-            if disabled:
-                break
-            self.device.click(next_page.first, nav=True)
+            page += 1
+            self.goto(f"https://www.neopets.com/market.phtml?type=your&order_by=id&lim={page*30}")
         self.config.stored.StockData.set(stocked_data)
 
     def evaluate_price_strategy(self, item: dict):
@@ -235,7 +228,7 @@ class QuickStockUI(BasePageUI):
             logger.info("Shop not opened, cannot withdraw from till")
             return
         self.goto('https://www.neopets.com/market.phtml?type=till')
-        money = str2int(self.page.locator('.content >> p > b').text_content())
+        money = str2int(self.page.locator('#mkt-till-balance').text_content())
         if money <= 0:
             logger.info("No NP in till to withdraw")
             return

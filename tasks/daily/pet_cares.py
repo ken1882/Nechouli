@@ -37,7 +37,7 @@ class PetCaresUI(BasePageUI):
 
     def scan_all_pets(self):
         self.pets = []
-        nodes = self.page.locator('.hp-carousel-nameplate')
+        nodes = self.page.locator('.slick-slide:not(.slick-cloned) .hp-carousel-nameplate')
         num = nodes.count()
         if not num:
             raise TaskError('No pets found')
@@ -46,10 +46,6 @@ class PetCaresUI(BasePageUI):
             if not name: # empty slot
                 continue
             if any(pet.name == name for pet in self.pets):
-                continue
-            bb = node.bounding_box()
-            logger.info("Visibility check: %s", bb)
-            if bb['x'] + bb['width'] < 100:
                 continue
             data = {
                 'name': name,
@@ -75,31 +71,38 @@ class PetCaresUI(BasePageUI):
                 self.config.stored.PetsData.remove(p)
 
     def unselect(self):
+        shade = self.page.locator('#navpopupshade__2020')
+        if shade.count() and shade.is_visible():
+            shade.evaluate('node => node.click()')
         if not self.selected_pet:
             return
+        back_node = self.page.locator('#petCareResultBack')
+        if back_node.count() and back_node.is_visible():
+            back_node.click()
         self.selected_pet = None
-        self.device.click((10, 200)) # just click somewhere to unselect
         self.device.click_record_clear()
 
     def select_pet(self, index):
         if index < 0 or index >= len(self.pets):
             raise TaskError(f'Invalid pet index: {index}')
         self.selected_pet = self.pets[index]
-        x_cycle = []
-        viewable = self.page.locator('.slick-list').bounding_box()
-        while True:
-            bb = self.selected_pet.locator.bounding_box()
-            logger.info("Visibility check: %s", bb)
-            if bb['x'] + bb['width']*0.95 < viewable['x']:
-                self.device.click('button[class="slick-prev slick-arrow"]')
-            elif bb['x'] > viewable['x'] + viewable['width']*0.95:
-                self.device.click('button[class="slick-next slick-arrow"]')
-            else:
-                break
-            self.device.wait(0.5)
-            x_cycle.append(bb['x'])
+        slick_index = self.selected_pet.locator.locator(
+            'xpath=ancestor::div[contains(@class, "slick-slide")][1]'
+        ).get_attribute('data-slick-index')
+        self.page.locator('.slick-slider').evaluate(
+            '(el, index) => window.jQuery(el).slick("slickGoTo", Number(index))',
+            slick_index,
+        )
+        self.device.wait(0.5)
+        self.selected_pet._locator = self.device.wait_for_element(
+            f'.slick-active .hp-carousel-nameplate[data-name="{self.selected_pet.name}"]'
+        )
         logger.info(f'Selected pet: {self.selected_pet.name}')
-        self.selected_pet.locator.click()
+        self.selected_pet.locator.evaluate('node => node.click()')
+        self.device.wait_for_element(
+            '#petCareInfoName',
+            condition=lambda node: node.inner_text().strip() == self.selected_pet.name,
+        )
 
     def feed_all_pets(self):
         for i, pet in enumerate(self.pets):

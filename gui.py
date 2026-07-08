@@ -102,7 +102,7 @@ def stop_process(process, stop_event=None):
         stop_event.set()
     try:
         if process.is_alive():
-            process.join(timeout=10)
+            process.join(timeout=1)
     except KeyboardInterrupt:
         logger.info("Second keyboard interrupt received, force killing web service")
     finally:

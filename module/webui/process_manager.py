@@ -26,7 +26,7 @@ class ProcessManager:
         self.renderables: List[ConsoleRenderable] = []
         self.renderable_line_counts: List[int] = []
         self.renderables_version = 0
-        self.renderables_max_length = 500
+        self.renderables_max_length = 100
         self.renderables_reduce_length = 100
         self._process: Process = None
         self.thd_log_queue_handler: threading.Thread = None
@@ -69,7 +69,6 @@ class ProcessManager:
         try:
             if self.alive:
                 kill_process_tree(self._process.pid, grace=5)
-                kill_remote_browser(self.config_name)
                 self._append_renderable(
                     f"[{self.config_name}] exited. Reason: Manual stop\n"
                 )

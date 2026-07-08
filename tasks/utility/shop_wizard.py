@@ -5,6 +5,7 @@ from module import jelly_neo as jn
 from module.db import data_manager as dm
 from module.db.models.neoitem import NeoItem
 from datetime import datetime
+from urllib.parse import parse_qs, urlparse
 
 class ShopWizardUI(BasePageUI):
     MAX_MARKET_PRICE = 999999
@@ -143,20 +144,31 @@ class ShopWizardUI(BasePageUI):
 
     def purchase_item(self, name, shop_link, amount=1) -> int:
         self.goto(shop_link)
-        segs = self.page.url.split('&')
-        good_id = next((s for s in segs if s.startswith('buy_obj_info')), None)
+        query = parse_qs(urlparse(self.page.url).query)
+        good_id = query.get('buy_obj_info_id', [''])[0]
         if not good_id:
             logger.error(f"Failed to find good_id for {name} in {shop_link}")
             return 0
-        logger.info(f"Buying {name} (x{amount}) for {shop_link.split('=')[-1]} NP")
-        good_id = good_id.split('=')[1]
-        goods = self.page.locator(f'a[href*="obj_info_id={good_id}"]')
+        price = query.get('buy_cost_neopoints', [''])[0]
+        logger.info(f"Buying {name} (x{amount}) for {price} NP")
+        goods = self.page.locator(f'.bsp-item--featured[data-oii="{good_id}"] .bsp-item__buy')
         brought = 0
-        self.page.on('dialog', lambda dialog: dialog.accept())
-        while goods.count() and amount:
-            node = goods.nth(0)
+        while amount:
+            if not goods.count():
+                logger.warning(f"Failed to find pinned shop item {name} ({good_id})")
+                break
+            node = goods.first
             self.device.scroll_to(loc=node)
-            self.device.click(node, nav=True)
+            self.device.click(node)
+            confirm = self.device.wait_for_element('#bsp-buy-confirm')
+            self.device.click(confirm)
+            result = self.device.wait_for_element('#bsp-buy-success-popup', '#bsp-buy-error-popup')
+            if result.get_attribute('id') != 'bsp-buy-success-popup':
+                logger.warning(f"Failed to buy {name}: {result.inner_text()}")
+                break
+            logger.info(f"Bought {name}")
+            ok = self.device.wait_for_element('#bsp-buy-success-ok')
+            self.device.click(ok)
             amount  -= 1
             brought += 1
         return brought

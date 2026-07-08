@@ -65,4 +65,6 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 - For Microsoft Edge Dev remote debugging, `RemoteDebuggingAllowed` policy alone may not be enough. Also enable remote debugging in Edge Dev at `edge://inspect/#remote-debugging`; otherwise `msedge.exe --remote-debugging-port=<port>` may launch without listening on the port.
 
+- Prefer using `device.wait_for_element` over `device.wait` when waiting elements to load or page/animation/ui response.
+
 - For active live debugging or development requirments such as fetching real html tags instead guessing names, refer to `interactive.py` which manipulating the real browser instance
