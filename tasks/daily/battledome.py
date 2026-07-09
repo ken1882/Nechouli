@@ -80,12 +80,12 @@ class BattleDomeUI(BasePageUI):
                     return False
                 continue
             break
-        status = self.page.locator('#bdFightPetInfo')
+        status = self.page.locator(f'.petEligible[data-name="{fighter}"]')
         if not status.count() or 'is ready' not in status.first.text_content():
             logger.error(f"Pet {fighter} is unable to fight!")
             return False
-        step = self.device.wait_for_element('.nextStep')
-        self.device.click(step)
+        next_btn = self.page.locator('#BattleContinueButton')
+        self.device.click(next_btn)
         return True
 
     def select_opponent(self):
