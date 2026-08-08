@@ -2116,6 +2116,14 @@
         "type": "checkbox",
         "value": false
       },
+      "AutoSolveFaerieQuest": {
+        "type": "checkbox",
+        "value": false
+      },
+      "QuestItemPriceThreshold": {
+        "type": "input",
+        "value": 10000
+      },
       "PriceUpdateInterval": {
         "type": "input",
         "value": 30

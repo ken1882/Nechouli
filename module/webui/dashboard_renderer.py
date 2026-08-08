@@ -6,8 +6,10 @@ if TYPE_CHECKING:
 
 
 def handle_item_container(kwargs, stored):
+    items = stored.get("value", [])
+    size = sum(max(1, item.quantity) for item in items if item.category != 'cash')
     return [
-        put_text(len(stored.get("items", []))).style("--dashboard-value--"),
+        put_text(size).style("--dashboard-value--"),
         put_text(f' / {stored.get("capacity", "0")}').style("--dashboard-time--"),
     ]
 

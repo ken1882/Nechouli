@@ -108,6 +108,8 @@ class GeneratedConfig:
 
     # Group `ShopWizard`
     ShopWizard_EnableActivePriceUpdate = False
+    ShopWizard_AutoSolveFaerieQuest = False
+    ShopWizard_QuestItemPriceThreshold = 10000
     ShopWizard_PriceUpdateInterval = 30
     ShopWizard_PriceUpdateBatchSize = 10
     ShopWizard_PriceUpdateRescans = 5

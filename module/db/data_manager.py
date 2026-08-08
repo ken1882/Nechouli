@@ -329,6 +329,50 @@ def global_get(key: str) -> Optional[str]:
     return data.get(key)
 
 
+def global_items(prefix: str = "") -> Dict[str, str]:
+    """Return shared key-value pairs whose keys start with ``prefix``."""
+    if _redis_enabled():
+        ret = {}
+        redis_prefix = REDIS_GLOBAL_KEY_PREFIX + prefix
+        for key in RedisConn.scan_iter(f"{redis_prefix}*"):
+            value = RedisConn.get(key)
+            if value is not None:
+                ret[key[len(REDIS_GLOBAL_KEY_PREFIX):]] = value
+        return ret
+
+    if not _GLOBAL_FILE.exists():
+        return {}
+
+    with file_lock(_GLOBAL_FILE, "rb") as fp:
+        try:
+            data = orjson.loads(fp.read()) or {}
+        except orjson.JSONDecodeError:
+            return {}
+    return {key: value for key, value in data.items() if key.startswith(prefix)}
+
+
+def global_delete(key: str) -> None:
+    """Delete a shared key, if present."""
+    if _redis_enabled():
+        RedisConn.delete(REDIS_GLOBAL_KEY_PREFIX + key)
+        return
+
+    if not _GLOBAL_FILE.exists():
+        return
+
+    with file_lock(_GLOBAL_FILE, "rb+") as fp:
+        try:
+            data = orjson.loads(fp.read()) or {}
+        except orjson.JSONDecodeError:
+            data = {}
+        if key not in data:
+            return
+        del data[key]
+        fp.seek(0)
+        fp.truncate()
+        fp.write(orjson.dumps(data))
+
+
 class DataManager:
 
     def __init__(self,
@@ -407,4 +451,3 @@ class DataManager:
                     self.data[key] = obj
                 else:
                     raise ValueError(f"Class {class_name} does not implement `deserialize()`")
-

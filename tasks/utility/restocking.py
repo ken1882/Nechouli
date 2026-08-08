@@ -98,13 +98,19 @@ class RestockingUI(BasePageUI):
 
     def check_stock(self):
         self.goto("https://www.neopets.com/market.phtml?type=your")
-        stock_text = self.page.locator('center').first.text_content().split(':')
-        if len(stock_text) < 3:
+        stats = self.page.locator('.market-your-headerbar__stats b')
+        if stats.count() >= 2:
+            used, free = str2int(stats.nth(0).text_content()), str2int(stats.nth(1).text_content())
+        else:
+            stock_text = self.page.locator('center').first.text_content().split(':')
+            if len(stock_text) >= 3:
+                used, free = str2int(stock_text[-2]), str2int(stock_text[-1])
+            else:
+                used, free = None, None
+        if used is None or free is None:
             logger.warning("Failed to parse stock capacity")
-            self.config.stored.StockData.capacity = 0
             self.stock_free = 0
             return
-        used, free = str2int(stock_text[-2]), str2int(stock_text[-1])
         logger.info(f"Stock capacity: {used+free} ({used}/{free})")
         self.config.stored.StockData.capacity = used + free
         self.stock_free = free
@@ -193,6 +199,8 @@ class RestockingUI(BasePageUI):
         confirm_btn = self.page.locator('#confirm-link')
         while not confirm_btn.is_visible():
             self.device.click(item._locator, wait=0.1)
+            self.device.temporary_disconnect(3)
+            confirm_btn = self.page.locator('#confirm-link')
             if not confirm_btn.is_visible():
                 bb = item._locator.bounding_box()
                 mx, my = bb['x'] + 30, bb['y'] + 30

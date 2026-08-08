@@ -41,10 +41,13 @@ class QuickStockUI(BasePageUI):
             available_acts = node.locator('input')
             if not available_acts.count():
                 continue
-            item_name = node.locator('td').first.text_content().split('×')[0].strip()
+            name_cell = node.locator('td').first
+            item_name = name_cell.text_content().split('×')[0].strip()
             if item_name.lower() == 'check all':
                 break
-            item = NeoItem(name=item_name, _locator=node, quantity=1, _act='deposit')
+            count_badge = name_cell.locator('.qs-count-badge')
+            quantity = (str2int(count_badge.text_content()) or 1) if count_badge.count() else 1
+            item = NeoItem(name=item_name, _locator=node, quantity=quantity, _act='deposit')
             self.items.append(item)
         jn.batch_search(set(item.name for item in self.items))
         for item in self.items:
@@ -107,9 +110,9 @@ class QuickStockUI(BasePageUI):
                 self._stocked = True
             elif 'closet' in available_acts:
                 existed = next((i for i in self.closet if i.name == item.name), None)
-                if existed and existed.quantity < 5:
+                if existed and existed.quantity + item.quantity <= 5:
                     item._act = 'closet'
-                    existed.quantity += 1
+                    existed.quantity += item.quantity
                 else:
                     item._act = 'deposit'
         should_continue = not all(item._act in ['keep'] for item in self.items)
@@ -120,11 +123,11 @@ class QuickStockUI(BasePageUI):
         for item in self.items:
             acts = item._locator.locator('input').all()
             if item._act == 'stock':
-                if self.free_stocks <= 0:
-                    logger.warning(f"No free stocks available for item {item.name}, deposit instead")
+                if self.free_stocks < item.quantity:
+                    logger.warning(f"Not enough free stocks available for item {item.name}, deposit instead")
                     item._act = 'deposit'
                 else:
-                    self.free_stocks -= 1
+                    self.free_stocks -= item.quantity
             for act in reversed(acts):
                 aname = act.get_attribute('value')
                 if aname == item._act:
@@ -144,12 +147,32 @@ class QuickStockUI(BasePageUI):
         stats = self.page.locator('.market-your-headerbar__stats b')
         if stats.count() < 2:
             logger.warning("Failed to parse stock capacity")
-            self.config.stored.StockData.capacity = 0
             return 0, 0
         used, free = str2int(stats.nth(0).text_content()), str2int(stats.nth(1).text_content())
+        if used is None or free is None:
+            logger.warning("Failed to parse stock capacity")
+            return 0, 0
         logger.info(f"Stock capacity: {used+free} ({used}/{free})")
         self.config.stored.StockData.capacity = used + free
         return used, free
+
+    def get_inventory_capacity(self):
+        self.goto('https://www.neopets.com/inventory.phtml')
+        count = self.device.wait_for_element('.inv-total-count')
+        if not count:
+            logger.warning("Failed to parse inventory capacity")
+            return 0, 0
+        stats = count.locator('b')
+        if stats.count() < 2:
+            logger.warning("Failed to parse inventory capacity")
+            return 0, 0
+        used, capacity = str2int(stats.nth(0).text_content()), str2int(stats.nth(1).text_content())
+        if used is None or capacity is None:
+            logger.warning("Failed to parse inventory capacity")
+            return 0, 0
+        logger.info(f"Inventory capacity: {capacity} ({used}/{capacity-used})")
+        self.config.stored.InventoryData.capacity = capacity
+        return used, capacity
 
     def update_stock_price(self):
         self.goto("https://www.neopets.com/market.phtml?type=your")
@@ -218,6 +241,7 @@ class QuickStockUI(BasePageUI):
             raise ValueError(f"Script execution failed: {e}")
 
     def update_inventory_data(self):
+        self.get_inventory_capacity()
         self.goto('https://www.neopets.com/quickstock.phtml')
         self.scan_all_items()
         self.config.stored.InventoryData.set(self.items)
@@ -240,6 +264,12 @@ class QuickStockUI(BasePageUI):
         if 'Loading items...' in self.page.locator('#closet_app').text_content():
             logger.info("Waiting for closet items to load...")
             self.device.wait(3)
+        capacity = int(self.page.evaluate("() => window.closet_config?.capacity || 0"))
+        if capacity:
+            logger.info(f"Closet capacity: {capacity}")
+            self.config.stored.ClosetData.capacity = capacity
+        else:
+            logger.warning("Failed to parse closet capacity")
         loc_empty = self.page.locator('.closet-empty-title')
         if loc_empty.count() and loc_empty.first.is_visible():
             logger.info("Closet is empty")

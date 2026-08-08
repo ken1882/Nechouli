@@ -619,6 +619,14 @@
       "name": "Enable Active Price Update",
       "help": "Update market price of items in your shop and cache db by searching in Shop Wizard."
     },
+    "AutoSolveFaerieQuest": {
+      "name": "Auto Solve Faerie Quest",
+      "help": "Use opted-in accounts to search for and purchase items requested by faerie quests."
+    },
+    "QuestItemPriceThreshold": {
+      "name": "Quest Item Price Threshold",
+      "help": "Maximum NP to spend on a faerie quest item; more expensive quests are abandoned."
+    },
     "PriceUpdateInterval": {
       "name": "Price Update Interval",
       "help": "Interval in minutes running price update task."

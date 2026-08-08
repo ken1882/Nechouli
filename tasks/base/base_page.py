@@ -181,6 +181,25 @@ class BasePageUI(ModuleBase):
         self.config.stored.NeoPoints.set(np)
         return np
 
+    def get_username(self) -> str:
+        cached = getattr(self, '_username', '')
+        if cached:
+            return cached
+        selectors = (
+            '#navprofiledropdown__2020 .nav-profile-dropdown-text '
+            'a[href*="userlookup.phtml?user="]',
+            '.user a[href*="userlookup.phtml?user="]',
+        )
+        for selector in selectors:
+            node = self.page.locator(selector)
+            if not node.count():
+                continue
+            username = node.first.text_content().strip()
+            if username:
+                self._username = username
+                return username
+        return ''
+
     def debug_screenshot(self, fname=''):
         if not fname:
             fname = f"{self.config.config_name}_snapshot.png"

@@ -459,7 +459,7 @@ class StoredItemContainer(StoredList):
 
     @property
     def size(self) -> int:
-        return len([i for i in self.items if i.category != 'cash'])
+        return sum(max(1, i.quantity) for i in self.items if i.category != 'cash')
 
     def is_full(self, keeps: int = 0) -> bool:
         return self.size + keeps >= self.capacity
