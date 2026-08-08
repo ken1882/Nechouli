@@ -14,6 +14,8 @@ import re
 import os
 from shutil import copy2
 from datetime import datetime, timedelta
+from random import randint
+
 
 class RestockingUI(BasePageUI):
     goods: list[NeoItem]
@@ -198,13 +200,22 @@ class RestockingUI(BasePageUI):
         logger.info(f"Buying item: {item.name} (Price/Profit: {item.restock_price} / {item.profit})")
         confirm_btn = self.page.locator('#confirm-link')
         while not confirm_btn.is_visible():
-            self.device.click(item._locator, wait=0.1)
-            self.device.temporary_disconnect(3)
-            confirm_btn = self.page.locator('#confirm-link')
+            self.device.click(item._locator)
             if not confirm_btn.is_visible():
                 bb = item._locator.bounding_box()
                 mx, my = bb['x'] + 30, bb['y'] + 30
                 self.device.click((mx, my), wait=0.1)
+        depth = 0
+        while not confirm_btn.is_enabled():
+            depth += 1
+            bb = self.page.locator('#cancel-link').bounding_box()
+            self.device.click((bb['x']+bb['width']/2, bb['y']-70))
+            self.device.temporary_disconnect(randint(50, 100) / 17.0)
+            confirm_btn = self.page.locator('#confirm-link')
+            if depth > 5:
+                logger.info("Blocked by cloudflare, canceling purchase")
+                self.device.click('#cancel-link')
+                return False
         self.device.click(confirm_btn)
         self.last_captcha_url = ''
         if item.profit >= self.config.Restocking_ImmediateProfit:
