@@ -206,7 +206,7 @@ class RestockingUI(BasePageUI):
                 mx, my = bb['x'] + 30, bb['y'] + 30
                 self.device.click((mx, my), wait=0.1)
         depth = 0
-        while not confirm_btn.is_enabled():
+        while confirm_btn.is_disabled():
             depth += 1
             bb = self.page.locator('#cancel-link').bounding_box()
             self.device.click((bb['x']+bb['width']/2, bb['y']-70))
