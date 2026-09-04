@@ -551,7 +551,7 @@ class AlasGUI(Frame):
 
     def _save_config(
             self,
-            modified: Dict[str, str],
+            modified: Dict[str, object],
             config_name: str,
             config_updater: AzurLaneConfig = State.config_updater,
     ) -> None:
@@ -561,7 +561,11 @@ class AlasGUI(Frame):
             config = config_updater.read_file(config_name)
             for k, v in modified.copy().items():
                 valuetype = deep_get(self.ALAS_ARGS, k + ".valuetype")
-                v = parse_pin_value(v, valuetype)
+                if not (
+                    isinstance(v, list)
+                    and deep_get(self.ALAS_ARGS, k + ".type") == "stored"
+                ):
+                    v = parse_pin_value(v, valuetype)
                 validate = deep_get(self.ALAS_ARGS, k + ".validate")
                 if not len(str(v)):
                     default = deep_get(self.ALAS_ARGS, k + ".value")

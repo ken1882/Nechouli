@@ -21,9 +21,21 @@ class Nechouli(AzurLaneAutoScript):
         super().__init__(config_name)
 
     def setup(self):
-        self.device.goto('https://itemdb.com.br/')
+        self._setup_itemdb()
         jn.update_agent_headers_from_page(self.device.page)
         self.device.goto('https://www.neopets.com/questlog/')
+
+    def _setup_itemdb(self):
+        b = (os.getenv('ENABLE_ITEMDB_QUERY') or '').strip().lower()
+        if b == '0' or b == 'false':
+            return
+        depth = 0
+        while depth < 10:
+            self.device.goto('https://itemdb.com.br/')
+            self.device.temporary_disconnect(random.randint(50, 100) / 17.0)
+            if self.device.page.locator('img[alt="itemdb logo"]').count():
+                break
+            depth += 1
 
     def loop(self):
         self.start()

@@ -4,6 +4,7 @@ from module.config.stored.classes import (
     StoredCounter,
     StoredDailyQuestFeedCounter,
     StoredDailyQuestRestockCounter,
+    StoredFaerieQuestStartTime,
     StoredIgsPurchaseCounter,
     StoredInt,
     StoredItemContainer,
@@ -24,6 +25,7 @@ class StoredGenerated:
     ObeliskTimesLeft = StoredInt("BattleDome.BattleDome.ObeliskTimesLeft")
     AaaPurchasedCount = StoredAaaPurchaseCounter("AlmostAbandonedAttic.AlmostAbandonedAttic.AaaPurchasedCount")
     IgsPurchasedCount = StoredIgsPurchaseCounter("IglooGarageSale.IglooGarageSale.IgsPurchasedCount")
+    FaerieQuestStartTime = StoredFaerieQuestStartTime("ShopWizard.ShopWizard.FaerieQuestStartTime")
     ShopWizardRequests = StoredShopWizardRequests("ShopWizard.ShopWizard.ShopWizardRequests")
     EarnedPlotPoints = StoredInt("VoidsWithin.VoidsWithin.EarnedPlotPoints")
     NeoPoints = StoredInt("InventoryTool.PlayerStorage.NeoPoints")

@@ -1,8 +1,11 @@
 from turtle import st
 from pywebio.output import *
+from pywebio.pin import pin, pin_on_change
+from pywebio.session import local
 from pywebio.session import run_js
 from pywebio.io_ctrl import Output
 from module.webui.lang import _t, t
+from module.webui.pin import put_input
 from typing import TYPE_CHECKING, Dict, Union, Any
 from datetime import datetime
 
@@ -184,21 +187,104 @@ def _render_object(obj: Any) -> str:
         return obj.name
     return str(obj)
 
+
+def _stored_list_state() -> dict[str, dict[str, list[str]]]:
+    state = getattr(local, "stored_lists", None)
+    if state is None:
+        state = {}
+        local.stored_lists = state
+    return state
+
+
+def _stored_list_value_scope(name: str) -> str:
+    return f"arg_stored-stored-value-{name}"
+
+
+def _capture_stored_list(name: str) -> list[str]:
+    values = _stored_list_state()[name]["values"]
+    for index, value in enumerate(values):
+        values[index] = str(getattr(pin, f"{name}_{index}", value) or "")
+    return values
+
+
+def _queue_stored_list(name: str, values: list[str]) -> None:
+    local.gui.modified_config_queue.put({
+        "name": ".".join(name.split("_")),
+        "value": [value for value in values if value.strip()],
+    })
+
+
+def _stored_list_changed(name: str, _value: str) -> None:
+    _queue_stored_list(name, _capture_stored_list(name))
+
+
+def _stored_list_rows(name: str) -> list[Output]:
+    state = _stored_list_state()[name]
+    values = state["values"]
+    if not values:
+        values.append("")
+
+    rows = []
+    for index, value in enumerate(values):
+        pin_name = f"{name}_{index}"
+        pin_on_change(
+            pin_name,
+            lambda changed, name=name: _stored_list_changed(name, changed),
+            clear=True,
+        )
+        rows.append(put_row([
+            put_input(pin_name, value=value),
+            put_button(
+                label="×",
+                color="danger",
+                onclick=lambda index=index: _remove_stored_list(name, index),
+            ),
+        ], size="1fr auto"))
+
+    rows.append(put_row([
+        None,
+        put_button(
+            label="+",
+            color="secondary",
+            onclick=lambda: _add_stored_list(name),
+        ),
+    ], size="1fr auto"))
+    return rows
+
+
+def _render_stored_list(name: str) -> None:
+    with use_scope(_stored_list_value_scope(name), clear=True):
+        for row in _stored_list_rows(name):
+            row.show()
+
+
+def _add_stored_list(name: str) -> None:
+    _capture_stored_list(name).append("")
+    _render_stored_list(name)
+
+
+def _remove_stored_list(name: str, index: int) -> None:
+    values = _capture_stored_list(name)
+    if len(values) <= 1:
+        values[0] = ""
+    else:
+        values.pop(index)
+    _queue_stored_list(name, values)
+    _render_stored_list(name)
+
+
 def handle_list(kwargs, value: list):
     name = kwargs["name"]
-    html = "<ol>"
-    for v in value:
-        html += f'''
-        <li>{_render_object(v)}</li>
-        '''
-    html += "</ol>"
+    _stored_list_state()[name] = {
+        "values": [_render_object(item) for item in value],
+    }
     return put_scope(
         f"arg_container-stored-list-{name}",
         [
             get_title_help(kwargs),
             put_scope(
-                f"arg_stored-stored-value-{name}",
-                [put_html(html)],
+                _stored_list_value_scope(name),
+                _stored_list_rows(name),
             )
         ]
     )

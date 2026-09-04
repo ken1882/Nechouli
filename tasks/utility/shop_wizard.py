@@ -4,7 +4,7 @@ from module.base.utils import str2int
 from module import jelly_neo as jn
 from module.db import data_manager as dm
 from module.db.models.neoitem import NeoItem
-from datetime import datetime
+from datetime import datetime, timedelta
 from urllib.parse import parse_qs, urlparse
 
 class ShopWizardUI(BasePageUI):
@@ -126,6 +126,7 @@ class ShopWizardUI(BasePageUI):
         self.goto(self.FQUEST_URL)
         item_name = self.get_current_fquest_item()
         key = self.fquest_key
+        quest_start = self.config.stored.FaerieQuestStartTime
         if not key:
             logger.warning("Unable to identify the quest owner's username")
             return bool(item_name)
@@ -135,12 +136,29 @@ class ShopWizardUI(BasePageUI):
             if value is not None:
                 self.delete_fquest_value(key, expected=value)
                 logger.info("Removed stale faerie quest request for %s", self.config.config_name)
+            if quest_start.is_set():
+                quest_start.clear()
             return False
 
         parsed_item, state, price, result_url = self.parse_fquest_value(value or '')
         if parsed_item != item_name:
             self.set_fquest_value(key, item_name)
+            quest_start.set()
             logger.info("Requested faerie quest item: %s", item_name)
+            return True
+        if not quest_start.is_set():
+            quest_start.set()
+        timeout = max(float(getattr(self.config, 'ShopWizard_FaerieQuestTimeout', 0) or 0), 0)
+        if timeout and datetime.now() - quest_start.time >= timedelta(hours=timeout):
+            logger.warning(
+                "Faerie quest item %s exceeded timeout of %s hours; abandoning quest",
+                item_name,
+                timeout,
+            )
+            if self.abandon_faerie_quest(item_name):
+                self.delete_fquest_value(key, expected=value)
+                quest_start.clear()
+                return False
             return True
         if state in ('pending', 'claimed'):
             logger.info("Waiting for a helper to find faerie quest item: %s", item_name)
@@ -164,6 +182,7 @@ class ShopWizardUI(BasePageUI):
             )
             if self.abandon_faerie_quest(item_name):
                 self.delete_fquest_value(key, expected=value)
+                quest_start.clear()
                 return False
             return True
 
@@ -195,6 +214,7 @@ class ShopWizardUI(BasePageUI):
             logger.warning("Faerie quest submission did not complete for %s", item_name)
             return True
         self.delete_fquest_value(key, expected=value)
+        quest_start.clear()
         logger.info("Completed faerie quest with %s", item_name)
         return False
 

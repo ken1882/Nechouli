@@ -623,6 +623,10 @@
       "name": "Auto Solve Faerie Quest",
       "help": "Use opted-in accounts to search for and purchase items requested by faerie quests."
     },
+    "FaerieQuestTimeout": {
+      "name": "Faerie Quest Timeout (hours)",
+      "help": "Abandon a faerie quest after this many hours; 0 never abandons due to timeout."
+    },
     "QuestItemPriceThreshold": {
       "name": "Quest Item Price Threshold",
       "help": "Maximum NP to spend on a faerie quest item; more expensive quests are abandoned."
@@ -638,6 +642,10 @@
     "PriceUpdateRescans": {
       "name": "Price Update Rescans",
       "help": "Number of times to rescan in shop wizard for same item when not finding lower price."
+    },
+    "FaerieQuestStartTime": {
+      "name": "Faerie Quest Start Time",
+      "help": "Time when the current faerie quest was first encountered."
     },
     "ShopWizardRequests": {
       "name": "Shop Wizard Requests",

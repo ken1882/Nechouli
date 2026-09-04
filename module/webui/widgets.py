@@ -371,6 +371,9 @@ def put_arg_stored(kwargs: T_Output_Kwargs) -> Output:
         return renderer.render(name, kwargs)
 
     values = kwargs.pop("value", {})
+    if type(values) is list:
+        return renderer.handle_list(kwargs, values)
+
     value = values.pop("value", "")
     total = values.pop("total", "")
     time_ = values.pop("time", "")

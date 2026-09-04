@@ -590,10 +590,12 @@
     "ShopWizard": {
       "EnableActivePriceUpdate": false,
       "AutoSolveFaerieQuest": false,
+      "FaerieQuestTimeout": 0,
       "QuestItemPriceThreshold": 10000,
       "PriceUpdateInterval": 30,
       "PriceUpdateBatchSize": 10,
       "PriceUpdateRescans": 5,
+      "FaerieQuestStartTime": {},
       "ShopWizardRequests": {}
     }
   },

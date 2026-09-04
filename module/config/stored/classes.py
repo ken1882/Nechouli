@@ -441,6 +441,17 @@ class StoredList(StoredBase):
     def __bool__(self):
         return bool(self.value)
 
+
+class StoredFaerieQuestStartTime(StoredBase):
+    def set(self, value=None):
+        self.time = value or now()
+
+    def clear(self):
+        self.time = DEFAULT_TIME
+
+    def is_set(self) -> bool:
+        return self.time != DEFAULT_TIME
+
 class StoredDailyQuestRestockCounter(StoredCounter):
     FIXED_TOTAL = 3
 
