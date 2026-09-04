@@ -56,6 +56,10 @@ _ProofCache: dict[str, str] = {}
 ItemDB_RateLimitTime = 0
 ITEMDB_RATE_LIMIT_COOLDOWN = 60 * 60
 
+def _itemdb_query_enabled() -> bool:
+    value = (os.getenv("ENABLE_ITEMDB_QUERY") or "").strip().lower()
+    return value not in ("0", "false")
+
 # ───────────────────────────   HTTP session pool   ────────────────────────────
 Agent = requests.Session()
 Agent.headers.update(HTTP_HEADERS)
@@ -397,6 +401,8 @@ def get_many_itemdb(
     timeout: int = 10
 ) -> dict[str, dict]:
     ret = {}
+    if not _itemdb_query_enabled():
+        return ret
     item_names = [name for name in item_names if name]
     if not item_names:
         return ret
@@ -451,6 +457,8 @@ def get_many_itemdb(
 def get_itemdb(item_name: str, agent=None, timeout: int = 10) -> dict:
     global Agent
     ret = _empty_item()
+    if not _itemdb_query_enabled():
+        return ret
     if _is_itemdb_rate_limited():
         return ret
     agent = agent or Agent
@@ -498,6 +506,8 @@ def get_itemdb(item_name: str, agent=None, timeout: int = 10) -> dict:
 _CycleIndex = 0
 def update_agent_headers(headers: dict | None = None, cycle=True) -> None:
     global Agent, AgentPool, _CycleIndex
+    if not _itemdb_query_enabled():
+        return
     headers = headers or {}
     Agent.headers.update(headers)
     refresh_itemdb_proof_header(Agent, "/api/v1/search")
@@ -615,6 +625,8 @@ def refresh_itemdb_proof_header(agent: requests.Session, path: str, method: str 
 
 
 def update_agent_headers_from_page(page, cycle=False) -> None:
+    if not _itemdb_query_enabled():
+        return
     cookies = page.context.cookies("https://itemdb.com.br/")
     cookie_header = "; ".join(
         f"{cookie['name']}={cookie['value']}"
