@@ -57,8 +57,8 @@ ItemDB_RateLimitTime = 0
 ITEMDB_RATE_LIMIT_COOLDOWN = 60 * 60
 
 def _itemdb_query_enabled() -> bool:
-    value = (os.getenv("ENABLE_ITEMDB_QUERY") or "").strip().lower()
-    return value not in ("0", "false")
+    v = (os.getenv("ENABLE_ITEMDB_QUERY") or "").strip().lower()
+    return v not in ("0", "false", "no", "off", "")
 
 # ───────────────────────────   HTTP session pool   ────────────────────────────
 Agent = requests.Session()

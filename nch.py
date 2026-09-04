@@ -6,6 +6,7 @@ from module.base.utils import (
     get_all_instance_addresses,
     check_connection
 )
+from module.jelly_neo import _itemdb_query_enabled
 import module.jelly_neo as jn
 from module.db import data_manager as dm
 from module import hardware as hw
@@ -26,8 +27,7 @@ class Nechouli(AzurLaneAutoScript):
         self.device.goto('https://www.neopets.com/questlog/')
 
     def _setup_itemdb(self):
-        b = (os.getenv('ENABLE_ITEMDB_QUERY') or '').strip().lower()
-        if b == '0' or b == 'false':
+        if not _itemdb_query_enabled():
             return
         depth = 0
         while depth < 10:
